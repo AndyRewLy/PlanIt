@@ -33,5 +33,8 @@
       "es2015",
       "react"
     ]
+  },
+  "dependencies": {
+    "react-tap-event-plugin": "^3.0.2"
   }
 }
