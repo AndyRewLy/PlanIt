@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import Login from './Login';
 import Register from './Register';
 
+require('../css/App.css');
 class LoginScreen extends React.Component {
 	constructor(props){
     	super(props);
@@ -22,7 +23,7 @@ class LoginScreen extends React.Component {
   	componentWillMount(){
     	var loginscreen=[];
     	loginscreen.push(<Login parentContext={this} appContext={this.props.parentContext}/>);
-    	var loginmessage = "Not registered yet, Register Now";
+    	var loginmessage = "Not registered yet? Register Now";
     	this.setState({
                   loginscreen:loginscreen,
                   loginmessage:loginmessage
@@ -32,14 +33,14 @@ class LoginScreen extends React.Component {
   	render() {
   	    console.log(this.state.buttonLabel);
     	return (
-      		<div className="loginscreen">
+      		<div className="loginscreen centeredForm">
         		{this.state.loginscreen}
         		<div>
+              <p>
           			{this.state.loginmessage}
+              </p>
             		<MuiThemeProvider>
-                  <div>
                     <RaisedButton label={this.state.buttonLabel} primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
-                  </div>
                 </MuiThemeProvider>
         		</div>
       		</div>
@@ -52,7 +53,7 @@ class LoginScreen extends React.Component {
     	if(this.state.isLogin){
       		var loginscreen=[];
       		loginscreen.push(<Register parentContext={this}/>);
-      		loginmessage = "Already registered.Go to Login";
+      		loginmessage = "Already registered? Go to Login";
       		this.setState({
                      loginscreen:loginscreen,
                      loginmessage:loginmessage,
@@ -63,7 +64,7 @@ class LoginScreen extends React.Component {
     	else{
       	var loginscreen=[];
       	loginscreen.push(<Login parentContext={this}/>);
-      	loginmessage = "Not Registered yet.Go to registration";
+      	loginmessage = "Not Registered yet? Go to registration";
       	this.setState({
                      loginscreen:loginscreen,
                      loginmessage:loginmessage,

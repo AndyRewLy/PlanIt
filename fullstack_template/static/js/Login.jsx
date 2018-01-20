@@ -23,7 +23,7 @@ class Login extends Component {
 					<TextField hintText="Enter your Username" floatingLabelText="Username" onChange={(event, newValue) => 
 						this.setState({username: newValue})}/>
 					<br/>
-					<TextField hintText="Enter your Password" floatingLabelText="Password" onChange={(event, newValue) => 
+					<TextField type="password" hintText="Enter your Password" floatingLabelText="Password" onChange={(event, newValue) => 
 						this.setState({password: newValue})}/>
 					<br/>
 					<RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>

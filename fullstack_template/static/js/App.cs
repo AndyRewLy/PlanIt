@@ -1,0 +1,3 @@
+#centeredForm {
+	left: 50%;
+}
