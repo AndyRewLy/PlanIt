@@ -1,3 +1,6 @@
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import RaisedButton from 'material-ui/RaisedButton';
+
 import React, { Component } from 'react';
 
 import Login from './Login';
@@ -33,9 +36,11 @@ class LoginScreen extends React.Component {
         		{this.state.loginscreen}
         		<div>
           			{this.state.loginmessage}
-            		<div>
-               			<input type="button" value={this.state.buttonLabel} primary={true} onClick={(event) => this.handleClick(event)}></input>
-           			</div>
+            		<MuiThemeProvider>
+                  <div>
+                    <RaisedButton label={this.state.buttonLabel} primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
+                  </div>
+                </MuiThemeProvider>
         		</div>
       		</div>
     	);
@@ -68,5 +73,9 @@ class LoginScreen extends React.Component {
     	}
   	}
 }
+
+const style = {
+  margin: 15,
+};
 
 export default LoginScreen;

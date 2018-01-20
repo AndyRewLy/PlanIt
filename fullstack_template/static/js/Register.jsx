@@ -1,3 +1,8 @@
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import AppBar from 'material-ui/AppBar';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+
 import React, { Component } from 'react';
 
 class Register extends React.Component {
@@ -13,17 +18,42 @@ class Register extends React.Component {
 
 	render() {
 		return (
-			<form>
-				<div><input name="First Name" onChange = { (event, newValue) => 
-					this.setState({first_name: newValue})}></input></div>
-				<div><input name="Last Name" onChange = { (event, newValue) => 
-					this.setState({last_name: newValue})}></input></div>
-				<div><input name="Email" onChange = { (event, newValue) => 
-					this.setState({email: newValue})}></input></div>
-				<div><input name="Password" onChange = { (event, newValue) => 
-					this.setState({password: newValue})}></input></div>
-				<input type="button" value="Submit" primary={true} onClick={(event) => this.handleClick(event)}/>
-			</form>
+			<div>
+        <MuiThemeProvider>
+          <div>
+          <AppBar
+             title="Register"
+           />
+           <TextField
+             hintText="Enter your First Name"
+             floatingLabelText="First Name"
+             onChange = {(event,newValue) => this.setState({first_name:newValue})}
+             />
+           <br/>
+           <TextField
+             hintText="Enter your Last Name"
+             floatingLabelText="Last Name"
+             onChange = {(event,newValue) => this.setState({last_name:newValue})}
+             />
+           <br/>
+           <TextField
+             hintText="Enter your Email"
+             type="email"
+             floatingLabelText="Email"
+             onChange = {(event,newValue) => this.setState({email:newValue})}
+             />
+           <br/>
+           <TextField
+             type = "password"
+             hintText="Enter your Password"
+             floatingLabelText="Password"
+             onChange = {(event,newValue) => this.setState({password:newValue})}
+             />
+           <br/>
+           <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
+          </div>
+         </MuiThemeProvider>
+      </div>
 		);
 	}
 
@@ -31,5 +61,10 @@ class Register extends React.Component {
 		console.log("TO DOOOOO")
 	}
 }
+
+const style = {
+  margin: 15,
+};
+
 
 export default Register;
