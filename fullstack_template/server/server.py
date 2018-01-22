@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
 from flask_sqlalchemy import SQLAlchemy
-from application.user import User
+from application.models import User
 from application import db
 import os
 
@@ -14,20 +14,34 @@ def home():
 def hello():
    return "Hello World!"
 
-@app.route('/register',methods=['POST','GET'])
+@app.route('/register',methods=['POST'])
 def register():
     if request.method == 'POST':
         request_data = request.get_json()
-        data = User(first_name=request_data["first_name"], last_name=request_data["last_name"], email=request_data["email"], password=request_data["password"])
+        data = User(first_name=request_data["first_name"],
+                    last_name=request_data["last_name"], 
+                    email=request_data["email"],
+                    password=request_data["password"])
         try:     
             db.session.add(data)
             db.session.commit()        
             db.session.close()
         except:
             db.session.rollback()
-        return "sucesss"
+        return "success"
     else:
-        return "fial"
+        return "fail"
+
+#for debugging purposes: returns all registers users stored in db
+@app.route('/users',methods=['GET'])
+def print_all_users():
+    try: 
+        query_db = User.query.order_by(User.id.desc())
+        for q in query_db:
+            print(q)
+    except:
+            db.session.rollback()
+    return "success"
 
 if __name__ == "__main__":
    app.secret_key = os.urandom(12)

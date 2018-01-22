@@ -14,4 +14,4 @@ class User(db.Model):
         self.password = password
 
     def __repr__(self):
-        return '<Data %r>' % self.email
+        return '<User %r %r %r %r>' % (self.first_name, self.last_name, self.email, self.password)
