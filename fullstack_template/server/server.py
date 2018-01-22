@@ -1,7 +1,8 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
 from flask_sqlalchemy import SQLAlchemy
 from application.models import User
-from application import db
+from application.db_connector import db
+from util.hash_password import hash_password, check_password
 import os
 
 app = Flask(__name__, static_folder="../static/dist", template_folder="../static")
@@ -21,16 +22,30 @@ def register():
         data = User(first_name=request_data["first_name"],
                     last_name=request_data["last_name"], 
                     email=request_data["email"],
-                    password=request_data["password"])
+                    password=hash_password(request_data["password"]))
         try:     
             db.session.add(data)
             db.session.commit()        
             db.session.close()
         except:
             db.session.rollback()
-        return "success"
+        return "successful register"
     else:
-        return "fail"
+        return "unsucessful register"
+
+@app.route('/login',methods=['POST'])
+def login():
+    request_data = request.get_json()
+    username = request_data["username"],
+    password = request_data["password"]
+    try:     
+        query_db = User.query.filter_by(email=username).first()
+        if(check_password(query_db.password, password)):
+            print("successful login")
+            return "successful login"
+    except:
+        db.session.rollback()
+    return "unsucessful login"
 
 #for debugging purposes: returns all registers users stored in db
 @app.route('/users',methods=['GET'])

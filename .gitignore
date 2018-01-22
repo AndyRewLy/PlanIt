@@ -1,6 +1,7 @@
 node_modules/
 dist/
 env/
+*.pyc
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
