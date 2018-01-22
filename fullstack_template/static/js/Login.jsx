@@ -35,6 +35,15 @@ class Login extends Component {
 
 	handleClick(event) {
 		console.log("TO DO")
+		console.log(this.state);
+		fetch('/login', {
+			method: 'POST',
+			dataType: 'json',
+			headers: {'Content-Type':'application/json'},
+			body: JSON.stringify(this.state)
+		}).then(function(response) {
+			console.log(response.text());
+		})
 	}
 
 }
