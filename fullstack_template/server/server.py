@@ -36,7 +36,7 @@ def register():
 @app.route('/login',methods=['POST'])
 def login():
     request_data = request.get_json()
-    username = request_data["username"],
+    username = request_data["username"]
     password = request_data["password"]
     try:     
         query_db = User.query.filter_by(email=username).first()
