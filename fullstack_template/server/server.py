@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, render_template, request, session, abort
+from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from application.models import User
 from application.db_connector import db
@@ -42,10 +42,10 @@ def login():
         query_db = User.query.filter_by(email=username).first()
         if(check_password(query_db.password, password)):
             print("successful login")
-            return "successful login"
+            return jsonify('{"loginStatus": "successful login"}')
     except:
         db.session.rollback()
-    return "unsucessful login"
+    return jsonify('{"loginStatus": "unsuccessful login"}')
 
 #for debugging purposes: returns all registers users stored in db
 @app.route('/users',methods=['GET'])

@@ -33,7 +33,7 @@ class App extends React.Component {
 	      <div className="App">
 	        {this.state.loginPage}
 	        {this.state.uploadScreen}
-	        <p>{this.state.username}</p>
+	        <p>Current User: {this.state.username}</p>
 	      </div>
 	    );
 	}
