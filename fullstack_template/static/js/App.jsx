@@ -13,8 +13,11 @@ class App extends React.Component {
 	     super(props);
 	     this.state={
 	       loginPage:[],
-	       uploadScreen:[]
+	       uploadScreen:[],
+	       userLoggedIn:false,
+	       username:"",
 	     }
+	     this.handleLogin = this.handleLogin.bind(this);
 	 }
 	
 	 componentWillMount(){
@@ -30,10 +33,18 @@ class App extends React.Component {
 	      <div className="App">
 	        {this.state.loginPage}
 	        {this.state.uploadScreen}
+	        <p>{this.state.username}</p>
 	      </div>
 	    );
 	}
 
+	handleClick(event) {
+		console.log(this.state);
+	}
+
+	handleLogin(username) {
+		this.setState({userLoggedIn:true, username: username});
+	}
 }
 
 export default App;
