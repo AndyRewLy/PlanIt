@@ -12,6 +12,7 @@ class Login extends Component {
 			username:'',
 			password:'',
 		}
+		this.handleClick = this.handleClick.bind(this)
 	}
 
 	render() {
@@ -34,8 +35,11 @@ class Login extends Component {
 	}
 
 	handleClick(event) {
-		console.log("TO DO")
-		console.log(this.state);
+		var self = this;
+		var app = self.props.appContext;
+
+		console.log(app)
+
 		fetch('/login', {
 			method: 'POST',
 			dataType: 'json',
@@ -43,6 +47,9 @@ class Login extends Component {
 			body: JSON.stringify(this.state)
 		}).then(function(response) {
 			console.log(response.text());
+			console.log("Current definition of app is:");
+			console.log(app);
+			app.handleLogin(self.state.username)
 		})
 	}
 

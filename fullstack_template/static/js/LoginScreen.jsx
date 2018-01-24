@@ -63,7 +63,7 @@ class LoginScreen extends React.Component {
     	}
     	else{
       	var loginscreen=[];
-      	loginscreen.push(<Login parentContext={this}/>);
+      	loginscreen.push(<Login parentContext={this} appContext={this.props.parentContext}/>);
       	loginmessage = "Not Registered yet? Go to registration";
       	this.setState({
                      loginscreen:loginscreen,
