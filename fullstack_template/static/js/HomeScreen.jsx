@@ -5,6 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import AppBar from 'material-ui/AppBar';
+import {Home, Group, Event, ExitToApp} from 'material-ui-icons';
 
 import React, { Component } from 'react';
 
@@ -29,10 +30,10 @@ class HomeScreen extends React.Component {
                 </MuiThemeProvider>
                 <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
                 <Drawer docked={false} width={200} open={this.state.open} onRequestChange={(open) => this.setState({open})}>
-                    <MenuItem onClick={this.handleClose} primaryText="Home"></MenuItem>
-                    <MenuItem onClick={this.handleClose} primaryText="My Organizations"></MenuItem>
-                    <MenuItem onClick={this.handleClose} primaryText="My Events"></MenuItem>
-                    <MenuItem onClick={this.handleClose} primaryText="Logout"></MenuItem>
+                    <MenuItem onClick={this.handleClose} primaryText="Home" rightIcon={<Home/>}></MenuItem>
+                    <MenuItem onClick={this.handleClose} primaryText="My Organizations" rightIcon={<Group/>}></MenuItem>
+                    <MenuItem onClick={this.handleClose} primaryText="My Events" rightIcon={<Event/>}></MenuItem>
+                    <MenuItem onClick={this.handleClose} primaryText="Logout" rightIcon={<ExitToApp/>}></MenuItem>
                 </Drawer>
                 </MuiThemeProvider>
             </div>
