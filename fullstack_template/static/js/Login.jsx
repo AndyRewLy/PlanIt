@@ -46,11 +46,24 @@ class Login extends Component {
 			headers: {'Content-Type':'application/json'},
 			body: JSON.stringify(this.state)
 		}).then(function(response) {
-			console.log(response.text());
-			console.log("Current definition of app is:");
-			console.log(app);
-			app.handleLogin(self.state.username)
-		})
+                	return response.json();
+                        //var promise = response.text();
+                        //console.log(promise);
+                        //console.log(promise.value);
+			//console.log("Current definition of app is:");
+			//console.log(app);
+                        
+		}).then(function(data) {
+                	const response = data;
+                        const json = JSON.parse(response);
+                	console.log(json);
+                        if(json['loginStatus'] === "successful login") {
+				app.handleLogin(self.state.username)
+                        }
+                        else {
+				app.handleLogin("")
+                        }
+                })
 	}
 
 }

@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 //injectTapEventPlugin();
 
 import LoginScreen from './LoginScreen';
+import HomeScreen from './HomeScreen';
 
 class App extends React.Component {
 
@@ -13,7 +14,7 @@ class App extends React.Component {
 	     super(props);
 	     this.state={
 	       loginPage:[],
-	       uploadScreen:[],
+	       homeScreen:[],
 	       userLoggedIn:false,
 	       username:"",
 	     }
@@ -22,18 +23,17 @@ class App extends React.Component {
 	
 	 componentWillMount(){
 	     var loginPage =[];
-	     loginPage.push(<LoginScreen parentContext={this}/>);
+	     loginPage.push(<LoginScreen className="Login" parentContext={this}/>);
 	     this.setState({
 	                   loginPage:loginPage
-	                     })
+											 })
 	 }
 	  
 	render() {
 	    return (
 	      <div className="App">
 	        {this.state.loginPage}
-	        {this.state.uploadScreen}
-	        <p>{this.state.username}</p>
+	        {this.state.homeScreen}
 	      </div>
 	    );
 	}
@@ -43,7 +43,13 @@ class App extends React.Component {
 	}
 
 	handleLogin(username) {
+		var loginPage = [];
+		var homeScreen = [];
+
 		this.setState({userLoggedIn:true, username: username});
+	
+		homeScreen.push(<HomeScreen parentContext={this}/>);
+		this.setState({loginPage:loginPage, homeScreen:homeScreen});
 	}
 }
 

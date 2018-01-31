@@ -33,7 +33,7 @@ class LoginScreen extends React.Component {
   	render() {
   	    console.log(this.state.buttonLabel);
     	return (
-      		<div className="loginscreen centeredForm">
+      		<div className="Login">
         		{this.state.loginscreen}
         		<div>
               <p>

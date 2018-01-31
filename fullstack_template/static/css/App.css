@@ -1,4 +1,9 @@
-.App {
+.Login {
 	text-align: center;
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial;
+}
+
+.PlanIt {
+	text-align: right;
 	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial;
 }

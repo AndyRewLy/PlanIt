@@ -58,7 +58,6 @@ class Register extends React.Component {
 	}
 
 	handleClick(event) {
-    console.log("TO DO")
     console.log(this.state);
     fetch('/register', {
       method: 'POST',
