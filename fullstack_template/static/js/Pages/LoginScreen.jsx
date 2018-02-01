@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import Login from './Login';
 import Register from './Register';
 
-require('../css/App.css');
+require('../../css/App.css');
 class LoginScreen extends React.Component {
 	constructor(props){
     	super(props);

@@ -7,9 +7,10 @@ import MenuItem from 'material-ui/MenuItem';
 import AppBar from 'material-ui/AppBar';
 import {Home, Group, Event, ExitToApp} from 'material-ui-icons';
 
+import CardContainer from '../Card/CardContainer';
 import React, { Component } from 'react';
 
-require('../css/App.css');
+require('../../css/App.css');
 
 class HomeScreen extends React.Component {
     constructor(props){
@@ -36,6 +37,8 @@ class HomeScreen extends React.Component {
                     <MenuItem onClick={this.handleClose} primaryText="Logout" rightIcon={<ExitToApp/>}></MenuItem>
                 </Drawer>
                 </MuiThemeProvider>
+                <p> My Upcoming Events </p>
+                <CardContainer cards={this.state.cards}/>
             </div>
       );
     }

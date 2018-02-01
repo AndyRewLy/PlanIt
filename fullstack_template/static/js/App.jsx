@@ -5,8 +5,8 @@ import React, { Component } from 'react';
 
 //injectTapEventPlugin();
 
-import LoginScreen from './LoginScreen';
-import HomeScreen from './HomeScreen';
+import LoginScreen from './Pages/LoginScreen';
+import HomeScreen from './Pages/HomeScreen';
 
 class App extends React.Component {
 
