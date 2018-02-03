@@ -3,7 +3,7 @@ from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, DateTime
 
 class OrganizationType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), , unique=True) 
+    name = db.Column(db.String(128), unique=True) 
 
     def __init__(self, name):
         self.name = name
