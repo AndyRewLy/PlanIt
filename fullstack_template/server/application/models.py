@@ -3,7 +3,7 @@ from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, DateTime
 
 class OrganizationType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), index=True, unique=True) 
+    name = db.Column(db.String(128), , unique=True) 
 
     def __init__(self, name):
         self.name = name
@@ -13,7 +13,7 @@ class OrganizationType(db.Model):
 
 class Major(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), index=True, unique=True)
+    name = db.Column(db.String(128), unique=True)
 
     def __init__(self, name):
         self.name = name 
@@ -23,10 +23,10 @@ class Major(db.Model):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(128), index=True, unique=False)
-    last_name = db.Column(db.String(128), index=True, unique=False)
-    email = db.Column(db.String(128), index=True, unique=False)
-    password = db.Column(db.String(128), index=True, unique=False)
+    first_name = db.Column(db.String(128), unique=False)
+    last_name = db.Column(db.String(128), unique=False)
+    email = db.Column(db.String(128), unique=False)
+    password = db.Column(db.String(128), unique=False)
     major = db.Column(db.Integer, ForeignKey(Major.id)) 
     
     def __init__(self, first_name, last_name, email, password, major):
@@ -41,7 +41,7 @@ class User(db.Model):
 
 class Organization(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), index=True, unique=True) 
+    name = db.Column(db.String(128), unique=True) 
     org_type = db.Column(db.Integer, ForeignKey(OrganizationType.id))
 
     def __init__(self, name, org_type): 
@@ -79,13 +79,13 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     org_id = db.Column(db.Integer, ForeignKey(Organization.id)) 
     creator = db.Column(db.Integer, ForeignKey(OrganizationAdmin.id)) 
-    description = db.Column(db.String(1024), index=True) 
+    description = db.Column(db.String(1024)) 
     date_created = db.Column(DateTime(timezone=True))
     event_date = db.Column(DateTime(timezone=True)) 
-    location = db.Column(db.String(128), index=True) 
+    location = db.Column(db.String(128)) 
     members_only = db.Column(db.Boolean)
-    tags = db.Column(db.String(512), index=True) 
-    event_items = db.Column(db.String(256), index=True, default=None)
+    tags = db.Column(db.String(512)) 
+    event_items = db.Column(db.String(256), default=None)
     include_year = db.Column(db.Boolean)
     status = db.Column(db.Integer, default=-1) 
 
@@ -109,7 +109,7 @@ class EventRSVP(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.id)) 
     event_id = db.Column(db.Integer, ForeignKey(Event.id))
-    status = db.Column(db.Integer, index=True)
+    status = db.Column(db.Integer)
 
     def __init__(self, user_id, event_id, status):
         self.user_id = user_id
@@ -123,7 +123,7 @@ class EventComment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.id)) 
     event_id = db.Column(db.Integer, ForeignKey(Event.id))
-    comment = db.Column(db.String(1024), index=True)
+    comment = db.Column(db.String(1024))
     date = db.Column(DateTime(timezone=True))
 
     def __init__(self, user_id, event_id, comment, date):
@@ -139,7 +139,7 @@ class AdminComment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(OrganizationAdmin.id)) 
     event_id = db.Column(db.Integer, ForeignKey(Event.id))
-    comment = db.Column(db.String(1024), index=True)
+    comment = db.Column(db.String(1024))
     date = db.Column(DateTime(timezone=True))
 
     def __init__(self, user_id, event_id, comment, date):
