@@ -37,7 +37,7 @@ class User(db.Model):
         self.major = major 
 
     def __repr__(self):
-        return '<User %r %r %r %r>' % (self.first_name, self.last_name, self.email, self.password, self.major)
+        return '<User %r %r %r %r, %r>' % (self.first_name, self.last_name, self.email, self.password, self.major)
 
 class Organization(db.Model):
     id = db.Column(db.Integer, primary_key=True)

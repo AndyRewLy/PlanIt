@@ -22,7 +22,8 @@ def register():
         data = User(first_name=request_data["first_name"],
                     last_name=request_data["last_name"], 
                     email=request_data["email"],
-                    password=hash_password(request_data["password"]))
+                    password=hash_password(request_data["password"]),
+                    major=None)
         try:     
             db.session.add(data)
             db.session.commit()        
