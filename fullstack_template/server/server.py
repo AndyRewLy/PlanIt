@@ -10,7 +10,6 @@ app = Flask(__name__, static_folder="../static/dist", template_folder="../static
 app.config['JWT_AUTH_URL_RULE'] = "/login"
 app.config['SECRET_KEY'] = os.urandom(12)
 
-
 @app.route("/")
 def home():
    return render_template("index.html")
@@ -39,6 +38,9 @@ def register():
                     email=request_data["email"],
                     password=hash_password(request_data["password"]),
                     major=None)
+        user = User.query.filter_by(email=data.email).first()
+        if user is not None: 
+            return "unsucessful register"
         try:     
             db.session.add(data)
             db.session.commit()        
@@ -60,6 +62,7 @@ def print_all_users():
             db.session.rollback()
     return "success"
 
+#for debugging purposes: requires a JWT in the authorization header to access
 @app.route('/protected')
 @jwt_required()
 def protected():
