@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import Card from './Card'
+import OrgCard from './OrgCard'
 
-class CardContainer extends React.Component {
+require('../../css/CardContainer.css')
+class OrgCardContainer extends React.Component {
 
     render() {
         var card = undefined;
@@ -12,21 +13,19 @@ class CardContainer extends React.Component {
         return (
             <div className="CardContainer">
                 {this.props.cards.length > 0 &&
-                   <div>
+                   <div class="card-subcontainer">
                        {
                            this.props.cards.slice(0).reverse().map(card =>
-                              <Card
-                                eventName={card.eventName}
-                                eventTime={card.eventTime}
-                                eventLocation={card.eventLocation}
-                                organization={card.organization}
+                              <OrgCard
+                                organizationName={card.organizationName}
+                                organizationDescription={card.organizationDescription}
                               />)
                        }
                    </div>
                 }
                 {this.props.cards.length == 0 &&
                     <div>
-                        <h1> You currently have no events. </h1>
+                        <h1> You currently have no orgs. </h1>
                     </div>
                 }
             </div>
@@ -34,4 +33,4 @@ class CardContainer extends React.Component {
     }
 }
 
-export default CardContainer;
+export default OrgCardContainer;

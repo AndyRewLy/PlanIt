@@ -16,7 +16,8 @@ class App extends React.Component {
 	       loginPage:[],
 	       homeScreen:[],
 	       userLoggedIn:false,
-	       username:"",
+				 username:"",
+				 isAdmin: true,
 	     }
 	     this.handleLogin = this.handleLogin.bind(this);
 	 }
