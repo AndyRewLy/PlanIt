@@ -46,24 +46,17 @@ class Login extends Component {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(this.state)
 		}).then(function (response) {
-			if(response.status != 200) {
+			if (response.status != 200) {
 				throw Error("Invalid Credentials")
 			}
 			return response.json();
-			//var promise = response.text();
-			//console.log(promise);
-			//console.log(promise.value);
-			//console.log("Current definition of app is:");
-			//console.log(app);
 		}).then(function (data) {
 			const json = data;
-			console.log(json)
 			//storing JWT to a cookie
-			document.cookie = "access_token=" + json["access_token"]
+			document.cookie = "access_token= JWT " + json["access_token"]
 			app.handleLogin(self.state.username)
-		})
-		.catch(function(error) {
-			alert(error) 
+		}).catch(function (error) {
+			alert(error)
 		});
 	}
 

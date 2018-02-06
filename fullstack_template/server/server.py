@@ -7,6 +7,8 @@ from util.hash_password import hash_password, check_password
 import os
 
 app = Flask(__name__, static_folder="../static/dist", template_folder="../static")
+
+#flask_jwt setup
 app.config['JWT_AUTH_URL_RULE'] = "/login"
 app.config['SECRET_KEY'] = os.urandom(12)
 
@@ -31,25 +33,25 @@ jwt = JWT(app, authenticate, identity)
 
 @app.route('/register',methods=['POST'])
 def register():
-    if request.method == 'POST':
-        request_data = request.get_json()
-        data = User(first_name=request_data["first_name"],
-                    last_name=request_data["last_name"], 
-                    email=request_data["email"],
-                    password=hash_password(request_data["password"]),
-                    major=None)
-        user = User.query.filter_by(email=data.email).first()
-        if user is not None: 
-            return "unsucessful register"
-        try:     
-            db.session.add(data)
-            db.session.commit()        
-            db.session.close()
-        except:
-            db.session.rollback()
-        return "successful register"
-    else:
-        return "unsucessful register"
+    request_data = request.get_json()
+    data = User(first_name=request_data["first_name"],
+                last_name=request_data["last_name"], 
+                email=request_data["email"],
+                password=hash_password(request_data["password"]),
+                major=None)
+        
+    #email validation
+    user = User.query.filter_by(email=data.email).first()
+    if user is not None: 
+        return jsonify(message="Email already registered"), 400
+        
+    try:     
+        db.session.add(data)
+        db.session.commit()        
+        db.session.close()
+    except:
+        db.session.rollback()
+    return jsonify(message="successful register")
 
 #for debugging purposes: returns all registers users stored in db
 @app.route('/users',methods=['GET'])
