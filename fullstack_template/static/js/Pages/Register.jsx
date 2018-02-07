@@ -57,16 +57,29 @@ class Register extends React.Component {
 		);
 	}
 
-	handleClick(event) {
+  handleClick(event) {
     console.log(this.state);
     fetch('/register', {
       method: 'POST',
       dataType: 'json',
-      headers: {'Content-Type':'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(this.state)
-    }).then(function(response) {
-			console.log(response.text());
-		})
+    }).then(function (response) {
+      if (response.status == 200) {
+        return response.json()
+      }
+      else {
+        return response.json().catch(err => {
+          throw new Error(response.statusText);
+        }).then(json => {
+          throw new Error(json.message);
+        });
+      }
+    }).then(function (data) {//on status == 200
+      console.log(data.message);
+    }).catch(function (error) {//on status != 200
+      alert(error.message);
+    });
   }
 }
 
