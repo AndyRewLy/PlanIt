@@ -5,8 +5,8 @@ import React, { Component } from 'react';
 
 //injectTapEventPlugin();
 
-import LoginScreen from './LoginScreen';
-import HomeScreen from './HomeScreen';
+import LoginScreen from './Pages/LoginScreen';
+import HomeScreen from './Pages/HomeScreen';
 
 class App extends React.Component {
 
@@ -16,7 +16,8 @@ class App extends React.Component {
 	       loginPage:[],
 	       homeScreen:[],
 	       userLoggedIn:false,
-	       username:"",
+				 username:"",
+				 isAdmin: true,
 	     }
 	     this.handleLogin = this.handleLogin.bind(this);
 	 }
