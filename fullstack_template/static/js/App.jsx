@@ -23,11 +23,10 @@ class App extends React.Component {
 	 }
 	
 	 componentWillMount(){
-	     var loginPage =[];
-	     loginPage.push(<LoginScreen className="Login" parentContext={this}/>);
-	     this.setState({
-	                   loginPage:loginPage
-											 })
+	      var loginPage =[];
+	      loginPage.push(<LoginScreen className="Login" parentContext={this}/>);
+	      this.setState({
+	                    loginPage:loginPage})
 	 }
 	  
 	render() {
