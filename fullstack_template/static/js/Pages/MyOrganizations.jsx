@@ -13,6 +13,8 @@ import OrgCardContainer from '../Card/OrgCardContainer';
 import OrgCard from '../Card/OrgCard';
 import React, { Component } from 'react';
 
+import io from 'socket.io-client';
+
 require('../../css/MyOrganizations.css');
 
 const organizationTypes = ["Academic", "Community Service", "Council", "Cultural", "Environmental", "Honor", "National Society", "Performing Arts", "Political", "Professional", "Recreational", "Religious", "Special Interest"];
@@ -33,7 +35,8 @@ class MyOrganizations extends React.Component {
             adminOrgs: [],
             memberOrgs: [],
             orgCards: [{organizationName: "WISH", organizationDescription: "Women in software and hardware"},
-                       {organizationName: "Natasha", organizationDescription: "Cats"}]
+                       {organizationName: "Natasha", organizationDescription: "Cats"}],
+            socketText: undefined,
         }
 
         this.renderOrgForm = this.renderOrgForm.bind(this);
@@ -42,6 +45,27 @@ class MyOrganizations extends React.Component {
         this.handleOrgNameChange = this.handleOrgNameChange.bind(this);
         this.closeOrgDialog = this.closeOrgDialog.bind(this);
         this.submitOrganization = this.submitOrganization.bind(this);
+    }
+
+    componentDidMount() {
+        this.socket = io.connect('http://localhost:5000');
+
+        var socket = this.socket;
+
+        this.socket.on('connect', function() {
+            socket.emit('my event', {data: 'I\'m connected!'}); 
+            socket.emit('getOrgs'); 
+        })
+        this.socket.on('message', message => {
+            console.log('message');
+            this.setState({socketText: message});
+        });
+
+        this.socket.on('receiveOrgs', orgs => {
+            console.log('receiveOrgs' + orgs);
+            this.setState({orgCards: orgs});
+        });
+
     }
 
     handleOrgNameChange(event, value) {
@@ -59,6 +83,7 @@ class MyOrganizations extends React.Component {
     submitOrganization() {
         //Make API CAll here to create the new organization currently logs the information to send
         console.log("I'm currently submitting" + this.state.organizationName + " " + this.state.organizationType);
+        this.socket.emit('createOrg', this.state.organizationName, this.state.organizationType);
     }
 
     renderOrgForm() {
@@ -125,6 +150,8 @@ class MyOrganizations extends React.Component {
                         <h1> You are not an admin of any organizations. </h1>
                     </div>
                 } */}
+                {this.state.socketText !== undefined && <p>{this.state.socketText}</p>}
+                
             </div>
               </div>
         );
