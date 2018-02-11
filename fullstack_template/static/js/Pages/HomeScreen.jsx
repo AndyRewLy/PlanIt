@@ -89,7 +89,7 @@ class HomeScreen extends React.Component {
                            myEvents: myEvents});
         }
         else if (target && target === "Logout") {
-            //Add Logout function here;
+            this.props.parentContext.handleLogout();
         }
 
         this.setState({open: false});

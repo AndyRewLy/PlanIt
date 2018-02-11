@@ -19,7 +19,8 @@ class App extends React.Component {
 				 username:"",
 				 isAdmin: true,
 	     }
-	     this.handleLogin = this.handleLogin.bind(this);
+		 this.handleLogin = this.handleLogin.bind(this);
+		 this.handleLogout = this.handleLogout.bind(this);
 	 }
 	
 	 componentWillMount(){
@@ -50,6 +51,18 @@ class App extends React.Component {
 	
 		homeScreen.push(<HomeScreen parentContext={this}/>);
 		this.setState({loginPage:loginPage, homeScreen:homeScreen});
+	}
+
+	handleLogout() {
+		document.cookie="access_token=undefined";
+		
+		var loginPage = [];
+		var homeScreen = [];
+
+		loginPage.push(<LoginScreen className="Login" parentContext={this}/>);
+		
+		this.setState({loginPage:loginPage, 
+			           homeScreen:homeScreen});
 	}
 }
 
