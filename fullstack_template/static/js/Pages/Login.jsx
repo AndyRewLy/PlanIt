@@ -21,7 +21,7 @@ class Login extends Component {
 				<MuiThemeProvider>
 					<div>
 					<AppBar title="Login"/>
-					<TextField hintText="Enter your Username" floatingLabelText="Username" onChange={(event, newValue) => 
+					<TextField hintText="Enter your Email" floatingLabelText="Email" onChange={(event, newValue) => 
 						this.setState({username: newValue})}/>
 					<br/>
 					<TextField type="password" hintText="Enter your Password" floatingLabelText="Password" onChange={(event, newValue) => 

@@ -32,16 +32,35 @@ class MyOrganizations extends React.Component {
             organizationName: undefined,
             adminOrgs: [],
             memberOrgs: [],
-            orgCards: [{organizationName: "WISH", organizationDescription: "Women in software and hardware"},
-                       {organizationName: "Natasha", organizationDescription: "Cats"}]
+            //orgCards: [{organizationName: "WISH", organizationDescription: "Women in software and hardware"},
+            //           {organizationName: "Natasha", organizationDescription: "Cats"}],
+            orgCards: [],
         }
 
         this.renderOrgForm = this.renderOrgForm.bind(this);
         this.showCreateOrgCallOut = this.showCreateOrgCallOut.bind(this);
         this.handleOrgTypeChange = this.handleOrgTypeChange.bind(this);
         this.handleOrgNameChange = this.handleOrgNameChange.bind(this);
+        this.handleOrgDescriptionChange = this.handleOrgDescriptionChange.bind(this);
         this.closeOrgDialog = this.closeOrgDialog.bind(this);
         this.submitOrganization = this.submitOrganization.bind(this);
+
+        this.getUserAdminOrganizations = this.getUserAdminOrganizations.bind(this);
+    }
+
+    componentDidMount() {
+        var organizationInterval = setInterval(this.getUserAdminOrganizations, 1000);
+        this.setState({organizationInterval: organizationInterval});
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.organizationInterval);
+    }
+
+    getUserAdminOrganizations() {
+        console.log("Getting all the user admin orgs...");
+        //Add the code to make a request to backend
+        // This is for getting all organizations that a user is an admin of
     }
 
     handleOrgNameChange(event, value) {
@@ -50,6 +69,10 @@ class MyOrganizations extends React.Component {
 
     handleOrgTypeChange(event, index, value) {
         this.setState({organizationType: value});
+    }
+
+    handleOrgDescriptionChange(event, value) {
+        this.setState({organizationDescription: value});
     }
 
     closeOrgDialog() {
@@ -95,14 +118,18 @@ class MyOrganizations extends React.Component {
                     autoScrollBodyContent={true}>
                     <div>
                         <div>
-                            Organization Name
+                            <div>Organization Name</div>
                             <TextField hintText="Type organization name here" onChange={this.handleOrgNameChange}/>
                         </div>
                         <div>
-                            Organization Type
+                            <div>Organization Type</div>
                             <DropDownMenu value={this.state.organizationType} onChange={this.handleOrgTypeChange}>
                                 {orgTypeMenuItems}
                             </DropDownMenu>
+                        </div>
+                        <div>
+                            <div>Organization Description</div>
+                            <TextField hintText="Type organization description here" onChange={this.handleOrgDescriptionChange} multiLine={true}/>
                         </div>
                     </div>
                     <div>
@@ -146,7 +173,7 @@ class MyOrganizations extends React.Component {
                     <div>
                         <h1> You are not an admin of any organizations. </h1>
                     </div>
-                } */}
+                } */}                
             </div>
               </div>
         );
