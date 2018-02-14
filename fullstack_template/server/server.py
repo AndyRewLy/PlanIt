@@ -2,7 +2,6 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 from flask_sqlalchemy import SQLAlchemy
 from application.models import User
 from flask_jwt import JWT, jwt_required, current_identity
-from flask_socketio import SocketIO, emit
 from application.db_connector import db
 from util.hash_password import hash_password, check_password
 import os
@@ -13,7 +12,6 @@ app = Flask(__name__, static_folder="../static/dist", template_folder="../static
 app.config['JWT_AUTH_URL_RULE'] = "/login"
 app.config['SECRET_KEY'] = os.urandom(12)
 
-socketio = SocketIO(app)
 
 current_orgs = [{"organizationName": "test", "organizationType": "service"},
                 {"organizationName": "test2", "organizationType": "Melinda"}]
@@ -75,25 +73,6 @@ def print_all_users():
 def protected():
     return '%s' % current_identity
 
-@socketio.on('message')
-def handle_message(message):
-    print('received message: ' + message)
-
-@socketio.on('my event')
-def handle_my_custom_event(json):
-    print('received json: ' + str(json))
-    emit('message', "you connected waht you want now boi")
-
-@socketio.on('getOrgs')
-def handleGetOrgs():
-    emit('receiveOrgs', current_orgs)
-
-@socketio.on('createOrg')
-def handlePostOrg(organizationName, organizationType):
-    newOrg = {'organizationName': organizationName, 'organizationType': organizationType}
-    current_orgs.append(newOrg)
-    emit('receiveOrgs', current_orgs)
-
 if __name__ == "__main__":
    app.secret_key = os.urandom(12)
-   socketio.run(app)
+   app.run(port=5000)
