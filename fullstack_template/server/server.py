@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from application.models import User, OrganizationType, Organization
+from application.models import User, OrganizationType, Organization, OrganizationAdmin
 from flask_jwt import JWT, jwt_required, current_identity
 from application.db_connector import db
 from util.hash_password import hash_password, check_password
@@ -30,7 +30,7 @@ def authenticate(username, password):
 
 def identity(payload):
     user_id = payload['identity']
-    return User.query.get(int(user_id)).email
+    return User.query.get(int(user_id))
 
 jwt = JWT(app, authenticate, identity)
 
@@ -74,6 +74,7 @@ def protected():
     return '%s' % current_identity
 
 @app.route('/organizations',methods=['POST'])
+@jwt_required()
 def create_organization():
     request_data = request.get_json()
 
@@ -83,11 +84,32 @@ def create_organization():
         
     try:     
         db.session.add(data)
+    except:
+        db.session.rollback()
+
+    org = Organization.query.filter_by(name=request_data["organizationName"]).first()
+    org_admin = OrganizationAdmin(current_identity.id, org.id) 
+
+    try:     
+        db.session.add(org_admin)
         db.session.commit()        
         db.session.close()
     except:
         db.session.rollback()
+
     return jsonify(message="successful organization creation")
+
+@app.route('/organizations',methods=['GET'])
+@jwt_required()
+def get_organizations():
+    print('beginning')
+    #orgs = OrganizationAdmin.query.filter_by(user_id=current_identity.id).all()
+    orgs = Organization.query.join(OrganizationAdmin).filter_by(user_id=current_identity.id).all()
+    print('\n\n\n')
+    print(orgs)
+    serialized = [Organization.serialize(item) for item in orgs]
+    return jsonify(message=serialized), 200
+
 
 if __name__ == "__main__":
    app.secret_key = os.urandom(12)

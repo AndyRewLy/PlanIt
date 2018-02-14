@@ -45,17 +45,26 @@ class Organization(db.Model):
     name = db.Column(db.String(128), unique=True) 
     org_type_id = db.Column(db.Integer, ForeignKey(OrganizationType.id))
     events = relationship("Event", backref='organization')
+    admins = relationship("OrganizationAdmin", backref='organization')
 
     def __init__(self, name): 
         self.name = name
 
     def __repr__(self):
         return '<Organization %r %r>' % (self.name, self.org_type)
+    
+    def serialize(self):
+        return {
+            'organizationName': self.name, 
+            'organizationType': self.org_type_id
+        }
 
 class OrganizationAdmin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.id))
     org_id = db.Column(db.Integer, ForeignKey(Organization.id)) 
+    user = db.relationship("User", backref="admin_membership")
+    #organization = db.relationship("Organization", backref="admin_membership")
 
     def __init__(self, user_id, org_id): 
         self.user_id = user_id
