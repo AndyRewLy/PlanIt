@@ -1,10 +1,11 @@
 from application.db_connector import db
 from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy.orm import relationship
 
 class OrganizationType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True) 
-
+    organizations = relationship("Organization", backref='org_type')
     def __init__(self, name):
         self.name = name
 
@@ -42,11 +43,11 @@ class User(db.Model):
 class Organization(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True) 
-    org_type = db.Column(db.Integer, ForeignKey(OrganizationType.id))
+    org_type_id = db.Column(db.Integer, ForeignKey(OrganizationType.id))
+    events = relationship("Event", backref='organization')
 
-    def __init__(self, name, org_type): 
+    def __init__(self, name): 
         self.name = name
-        self.org_type = org_type 
 
     def __repr__(self):
         return '<Organization %r %r>' % (self.name, self.org_type)
@@ -77,11 +78,13 @@ class OrganizationMember(db.Model):
 
 class Event(db.Model): 
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), unique=True) 
     org_id = db.Column(db.Integer, ForeignKey(Organization.id)) 
     creator = db.Column(db.Integer, ForeignKey(OrganizationAdmin.id)) 
     description = db.Column(db.String(1024)) 
     date_created = db.Column(DateTime(timezone=True))
-    event_date = db.Column(DateTime(timezone=True)) 
+    event_start = db.Column(DateTime(timezone=True)) 
+    event_end = db.Column(DateTime(timezone=True)) 
     location = db.Column(db.String(128)) 
     members_only = db.Column(db.Boolean)
     tags = db.Column(db.String(512)) 
@@ -89,12 +92,14 @@ class Event(db.Model):
     include_year = db.Column(db.Boolean)
     status = db.Column(db.Integer, default=-1) 
 
-    def __init__(self, org_id, creator, description, date_created, event_date, location, members_only, tags, event_items, include_year, status):
+    def __init__(self, org_id, name, creator, description, date_created, event_start, event_end, location, members_only, tags, event_items, include_year, status):
         self.org_id = org_id
+        self.name = name
         self.creator = creator
         self.description = description
         self.date_created = date_created
-        self.event_date = event_date
+        self.event_start = event_start
+        self.event_end = event_end
         self.location = location
         self.members_only = members_only
         self.tags = tags
@@ -103,7 +108,7 @@ class Event(db.Model):
         self.status = status
 
     def __repr__(self):
-        return '<Event %r %r %r %r %r %r %r %r %r %r %r>' % (self.org_id, self.creator, self.description, self.date_created, self.event_date, self.location, self.members_only, self.tags, self.event_items, self.include_year, self.status)
+        return '<Event %r %r %r %r %r %r %r %r %r %r %r %r>' % (self.org_id, self.creator, self.description, self.date_created, self.event_start, self.event_end, self.location, self.members_only, self.tags, self.event_items, self.include_year, self.status)
 
 class EventRSVP(db.Model):
     id = db.Column(db.Integer, primary_key=True)

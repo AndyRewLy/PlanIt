@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from application.models import User
+from application.models import User, OrganizationType, Organization
 from flask_jwt import JWT, jwt_required, current_identity
 from application.db_connector import db
 from util.hash_password import hash_password, check_password
@@ -69,6 +69,22 @@ def print_all_users():
 @jwt_required()
 def protected():
     return '%s' % current_identity
+
+@app.route('/organizations',methods=['POST'])
+def create_organization():
+    request_data = request.get_json()
+
+    org_type = OrganizationType.query.filter_by(name=request_data["organizationType"]).first()
+    data = Organization(name=request_data["organizationName"])
+    data.org_type = org_type
+        
+    try:     
+        db.session.add(data)
+        db.session.commit()        
+        db.session.close()
+    except:
+        db.session.rollback()
+    return jsonify(message="successful organization creation")
 
 if __name__ == "__main__":
    app.secret_key = os.urandom(12)
