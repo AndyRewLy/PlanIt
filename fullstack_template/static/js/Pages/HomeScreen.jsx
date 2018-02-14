@@ -33,7 +33,7 @@ class HomeScreen extends React.Component {
     
     componentWillMount(){
 		var homePage = [];
-		homePage.push(<HomePage parentContext={this}/>);
+		homePage.push(<HomePage parentContext={this} key="HomePage"/>);
 		this.setState({homePage:homePage});
      }
      
@@ -71,19 +71,19 @@ class HomeScreen extends React.Component {
         var myEvents = [];
     
         if (target && target === "Home") {
-            homePage.push(<HomePage parentContext={this}/>);
+            homePage.push(<HomePage parentContext={this} key="HomePage"/>);
             this.setState({homePage:homePage, 
                            myOrganizations: myOrganizations, 
                            myEvents: myEvents});
         }
         else if (target && target === "My Organizations") {
-            myOrganizations.push(<MyOrganizations parentContext={this}/>);
+            myOrganizations.push(<MyOrganizations parentContext={this} key="MyOrganizations"/>);
             this.setState({homePage:homePage, 
                            myOrganizations: myOrganizations, 
                            myEvents: myEvents});
         }
         else if (target && target === "My Events") {
-            myEvents.push(<MyEvents parentContext={this}/>);
+            myEvents.push(<MyEvents parentContext={this} key="MyEvents"/>);
             this.setState({homePage:homePage, 
                            myOrganizations: myOrganizations, 
                            myEvents: myEvents});

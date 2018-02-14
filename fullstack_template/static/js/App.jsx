@@ -25,7 +25,7 @@ class App extends React.Component {
 	
 	 componentWillMount(){
 	      var loginPage =[];
-	      loginPage.push(<LoginScreen className="Login" parentContext={this}/>);
+	      loginPage.push(<LoginScreen className="Login" parentContext={this} key="LoginScreen"/>);
 	      this.setState({
 	                    loginPage:loginPage})
 	 }
@@ -49,7 +49,7 @@ class App extends React.Component {
 
 		this.setState({userLoggedIn:true, username: username});
 	
-		homeScreen.push(<HomeScreen parentContext={this}/>);
+		homeScreen.push(<HomeScreen parentContext={this} key="HomeScreen"/>);
 		this.setState({loginPage:loginPage, homeScreen:homeScreen});
 	}
 
@@ -59,7 +59,7 @@ class App extends React.Component {
 		var loginPage = [];
 		var homeScreen = [];
 
-		loginPage.push(<LoginScreen className="Login" parentContext={this}/>);
+		loginPage.push(<LoginScreen className="Login" parentContext={this} key="LoginScreen"/>);
 		
 		this.setState({loginPage:loginPage, 
 			           homeScreen:homeScreen});

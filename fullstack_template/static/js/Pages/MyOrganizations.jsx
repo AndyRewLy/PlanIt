@@ -13,8 +13,6 @@ import OrgCardContainer from '../Card/OrgCardContainer';
 import OrgCard from '../Card/OrgCard';
 import React, { Component } from 'react';
 
-import io from 'socket.io-client';
-
 require('../../css/MyOrganizations.css');
 
 const organizationTypes = ["Academic", "Community Service", "Council", "Cultural", "Environmental", "Honor", "National Society", "Performing Arts", "Political", "Professional", "Recreational", "Religious", "Special Interest"];
@@ -34,38 +32,35 @@ class MyOrganizations extends React.Component {
             organizationName: undefined,
             adminOrgs: [],
             memberOrgs: [],
-            orgCards: [{organizationName: "WISH", organizationDescription: "Women in software and hardware"},
-                       {organizationName: "Natasha", organizationDescription: "Cats"}],
-            socketText: undefined,
+            //orgCards: [{organizationName: "WISH", organizationDescription: "Women in software and hardware"},
+            //           {organizationName: "Natasha", organizationDescription: "Cats"}],
+            orgCards: [],
         }
 
         this.renderOrgForm = this.renderOrgForm.bind(this);
         this.showCreateOrgCallOut = this.showCreateOrgCallOut.bind(this);
         this.handleOrgTypeChange = this.handleOrgTypeChange.bind(this);
         this.handleOrgNameChange = this.handleOrgNameChange.bind(this);
+        this.handleOrgDescriptionChange = this.handleOrgDescriptionChange.bind(this);
         this.closeOrgDialog = this.closeOrgDialog.bind(this);
         this.submitOrganization = this.submitOrganization.bind(this);
+
+        this.getUserAdminOrganizations = this.getUserAdminOrganizations.bind(this);
     }
 
     componentDidMount() {
-        this.socket = io.connect('http://localhost:5000');
+        var organizationInterval = setInterval(this.getUserAdminOrganizations, 1000);
+        this.setState({organizationInterval: organizationInterval});
+    }
 
-        var socket = this.socket;
+    componentWillUnmount() {
+        clearInterval(this.state.organizationInterval);
+    }
 
-        this.socket.on('connect', function() {
-            socket.emit('my event', {data: 'I\'m connected!'}); 
-            socket.emit('getOrgs'); 
-        })
-        this.socket.on('message', message => {
-            console.log('message');
-            this.setState({socketText: message});
-        });
-
-        this.socket.on('receiveOrgs', orgs => {
-            console.log('receiveOrgs' + orgs);
-            this.setState({orgCards: orgs});
-        });
-
+    getUserAdminOrganizations() {
+        console.log("Getting all the user admin orgs...");
+        //Add the code to make a request to backend
+        // This is for getting all organizations that a user is an admin of
     }
 
     handleOrgNameChange(event, value) {
@@ -76,14 +71,21 @@ class MyOrganizations extends React.Component {
         this.setState({organizationType: value});
     }
 
+    handleOrgDescriptionChange(event, value) {
+        this.setState({organizationDescription: value});
+    }
+
     closeOrgDialog() {
         this.setState({isCreateCallOutVisible: false});
     }
 
     submitOrganization() {
         //Make API CAll here to create the new organization currently logs the information to send
-        console.log("I'm currently submitting" + this.state.organizationName + " " + this.state.organizationType);
-        this.socket.emit('createOrg', this.state.organizationName, this.state.organizationType);
+        //Needs to pass the following
+        //   this.state.organizationName
+        //   this.state.organizationType
+        //   this.state.organizationDescription
+        this.closeOrgDialog();
     }
 
     renderOrgForm() {
@@ -98,14 +100,18 @@ class MyOrganizations extends React.Component {
                     autoScrollBodyContent={true}>
                     <div>
                         <div>
-                            Organization Name
+                            <div>Organization Name</div>
                             <TextField hintText="Type organization name here" onChange={this.handleOrgNameChange}/>
                         </div>
                         <div>
-                            Organization Type
+                            <div>Organization Type</div>
                             <DropDownMenu value={this.state.organizationType} onChange={this.handleOrgTypeChange}>
                                 {orgTypeMenuItems}
                             </DropDownMenu>
+                        </div>
+                        <div>
+                            <div>Organization Description</div>
+                            <TextField hintText="Type organization description here" onChange={this.handleOrgDescriptionChange} multiLine={true}/>
                         </div>
                     </div>
                     <div>
@@ -149,9 +155,7 @@ class MyOrganizations extends React.Component {
                     <div>
                         <h1> You are not an admin of any organizations. </h1>
                     </div>
-                } */}
-                {this.state.socketText !== undefined && <p>{this.state.socketText}</p>}
-                
+                } */}                
             </div>
               </div>
         );
