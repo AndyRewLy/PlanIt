@@ -12,6 +12,9 @@ app = Flask(__name__, static_folder="../static/dist", template_folder="../static
 app.config['JWT_AUTH_URL_RULE'] = "/login"
 app.config['SECRET_KEY'] = os.urandom(12)
 
+
+current_orgs = [{"organizationName": "test", "organizationType": "service"},
+                {"organizationName": "test2", "organizationType": "Melinda"}]
 @app.route("/")
 def home():
    return render_template("index.html")
@@ -72,4 +75,4 @@ def protected():
 
 if __name__ == "__main__":
    app.secret_key = os.urandom(12)
-   app.run()
+   app.run(port=5000)

@@ -22,7 +22,7 @@ class LoginScreen extends React.Component {
 
   	componentWillMount(){
     	var loginscreen=[];
-    	loginscreen.push(<Login parentContext={this} appContext={this.props.parentContext}/>);
+    	loginscreen.push(<Login parentContext={this} appContext={this.props.parentContext} key="login"/>);
     	var loginmessage = "Not registered yet? Register Now";
     	this.setState({
                   loginscreen:loginscreen,
@@ -52,7 +52,7 @@ class LoginScreen extends React.Component {
     	var loginmessage;
     	if(this.state.isLogin){
       		var loginscreen=[];
-      		loginscreen.push(<Register parentContext={this}/>);
+      		loginscreen.push(<Register parentContext={this} key="register"/>);
       		loginmessage = "Already registered? Go to Login";
       		this.setState({
                      loginscreen:loginscreen,
@@ -63,7 +63,7 @@ class LoginScreen extends React.Component {
     	}
     	else{
       	var loginscreen=[];
-      	loginscreen.push(<Login parentContext={this} appContext={this.props.parentContext}/>);
+      	loginscreen.push(<Login parentContext={this} appContext={this.props.parentContext} key="login"/>);
       	loginmessage = "Not Registered yet? Go to registration";
       	this.setState({
                      loginscreen:loginscreen,
