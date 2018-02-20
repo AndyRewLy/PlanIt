@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from application.models import User, OrganizationType, Organization, OrganizationAdmin
+from application.models import User, OrganizationType, Organization
 from flask_jwt import JWT, jwt_required, current_identity
 from application.db_connector import db
 from util.hash_password import hash_password, check_password
@@ -75,46 +75,30 @@ def print_all_users():
             db.session.rollback()
     return "success"
 
-#for debugging purposes: requires a JWT in the authorization header to access
-@app.route('/protected')
-@jwt_required()
-def protected():
-    return '%s' % current_identity
-
-@app.route('/organizations',methods=['POST'])
+@app.route('/orgs',methods=['POST'])
 @jwt_required()
 def create_organization():
     request_data = request.get_json()
 
     org_type = OrganizationType.query.filter_by(name=request_data["organizationType"]).first()
-    data = Organization(name=request_data["organizationName"])
+    data = Organization(name=request_data["organizationName"], 
+                        description=request_data["organizationDescription"])
     data.org_type = org_type
-        
+    data.admins = [current_identity]
+    
     try:     
         db.session.add(data)
-    except:
-        db.session.rollback()
-
-    org = Organization.query.filter_by(name=request_data["organizationName"]).first()
-    org_admin = OrganizationAdmin(current_identity.id, org.id) 
-
-    try:     
-        db.session.add(org_admin)
-        db.session.commit()        
-        db.session.close()
+        db.session.commit()
     except:
         db.session.rollback()
 
     return jsonify(message="successful organization creation")
 
-@app.route('/organizations',methods=['GET'])
+#/'orgs?admin=false' /orgs?admin=<sel>
+@app.route('/orgs',methods=['GET'])
 @jwt_required()
 def get_organizations():
-    print('beginning')
-    #orgs = OrganizationAdmin.query.filter_by(user_id=current_identity.id).all()
-    orgs = Organization.query.join(OrganizationAdmin).filter_by(user_id=current_identity.id).all()
-    print('\n\n\n')
-    print(orgs)
+    orgs = current_identity.organization_admins.all()
     serialized = [Organization.serialize(item) for item in orgs]
     return jsonify(message=serialized), 200
 

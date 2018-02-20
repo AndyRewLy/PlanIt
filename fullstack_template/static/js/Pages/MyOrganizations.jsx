@@ -30,6 +30,7 @@ class MyOrganizations extends React.Component {
             isCreateCallOutVisible: false,
             organizationType: undefined,
             organizationName: undefined,
+            organizationDescription: undefined,
             adminOrgs: [],
             memberOrgs: [],
             //orgCards: [{organizationName: "WISH", organizationDescription: "Women in software and hardware"},
@@ -60,7 +61,7 @@ class MyOrganizations extends React.Component {
     getUserAdminOrganizations() {
         var that = this;
         console.log("Getting all the user admin orgs...");
-        fetch('/organizations', {
+        fetch('/orgs', {
           method: 'GET',
           dataType: 'json',
           headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
@@ -110,7 +111,7 @@ class MyOrganizations extends React.Component {
     submitOrganization() {
         //Make API CAll here to create the new organization currently logs the information to send
             console.log(this.state);
-            fetch('/organizations', {
+            fetch('/orgs', {
               method: 'POST',
               dataType: 'json',
               headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},

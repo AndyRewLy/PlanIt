@@ -16,5 +16,5 @@ db.session.add(OrganizationType('Religious'))
 db.session.add(OrganizationType('Special Interest'))
 
 
-db.session.add(data)
+#db.session.add(data)
 db.session.commit()

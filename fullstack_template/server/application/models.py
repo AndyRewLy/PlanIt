@@ -40,38 +40,33 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r %r %r %r, %r>' % (self.first_name, self.last_name, self.email, self.password, self.major)
 
+organization_admins = db.Table('organization_admins',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('org_id', db.Integer, db.ForeignKey('organization.id'), primary_key=True)
+)
+
 class Organization(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True) 
     org_type_id = db.Column(db.Integer, ForeignKey(OrganizationType.id))
+    description = db.Column(db.String(1024))
     events = relationship("Event", backref='organization')
-    admins = relationship("OrganizationAdmin", backref='organization')
+    admins = db.relationship('User', secondary=organization_admins,
+        backref=db.backref('organization_admins'))
 
-    def __init__(self, name): 
+    def __init__(self, name, description): 
         self.name = name
+        self.description = description
 
     def __repr__(self):
-        return '<Organization %r %r>' % (self.name, self.org_type)
+        return '<Organization %r %r %r>' % (self.name, self.org_type, self.description)
     
     def serialize(self):
         return {
             'organizationName': self.name, 
-            'organizationType': self.org_type_id
+            'organizationType': self.org_type.name,
+            'organizationDescription': self.description
         }
-
-class OrganizationAdmin(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey(User.id))
-    org_id = db.Column(db.Integer, ForeignKey(Organization.id)) 
-    user = db.relationship("User", backref="admin_membership")
-    #organization = db.relationship("Organization", backref="admin_membership")
-
-    def __init__(self, user_id, org_id): 
-        self.user_id = user_id
-        self.org_id = org_id
-
-    def __repr__(self):
-        return '<Organization admin %r %r>' % (self.user_id, self.org_id) 
 
 class OrganizationMember(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -89,7 +84,7 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True) 
     org_id = db.Column(db.Integer, ForeignKey(Organization.id)) 
-    creator = db.Column(db.Integer, ForeignKey(OrganizationAdmin.id)) 
+    #creator = db.Column(db.Integer, ForeignKey(OrganizationAdmin.id)) 
     description = db.Column(db.String(1024)) 
     date_created = db.Column(DateTime(timezone=True))
     event_start = db.Column(DateTime(timezone=True)) 
@@ -151,7 +146,7 @@ class EventComment(db.Model):
 
 class AdminComment(db.Model): 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey(OrganizationAdmin.id)) 
+    #user_id = db.Column(db.Integer, ForeignKey(OrganizationAdmin.id)) 
     event_id = db.Column(db.Integer, ForeignKey(Event.id))
     comment = db.Column(db.String(1024))
     date = db.Column(DateTime(timezone=True))
