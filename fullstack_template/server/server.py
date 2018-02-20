@@ -94,12 +94,17 @@ def create_organization():
 
     return jsonify(message="successful organization creation")
 
-#/'orgs?admin=false' /orgs?admin=<sel>
-@app.route('/orgs',methods=['GET'])
+#returns the orgs you are a member of or an admin of
+@app.route('/orgs/admin=<sel>',methods=['GET'])
 @jwt_required()
-def get_organizations():
-    orgs = current_identity.organization_admins.all()
-    serialized = [Organization.serialize(item) for item in orgs]
+def get_organizations(sel):
+    serialized = ""
+    print(current_identity.organization_admins)
+    if sel == 'true':
+        orgs = current_identity.organization_admins
+        serialized = [Organization.serialize(item) for item in orgs]
+    else :
+        print("Get all organizations you are a member of")
     return jsonify(message=serialized), 200
 
 
