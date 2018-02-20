@@ -4,6 +4,7 @@ from application.models import User, OrganizationType, Organization, Organizatio
 from flask_jwt import JWT, jwt_required, current_identity
 from application.db_connector import db
 from util.hash_password import hash_password, check_password
+from datetime import datetime, timedelta
 import os
 
 app = Flask(__name__, static_folder="../static/dist", template_folder="../static")
@@ -11,6 +12,7 @@ app = Flask(__name__, static_folder="../static/dist", template_folder="../static
 #flask_jwt setup
 app.config['JWT_AUTH_URL_RULE'] = "/login"
 app.config['SECRET_KEY'] = os.urandom(12)
+app.config['JWT_EXPIRATION_DELTA'] = timedelta(hours=2)
 
 
 current_orgs = [{"organizationName": "test", "organizationType": "service"},
@@ -33,6 +35,12 @@ def identity(payload):
     return User.query.get(int(user_id))
 
 jwt = JWT(app, authenticate, identity)
+
+@jwt.jwt_error_handler
+def error_handler(e):
+    if e.error == "Invalid token":
+        return redirect("/")
+    return e.description, e.status_code
 
 @app.route('/register',methods=['POST'])
 def register():
