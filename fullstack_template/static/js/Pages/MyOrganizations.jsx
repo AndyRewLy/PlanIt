@@ -30,6 +30,7 @@ class MyOrganizations extends React.Component {
             isCreateCallOutVisible: false,
             organizationType: undefined,
             organizationName: undefined,
+            organizationImage: undefined,
             adminOrgs: [],
             memberOrgs: [],
             //orgCards: [{organizationName: "WISH", organizationDescription: "Women in software and hardware"},
@@ -42,6 +43,7 @@ class MyOrganizations extends React.Component {
         this.handleOrgTypeChange = this.handleOrgTypeChange.bind(this);
         this.handleOrgNameChange = this.handleOrgNameChange.bind(this);
         this.handleOrgDescriptionChange = this.handleOrgDescriptionChange.bind(this);
+        this.handleImageFileChange = this.handleImageFileChange.bind(this);
         this.closeOrgDialog = this.closeOrgDialog.bind(this);
         this.submitOrganization = this.submitOrganization.bind(this);
 
@@ -75,6 +77,10 @@ class MyOrganizations extends React.Component {
         this.setState({organizationDescription: value});
     }
 
+    handleImageFileChange(event, value) {
+        this.setState({organizationImage: event.target.files[0]});
+    }
+
     closeOrgDialog() {
         this.setState({isCreateCallOutVisible: false});
     }
@@ -86,6 +92,16 @@ class MyOrganizations extends React.Component {
         //   this.state.organizationType
         //   this.state.organizationDescription
         this.closeOrgDialog();
+
+        //The following is sample code on how to get the data from the reader
+        // var reader = new FileReader();
+
+        // reader.readAsText(this.state.organizationImage, "UTF-8");
+        
+        // reader.onload = function (evt) {
+        //     console.log(evt.target.result);
+        // }
+
     }
 
     renderOrgForm() {
@@ -112,6 +128,12 @@ class MyOrganizations extends React.Component {
                         <div>
                             <div>Organization Description</div>
                             <TextField hintText="Type organization description here" onChange={this.handleOrgDescriptionChange} multiLine={true}/>
+                        </div>
+                        <div>
+                            <div> Organization Image</div>
+                            <RaisedButton>
+                                <input type="file" onChange={this.handleImageFileChange}/>
+                            </RaisedButton>
                         </div>
                     </div>
                     <div>
