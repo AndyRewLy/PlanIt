@@ -61,7 +61,7 @@ class MyOrganizations extends React.Component {
     getUserAdminOrganizations() {
         var that = this;
         console.log("Getting all the user admin orgs...");
-        fetch('/orgs', {
+        fetch('/orgs/admin=true', {
           method: 'GET',
           dataType: 'json',
           headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
