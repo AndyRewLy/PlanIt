@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from application.models import User, OrganizationType, Organization
+from application.models import User, OrganizationType, Organization, Event
 from flask_jwt import JWT, jwt_required, current_identity
 from application.db_connector import db
 from util.hash_password import hash_password, check_password
@@ -106,6 +106,27 @@ def get_organizations(sel):
     else :
         print("Get all organizations you are a member of")
     return jsonify(message=serialized), 200
+
+@app.route('/events',methods=['POST'])
+@jwt_required()
+def create_event():
+    request_data = request.get_json()
+
+    data = Event(name=request_data["eventTitleValue"], 
+                 description=request_data["eventDescriptionValue"],
+                 location=request_data["eventLocationValue"],
+                 members_only=request_data["eventMembersOnlyValue"])
+    print(data)
+    data.organization = Organization.query.filter_by(name=request_data["eventOrganizationValue"]).first()
+    data.creator = current_identity
+    
+    try:     
+        db.session.add(data)
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    return jsonify(message="successful organization creation")
 
 
 if __name__ == "__main__":

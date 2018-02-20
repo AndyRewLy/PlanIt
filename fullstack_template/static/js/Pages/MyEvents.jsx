@@ -21,6 +21,7 @@ class MyEvents extends React.Component {
             callOutTitle: undefined,
             callOutIsVisible: false,
             eventTileValue: undefined,
+            eventOrganizationValue: undefined,
             eventDescriptionValue: undefined,
             eventLocationValue: undefined,
             eventMembersOnlyValue: false,
@@ -47,6 +48,7 @@ class MyEvents extends React.Component {
         this.renderEventForm = this.renderEventForm.bind(this);
 
         this.handleEventTitleChange = this.handleEventTitleChange.bind(this);
+        this.handleEventOrganizationChange = this.handleEventOrganizationChange.bind(this);
         this.handleEventDescriptionChange = this.handleEventDescriptionChange.bind(this);
         this.handleEventLocationChange = this.handleEventLocationChange.bind(this);
         this.handleMembersOnlyCheck = this.handleMembersOnlyCheck.bind(this);
@@ -70,12 +72,19 @@ class MyEvents extends React.Component {
         console.log(this.state.eventTitleValue + " " +
                     this.state.eventDescriptionValue + " " +
                     this.state.eventLocationValue + " " + 
-                    this.state.eventMembersOnlyValue);
+                    this.state.eventMembersOnlyValue + " " +
+                    this.state.eventOrganizationValue
+                );
+        
         this.closeEventDialog();
     }
 
     handleEventTitleChange(event, value) {
         this.setState({eventTitleValue: value});
+    }
+
+    handleEventOrganizationChange(event, value) {
+        this.setState({eventOrganizationValue: value});
     }
 
     handleEventDescriptionChange(event, value) {
@@ -116,6 +125,10 @@ class MyEvents extends React.Component {
                         <div>
                             <div>Event Title</div>
                             <TextField hintText="Type event Title here" onChange={this.handleEventTitleChange}/>
+                        </div>
+                        <div>
+                            <div>Event Organization</div>
+                            <TextField hintText="Type event organization here" onChange={this.handleEventOrganizationChange}/>
                         </div>
                         <div>
                             <div>Event Description</div>
