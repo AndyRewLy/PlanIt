@@ -21,7 +21,6 @@ class MyEvents extends React.Component {
             callOutTitle: undefined,
             callOutIsVisible: false,
             eventTileValue: undefined,
-            eventOrganizationValue: undefined,
             eventDescriptionValue: undefined,
             eventLocationValue: undefined,
             eventMembersOnlyValue: false,
@@ -32,9 +31,7 @@ class MyEvents extends React.Component {
         this.showCreateEventCallout = this.showCreateEventCallout.bind(this);
         this.renderEventForm = this.renderEventForm.bind(this);
         
-        this.handleEventOrganizationChange = this.handleEventOrganizationChange.bind(this);
         this.handleEventTitleChange = this.handleEventTitleChange.bind(this);
-        this.handleEventOrganizationChange = this.handleEventOrganizationChange.bind(this);
         this.handleEventDescriptionChange = this.handleEventDescriptionChange.bind(this);
         this.handleEventLocationChange = this.handleEventLocationChange.bind(this);
         this.handleMembersOnlyCheck = this.handleMembersOnlyCheck.bind(this);
@@ -53,24 +50,47 @@ class MyEvents extends React.Component {
         clearInterval(this.state.getAllEventsInterval);
     }
 
+    getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+    }
+
     submitEvent() {
         //This is where we need to submit the event or create a post call
         console.log(this.state.eventTitleValue + " " +
                     this.state.eventDescriptionValue + " " +
                     this.state.eventLocationValue + " " + 
-                    this.state.eventMembersOnlyValue + " " +
-                    this.state.eventOrganizationValue
+                    this.state.eventMembersOnlyValue
                 );
+        
+        fetch('/events', {
+            method: 'POST',
+            dataType: 'json',
+            headers: { 'Content-Type': 'application/json', 'Authorization': this.getCookie("access_token") },
+            body: JSON.stringify(this.state)
+        }).then(function (response) {
+            if (response.status == 200) {
+                return response.json()
+            }
+            else {
+                return response.json().catch(err => {
+                    throw new Error(response.statusText);
+                }).then(json => {
+                    throw new Error(json.message);
+                });
+            }
+        }).then(function (data) {//on status == 200
+            console.log(data.message);
+        }).catch(function (error) {//on status != 200
+            alert(error.message);
+        });
         
         this.closeEventDialog();
     }
 
     handleEventTitleChange(event, value) {
         this.setState({eventTitleValue: value});
-    }
-
-    handleEventOrganizationChange(event, value) {
-        this.setState({eventOrganizationValue: value});
     }
 
     handleEventDescriptionChange(event, value) {
@@ -93,17 +113,12 @@ class MyEvents extends React.Component {
         }
     }
 
-    getCookie(name) {
-        var value = "; " + document.cookie;
-        var parts = value.split("; " + name + "=");
-        if (parts.length == 2) return parts.pop().split(";").shift();
-    }
-    
     getAllEvents() {
         console.log("Getting all the events for this user...");
         
         var that = this;
-        fetch('/events', {
+        //this is getting only the events for the orgs you are an admin of
+        fetch('/events/admin=true', {
           method: 'GET',
           dataType: 'json',
           headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
@@ -140,10 +155,6 @@ class MyEvents extends React.Component {
                         <div>
                             <div>Event Title</div>
                             <TextField hintText="Type event Title here" onChange={this.handleEventTitleChange}/>
-                        </div>
-                        <div>
-                            <div>Event Organization</div>
-                            <TextField hintText="Type event organization here" onChange={this.handleEventOrganizationChange}/>
                         </div>
                         <div>
                             <div>Event Description</div>

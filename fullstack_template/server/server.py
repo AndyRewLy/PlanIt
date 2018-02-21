@@ -111,13 +111,13 @@ def get_organizations(sel):
 @jwt_required()
 def create_event():
     request_data = request.get_json()
-
     data = Event(name=request_data["eventTitleValue"], 
                  description=request_data["eventDescriptionValue"],
                  location=request_data["eventLocationValue"],
                  members_only=request_data["eventMembersOnlyValue"])
-    print(data)
-    data.organization = Organization.query.filter_by(name=request_data["eventOrganizationValue"])
+    
+    org_name = request_data["callOutTitle"]
+    data.organization = Organization.query.filter_by(name=org_name).first()
     data.creator = current_identity
     
     try:     
@@ -128,26 +128,21 @@ def create_event():
 
     return jsonify(message="successful event creation")
 
-@app.route('/events',methods=['GET'])
+#returns the events you are a member of or an admin of
+@app.route('/events/admin=<sel>',methods=['GET'])
 @jwt_required()
-def get_events():
-    orgs = current_identity.organization_admins
-    
+def get_events(sel):
     serialized = ""
-    serialized = [{"title" : item.name,
-                   "admin" : True,
-                   "events" : [{"eventTitle" : i.name} for i in item.events]} for item in orgs]
-    
-    """
-    if org != "":
-        organization = Organization.query.filter_by(name=str(org)).first()
-        print(organization)
-        events = organization.events
-        serialized = [Event.serialize(item) for item in events]
+    if sel == 'true':
+        orgs = current_identity.organization_admins
+        serialized = [{"title" : item.name,
+                       "admin" : True,
+                       "events" : 
+                          [{"eventTitle" : i.name} for i in item.events]
+                       } for item in orgs]
     else :
-        events = Event.all()
-        serialized = [Event.serialize(item) for item in events]
-        print("Get all events every created")"""
+        print("Get all events for the orgs you are a member of")
+  
 
     return jsonify(message=serialized), 200
 
