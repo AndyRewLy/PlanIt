@@ -117,7 +117,7 @@ def create_event():
                  location=request_data["eventLocationValue"],
                  members_only=request_data["eventMembersOnlyValue"])
     print(data)
-    data.organization = Organization.query.filter_by(name=request_data["eventOrganizationValue"]).first()
+    data.organization = Organization.query.filter_by(name=request_data["eventOrganizationValue"])
     data.creator = current_identity
     
     try:     
@@ -126,7 +126,30 @@ def create_event():
     except:
         db.session.rollback()
 
-    return jsonify(message="successful organization creation")
+    return jsonify(message="successful event creation")
+
+@app.route('/events',methods=['GET'])
+@jwt_required()
+def get_events():
+    orgs = current_identity.organization_admins
+    
+    serialized = ""
+    serialized = [{"title" : item.name,
+                   "admin" : True,
+                   "events" : [{"eventTitle" : i.name} for i in item.events]} for item in orgs]
+    
+    """
+    if org != "":
+        organization = Organization.query.filter_by(name=str(org)).first()
+        print(organization)
+        events = organization.events
+        serialized = [Event.serialize(item) for item in events]
+    else :
+        events = Event.all()
+        serialized = [Event.serialize(item) for item in events]
+        print("Get all events every created")"""
+
+    return jsonify(message=serialized), 200
 
 
 if __name__ == "__main__":

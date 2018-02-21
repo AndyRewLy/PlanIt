@@ -97,23 +97,18 @@ class Event(db.Model):
     event_items = db.Column(db.String(256), default=None)
     include_year = db.Column(db.Boolean)
     status = db.Column(db.Integer, default=-1) 
-    """
-    def __init__(self, name, description, date_created, event_start, event_end, location, members_only, tags, event_items, include_year, status):
-        self.name = name
-        self.description = description
-        self.date_created = date_created
-        self.event_start = event_start
-        self.event_end = event_end
-        self.location = location
-        self.members_only = members_only
-        self.tags = tags
-        self.event_items = event_items
-        self.include_year = include_year
-        self.status = status"""
 
     def __repr__(self):
         return '<Event %r %r %r %r %r %r %r %r %r %r %r %r>' % (self.org_id, self.creator, self.description, self.date_created, self.event_start, self.event_end, self.location, self.members_only, self.tags, self.event_items, self.include_year, self.status)
 
+    def serialize(self):
+        return {
+            'eventTitleValue': self.name, 
+            'eventDescriptionValue': self.description,
+            'eventLocationValue': self.location,
+            'eventMembersOnlyValue': self.members_only,
+            'eventOrganizationValue': self.organization.name
+        }
 class EventRSVP(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.id)) 
