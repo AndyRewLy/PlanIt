@@ -24,28 +24,13 @@ class MyEvents extends React.Component {
             eventDescriptionValue: undefined,
             eventLocationValue: undefined,
             eventMembersOnlyValue: false,
-            cards: [{title: 'Women in Software and Hardware',
-                     admin: true,
-                     events: [{'eventTitle': 'Raytheon Tech Talk'},
-                              {'eventTitle': 'Google Tech Talk'},
-                              {'eventTitle': 'Google Tech Talk 1'},
-                              {'eventTitle': 'Google Tech Talk 2'},
-                              {'eventTitle': 'Google Tech Talk 3'},
-                              {'eventTitle': 'Google Tech Talk 4'}
-                             ]
-                    },
-                    {title: 'Alpha Phi Omega',
-                     admin: false,
-                     events: [{'eventTitle': 'Rush Night'}
-                             ]
-                    }
-                   ]
+            cards: []
         }
 
         this.getAllEvents = this.getAllEvents.bind(this);
         this.showCreateEventCallout = this.showCreateEventCallout.bind(this);
         this.renderEventForm = this.renderEventForm.bind(this);
-
+        
         this.handleEventTitleChange = this.handleEventTitleChange.bind(this);
         this.handleEventDescriptionChange = this.handleEventDescriptionChange.bind(this);
         this.handleEventLocationChange = this.handleEventLocationChange.bind(this);
@@ -65,12 +50,42 @@ class MyEvents extends React.Component {
         clearInterval(this.state.getAllEventsInterval);
     }
 
+    getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+    }
+
     submitEvent() {
         //This is where we need to submit the event or create a post call
         console.log(this.state.eventTitleValue + " " +
                     this.state.eventDescriptionValue + " " +
                     this.state.eventLocationValue + " " + 
-                    this.state.eventMembersOnlyValue);
+                    this.state.eventMembersOnlyValue
+                );
+        
+        fetch('/events', {
+            method: 'POST',
+            dataType: 'json',
+            headers: { 'Content-Type': 'application/json', 'Authorization': this.getCookie("access_token") },
+            body: JSON.stringify(this.state)
+        }).then(function (response) {
+            if (response.status == 200) {
+                return response.json()
+            }
+            else {
+                return response.json().catch(err => {
+                    throw new Error(response.statusText);
+                }).then(json => {
+                    throw new Error(json.message);
+                });
+            }
+        }).then(function (data) {//on status == 200
+            console.log(data.message);
+        }).catch(function (error) {//on status != 200
+            alert(error.message);
+        });
+        
         this.closeEventDialog();
     }
 
@@ -100,6 +115,30 @@ class MyEvents extends React.Component {
 
     getAllEvents() {
         console.log("Getting all the events for this user...");
+        
+        var that = this;
+        //this is getting only the events for the orgs you are an admin of
+        fetch('/events/admin=true', {
+          method: 'GET',
+          dataType: 'json',
+          headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
+        }).then(function (response) {
+          if (response.status == 200) {
+            return response.json()
+          }
+          else {
+            return response.json().catch(err => {
+              throw new Error(response.statusText);
+            }).then(json => {
+              throw new Error(json.message);
+            });
+          }
+        }).then(function (data) {//on status == 200
+          console.log(data.message);
+          that.setState({cards: data.message});
+        }).catch(function (error) {//on status != 200
+          alert(error.message);
+        });
     }
 
     renderEventForm() {

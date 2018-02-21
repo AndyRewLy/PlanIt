@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from application.models import User
+from application.models import User, OrganizationType, Organization, Event
 from flask_jwt import JWT, jwt_required, current_identity
 from application.db_connector import db
 from util.hash_password import hash_password, check_password
@@ -32,7 +32,7 @@ def authenticate(username, password):
 
 def identity(payload):
     user_id = payload['identity']
-    return User.query.get(int(user_id)).email
+    return User.query.get(int(user_id))
 
 jwt = JWT(app, authenticate, identity)
 
@@ -75,11 +75,77 @@ def print_all_users():
             db.session.rollback()
     return "success"
 
-#for debugging purposes: requires a JWT in the authorization header to access
-@app.route('/protected')
+@app.route('/orgs',methods=['POST'])
 @jwt_required()
-def protected():
-    return '%s' % current_identity
+def create_organization():
+    request_data = request.get_json()
+
+    org_type = OrganizationType.query.filter_by(name=request_data["organizationType"]).first()
+    data = Organization(name=request_data["organizationName"], 
+                        description=request_data["organizationDescription"])
+    data.org_type = org_type
+    data.admins = [current_identity]
+    
+    try:     
+        db.session.add(data)
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    return jsonify(message="successful organization creation")
+
+#returns the orgs you are a member of or an admin of
+@app.route('/orgs/admin=<sel>',methods=['GET'])
+@jwt_required()
+def get_organizations(sel):
+    serialized = ""
+    print(current_identity.organization_admins)
+    if sel == 'true':
+        orgs = current_identity.organization_admins
+        serialized = [Organization.serialize(item) for item in orgs]
+    else :
+        print("Get all organizations you are a member of")
+    return jsonify(message=serialized), 200
+
+@app.route('/events',methods=['POST'])
+@jwt_required()
+def create_event():
+    request_data = request.get_json()
+    data = Event(name=request_data["eventTitleValue"], 
+                 description=request_data["eventDescriptionValue"],
+                 location=request_data["eventLocationValue"],
+                 members_only=request_data["eventMembersOnlyValue"])
+    
+    org_name = request_data["callOutTitle"]
+    data.organization = Organization.query.filter_by(name=org_name).first()
+    data.creator = current_identity
+    
+    try:     
+        db.session.add(data)
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    return jsonify(message="successful event creation")
+
+#returns the events you are a member of or an admin of
+@app.route('/events/admin=<sel>',methods=['GET'])
+@jwt_required()
+def get_events(sel):
+    serialized = ""
+    if sel == 'true':
+        orgs = current_identity.organization_admins
+        serialized = [{"title" : item.name,
+                       "admin" : True,
+                       "events" : 
+                          [{"eventTitle" : i.name} for i in item.events]
+                       } for item in orgs]
+    else :
+        print("Get all events for the orgs you are a member of")
+  
+
+    return jsonify(message=serialized), 200
+
 
 if __name__ == "__main__":
    app.secret_key = os.urandom(12)
