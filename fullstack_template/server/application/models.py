@@ -1,10 +1,11 @@
 from application.db_connector import db
 from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy.orm import relationship
 
 class OrganizationType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True) 
-
+    organizations = relationship("Organization", backref='org_type')
     def __init__(self, name):
         self.name = name
 
@@ -28,6 +29,8 @@ class User(db.Model):
     email = db.Column(db.String(128), unique=False)
     password = db.Column(db.String(128), unique=False)
     major = db.Column(db.Integer, ForeignKey(Major.id)) 
+
+    events = db.relationship('Event', backref='creator')
     
     def __init__(self, first_name, last_name, email, password, major):
         self.first_name = first_name
@@ -39,29 +42,33 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r %r %r %r, %r>' % (self.first_name, self.last_name, self.email, self.password, self.major)
 
+organization_admins = db.Table('organization_admins',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('org_id', db.Integer, db.ForeignKey('organization.id'), primary_key=True)
+)
+
 class Organization(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True) 
-    org_type = db.Column(db.Integer, ForeignKey(OrganizationType.id))
+    org_type_id = db.Column(db.Integer, ForeignKey(OrganizationType.id))
+    description = db.Column(db.String(1024))
+    events = relationship("Event", backref='organization')
+    admins = db.relationship('User', secondary=organization_admins,
+        backref=db.backref('organization_admins'))
 
-    def __init__(self, name, org_type): 
+    def __init__(self, name, description): 
         self.name = name
-        self.org_type = org_type 
+        self.description = description
 
     def __repr__(self):
-        return '<Organization %r %r>' % (self.name, self.org_type)
-
-class OrganizationAdmin(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey(User.id))
-    org_id = db.Column(db.Integer, ForeignKey(Organization.id)) 
-
-    def __init__(self, user_id, org_id): 
-        self.user_id = user_id
-        self.org_id = org_id
-
-    def __repr__(self):
-        return '<Organization admin %r %r>' % (self.user_id, self.org_id) 
+        return '<Organization %r %r %r>' % (self.name, self.org_type, self.description)
+    
+    def serialize(self):
+        return {
+            'organizationName': self.name, 
+            'organizationType': self.org_type.name,
+            'organizationDescription': self.description
+        }
 
 class OrganizationMember(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -77,11 +84,13 @@ class OrganizationMember(db.Model):
 
 class Event(db.Model): 
     id = db.Column(db.Integer, primary_key=True)
-    org_id = db.Column(db.Integer, ForeignKey(Organization.id)) 
-    creator = db.Column(db.Integer, ForeignKey(OrganizationAdmin.id)) 
+    name = db.Column(db.String(128), unique=True) 
+    org_id = db.Column(db.Integer, ForeignKey('organization.id')) 
+    creator_id = db.Column(db.Integer, ForeignKey('user.id'))
     description = db.Column(db.String(1024)) 
     date_created = db.Column(DateTime(timezone=True))
-    event_date = db.Column(DateTime(timezone=True)) 
+    event_start = db.Column(DateTime(timezone=True)) 
+    event_end = db.Column(DateTime(timezone=True)) 
     location = db.Column(db.String(128)) 
     members_only = db.Column(db.Boolean)
     tags = db.Column(db.String(512)) 
@@ -89,22 +98,17 @@ class Event(db.Model):
     include_year = db.Column(db.Boolean)
     status = db.Column(db.Integer, default=-1) 
 
-    def __init__(self, org_id, creator, description, date_created, event_date, location, members_only, tags, event_items, include_year, status):
-        self.org_id = org_id
-        self.creator = creator
-        self.description = description
-        self.date_created = date_created
-        self.event_date = event_date
-        self.location = location
-        self.members_only = members_only
-        self.tags = tags
-        self.event_items = event_items
-        self.include_year = include_year
-        self.status = status
-
     def __repr__(self):
-        return '<Event %r %r %r %r %r %r %r %r %r %r %r>' % (self.org_id, self.creator, self.description, self.date_created, self.event_date, self.location, self.members_only, self.tags, self.event_items, self.include_year, self.status)
+        return '<Event %r %r %r %r %r %r %r %r %r %r %r %r>' % (self.org_id, self.creator, self.description, self.date_created, self.event_start, self.event_end, self.location, self.members_only, self.tags, self.event_items, self.include_year, self.status)
 
+    def serialize(self):
+        return {
+            'eventTitleValue': self.name, 
+            'eventDescriptionValue': self.description,
+            'eventLocationValue': self.location,
+            'eventMembersOnlyValue': self.members_only,
+            'eventOrganizationValue': self.organization.name
+        }
 class EventRSVP(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.id)) 
@@ -137,7 +141,7 @@ class EventComment(db.Model):
 
 class AdminComment(db.Model): 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey(OrganizationAdmin.id)) 
+    #user_id = db.Column(db.Integer, ForeignKey(OrganizationAdmin.id)) 
     event_id = db.Column(db.Integer, ForeignKey(Event.id))
     comment = db.Column(db.String(1024))
     date = db.Column(DateTime(timezone=True))

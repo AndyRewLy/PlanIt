@@ -31,6 +31,7 @@ class MyOrganizations extends React.Component {
             organizationType: undefined,
             organizationName: undefined,
             organizationImage: undefined,
+            organizationDescription: undefined,
             adminOrgs: [],
             memberOrgs: [],
             //orgCards: [{organizationName: "WISH", organizationDescription: "Women in software and hardware"},
@@ -60,9 +61,31 @@ class MyOrganizations extends React.Component {
     }
 
     getUserAdminOrganizations() {
+        var that = this;
         console.log("Getting all the user admin orgs...");
-        //Add the code to make a request to backend
-        // This is for getting all organizations that a user is an admin of
+        fetch('/orgs/admin=true', {
+          method: 'GET',
+          dataType: 'json',
+          headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
+        }).then(function (response) {
+          if (response.status == 200) {
+            console.log("we here now");
+            return response.json()
+          }
+          else {
+            return response.json().catch(err => {
+              throw new Error(response.statusText);
+            }).then(json => {
+              throw new Error(json.message);
+            });
+          }
+        }).then(function (data) {//on status == 200
+          console.log(data.message);
+          that.setState({orgCards: data.message});
+        }).catch(function (error) {//on status != 200
+          alert(error.message);
+        });
+
     }
 
     handleOrgNameChange(event, value) {
@@ -85,23 +108,37 @@ class MyOrganizations extends React.Component {
         this.setState({isCreateCallOutVisible: false});
     }
 
+    getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+    }
+
     submitOrganization() {
         //Make API CAll here to create the new organization currently logs the information to send
-        //Needs to pass the following
-        //   this.state.organizationName
-        //   this.state.organizationType
-        //   this.state.organizationDescription
-        this.closeOrgDialog();
-
-        //The following is sample code on how to get the data from the reader
-        // var reader = new FileReader();
-
-        // reader.readAsText(this.state.organizationImage, "UTF-8");
-        
-        // reader.onload = function (evt) {
-        //     console.log(evt.target.result);
-        // }
-
+            console.log(this.state);
+            fetch('/orgs', {
+              method: 'POST',
+              dataType: 'json',
+              headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
+              body: JSON.stringify(this.state)
+            }).then(function (response) {
+              if (response.status == 200) {
+                return response.json()
+              }
+              else {
+                return response.json().catch(err => {
+                  throw new Error(response.statusText);
+                }).then(json => {
+                  throw new Error(json.message);
+                });
+              }
+            }).then(function (data) {//on status == 200
+              console.log(data.message);
+            }).catch(function (error) {//on status != 200
+              alert(error.message);
+            });
+        console.log("I'm currently submitting" + this.state.organizationName + " " + this.state.organizationType);
     }
 
     renderOrgForm() {
