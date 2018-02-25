@@ -3,9 +3,13 @@ import EventCard from './EventCard'
 
 require('../../css/CardContainer.css')
 class EventCardContainer extends React.Component {
+    constructor(props) {
+        super(props);
+    }
 
     render() {
         var card = undefined;
+
         if (this.props.cards && this.props.cards.length > 0) {
             card = (this.props.cards)[0];
         }
@@ -17,8 +21,14 @@ class EventCardContainer extends React.Component {
                        {
                            this.props.cards.slice(0).reverse().map(card =>
                               <EventCard
+                                renderEventInfo={this.props.renderEventInfo}
+                                eventId={card.eventId}                                
                                 eventTitle={card.eventTitle}
+                                eventImage={card.eventImage}
+                                eventStartTime={card.startTime}
+                                eventLocation={card.location}
                                 key={card.eventTitle}
+                                canRSVP={this.props.canRSVP}
                               />)
                        }
                    </div>

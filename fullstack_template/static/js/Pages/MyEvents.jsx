@@ -207,7 +207,7 @@ class MyEvents extends React.Component {
                        <RaisedButton label="Create Event" primary={true} style={style} onClick={this.showCreateEventCallout(cards[i].title)}/>}
                     </MuiThemeProvider>
                   </div>
-                  <EventCardContainer cards={this.state.cards[i].events}/>
+                  <EventCardContainer cards={this.state.cards[i].events} canRSVP={false}/>
                 </div>
             );
         }
