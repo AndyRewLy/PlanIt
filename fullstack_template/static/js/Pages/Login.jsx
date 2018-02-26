@@ -45,13 +45,13 @@ class Login extends Component {
 		var self = this;
 		var app = self.props.appContext;
 
-		console.log(app)
+		console.log(self);
 
 		fetch('/login', {
 			method: 'POST',
 			dataType: 'json',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(this.state)
+			body: JSON.stringify({username: self.state.username, password: self.state.password})
 		}).then(function (response) {
 			if (response.status != 200) {
 				self.toggleErrorMessage();
