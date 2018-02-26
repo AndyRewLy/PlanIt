@@ -11,8 +11,14 @@ class Login extends Component {
 		this.state={
 			username:'',
 			password:'',
+			errorMessageVisible: false,
 		}
 		this.handleClick = this.handleClick.bind(this)
+		this.toggleErrorMessage = this.toggleErrorMessage.bind(this);
+	}
+
+	toggleErrorMessage() {
+		this.setState({errorMessageVisible: !this.state.errorMessageVisible});
 	}
 
 	render() {
@@ -27,6 +33,7 @@ class Login extends Component {
 					<TextField type="password" hintText="Enter your Password" floatingLabelText="Password" onChange={(event, newValue) => 
 						this.setState({password: newValue})}/>
 					<br/>
+					{this.state.errorMessageVisible && <p>Invalid Email or Password</p>}
 					<RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
 					</div>
 				</MuiThemeProvider>
@@ -47,7 +54,7 @@ class Login extends Component {
 			body: JSON.stringify(this.state)
 		}).then(function (response) {
 			if (response.status != 200) {
-				throw Error("Invalid Credentials")
+				self.toggleErrorMessage();
 			}
 			return response.json();
 		}).then(function (data) {
@@ -56,7 +63,6 @@ class Login extends Component {
 			document.cookie = "access_token= JWT " + json["access_token"]
 			app.handleLogin(self.state.username)
 		}).catch(function (error) {
-			alert(error)
 		});
 	}
 
