@@ -166,12 +166,12 @@ class MyOrganizations extends React.Component {
                             <div>Organization Description</div>
                             <TextField hintText="Type organization description here" onChange={this.handleOrgDescriptionChange} multiLine={true}/>
                         </div>
-                        <div>
+                        {/* <div>
                             <div> Organization Image</div>
                             <RaisedButton>
                                 <input type="file" onChange={this.handleImageFileChange}/>
                             </RaisedButton>
-                        </div>
+                        </div> */}
                     </div>
                     <div>
                         {cancel}
