@@ -20,7 +20,7 @@ class MyEvents extends React.Component {
         this.state={
             callOutTitle: undefined,
             callOutIsVisible: false,
-            eventTileValue: undefined,
+            eventTitleValue: undefined,
             eventDescriptionValue: undefined,
             eventLocationValue: undefined,
             eventMembersOnlyValue: false,
@@ -213,10 +213,14 @@ class MyEvents extends React.Component {
     }
 
     getEventCardWithId() {
-        for (var cardIdx in this.state.cards) {
-            var card = this.state.cards[cardIdx];
-            if (card.eventId === this.state.calloutEventId) {
-                return card;
+        for (var orgIdx in this.state.cards) {
+            var org = this.state.cards[orgIdx];
+            var events = org["events"];
+            for(var eventIdx in events) {
+                var eventCard = events[eventIdx]
+                if (eventCard.eventId === this.state.calloutEventId) {
+                    return eventCard;
+                }
             }
         }
 
@@ -257,7 +261,7 @@ class MyEvents extends React.Component {
                 </MuiThemeProvider>
                 {this.state.cards.length > 0 && 
                    <Dialog
-                     title={calloutCard.eventTitle}
+                     title={calloutCard.eventTitleValue}
                      open={this.state.showEventInfo}
                      onRequestClose={this.handleClose}>
                      <div>
@@ -266,11 +270,11 @@ class MyEvents extends React.Component {
                      </div>
                      <div>
                          <h3>Event location</h3>
-                         <div>{calloutCard.location}</div>
+                         <div>{calloutCard.eventLocationValue}</div>
                      </div>
                      <div>
                          <h3>Event Description</h3> 
-                         <div>{calloutCard.eventDescription}</div>
+                         <div>{calloutCard.eventDescriptionValue}</div>
                      </div>
                    </Dialog>}
             </div>

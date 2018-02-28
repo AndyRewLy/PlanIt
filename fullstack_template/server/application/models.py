@@ -103,7 +103,8 @@ class Event(db.Model):
 
     def serialize(self):
         return {
-            'eventTitleValue': self.name, 
+            'eventId': self.id,
+            'eventTitle': self.name, 
             'eventDescriptionValue': self.description,
             'eventLocationValue': self.location,
             'eventMembersOnlyValue': self.members_only,

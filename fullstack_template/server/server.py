@@ -138,13 +138,29 @@ def get_events(sel):
         serialized = [{"title" : item.name,
                        "admin" : True,
                        "events" : 
-                          [{"eventTitle" : i.name} for i in item.events]
+                          [Event.serialize(i) for i in item.events]
                        } for item in orgs]
     else :
         print("Get all events for the orgs you are a member of")
   
 
     return jsonify(message=serialized), 200
+    
+
+#returns the events you are a member of or an admin of
+"""
+@app.route('/events/rsvp=<sel>',methods=['GET'])
+@jwt_required()
+def get_events(sel):
+    serialized = ""
+    if sel == 'true':
+        orgs = current_identity.organization_admins
+        serialized = 
+    else :
+        print("Get all events for the orgs you are a member of")
+  
+
+    return jsonify(message=serialized), 200"""
 
 
 if __name__ == "__main__":
