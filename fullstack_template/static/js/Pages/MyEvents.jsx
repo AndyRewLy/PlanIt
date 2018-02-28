@@ -261,7 +261,7 @@ class MyEvents extends React.Component {
                 </MuiThemeProvider>
                 {this.state.cards.length > 0 && 
                    <Dialog
-                     title={calloutCard.eventTitleValue}
+                     title={calloutCard.eventTitle}
                      open={this.state.showEventInfo}
                      onRequestClose={this.handleClose}>
                      <div>

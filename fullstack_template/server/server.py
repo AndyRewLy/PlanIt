@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from application.models import User, OrganizationType, Organization, Event
+from application.models import User, OrganizationType, Organization, Event, EventRSVP
 from flask_jwt import JWT, jwt_required, current_identity
 from application.db_connector import db
 from util.hash_password import hash_password, check_password
@@ -146,21 +146,39 @@ def get_events(sel):
 
     return jsonify(message=serialized), 200
     
+#set the rsvp status for an event
+@app.route('/events/rsvp',methods=['POST'])
+@jwt_required()
+def set_RSVP():
+    request_data = request.get_json()
+    event = Event.query.get(request_data["eventId"])
 
-#returns the events you are a member of or an admin of
-"""
+    rsvp = EventRSVP(status = request_data["status"])
+    rsvp.event = event
+    rsvp.user = current_identity
+        
+    try:     
+        db.session.add(rsvp)
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    return jsonify(message="set rsvp successful")
+
+#returns all the events that the current user has not RSVP to
 @app.route('/events/rsvp=<sel>',methods=['GET'])
 @jwt_required()
-def get_events(sel):
+def get_events_rsvp(sel):
     serialized = ""
     if sel == 'true':
-        orgs = current_identity.organization_admins
-        serialized = 
+        subquery = EventRSVP.query.with_entities(EventRSVP.event_id).filter_by(user_id=current_identity.id)
+        events = db.session.query(Event).filter(~Event.id.in_(subquery)).all()
+        
+        serialized = [Event.serialize(e) for e in events]
     else :
-        print("Get all events for the orgs you are a member of")
+        print("Get all events you have rsvp for")
   
-
-    return jsonify(message=serialized), 200"""
+    return jsonify(message=serialized), 200
 
 
 if __name__ == "__main__":
