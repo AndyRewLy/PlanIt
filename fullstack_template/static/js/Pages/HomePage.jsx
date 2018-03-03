@@ -9,15 +9,9 @@ class HomePage extends React.Component {
         super(props);
 
         this.state={
-            newEventCards: [{eventId: 1, 
-                             eventTitle: "Test Event",
-                             eventDescription: "I like to do tests jk i want to eat",
-                             eventImage: "test image",                             
-                             startTime: "test time",
-                             endTime: "test end Time",
-                             location: "test location"}],
+            newEventCards: [],
             showEventInfo: false,
-            calloutEventId: 0,
+            calloutEventId: undefined,
             canRSVP: false,
         }
 
@@ -40,8 +34,36 @@ class HomePage extends React.Component {
         clearInterval(this.state.getNewEventsInterval);
     }
 
+    getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+    }
+
     getNewEvents() {
         //Function to get all new events that the user has not RSVPed to yet
+        var that = this;
+
+        fetch('/events/rsvp=true', {
+          method: 'GET',
+          dataType: 'json',
+          headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
+        }).then(function (response) {
+          if (response.status == 200) {
+            return response.json()
+          }
+          else {
+            return response.json().catch(err => {
+              throw new Error(response.statusText);
+            }).then(json => {
+              throw new Error(json.message);
+            });
+          }
+        }).then(function (data) {//on status == 200
+          that.setState({newEventCards: data.message});
+        }).catch(function (error) {//on status != 200
+          alert(error.message);
+        });
     }
 
     handleClose() {
@@ -65,12 +87,37 @@ class HomePage extends React.Component {
         return {};
     }
 
+    
     sendEventResponse(response) {
         //Send the event response
         //0 - not going
         //1 - interested
         //2 - going 
-        console.log("The response to be sent is " + response);
+        var c = this.getEventCardWithId()
+        console.log("The response to be sent is " + response + " " + c.eventId);
+
+        //send eventid and rsvp status
+        fetch('/events/rsvp', {
+            method: 'POST',
+            dataType: 'json',
+            headers: { 'Content-Type': 'application/json', 'Authorization': this.getCookie("access_token") },
+            body: JSON.stringify({"status" : response, "eventId" : c.eventId })
+        }).then(function (response) {
+            if (response.status == 200) {
+                return response.json()
+            }
+            else {
+                return response.json().catch(err => {
+                    throw new Error(response.statusText);
+                }).then(json => {
+                    throw new Error(json.message);
+                });
+            }
+        }).then(function (data) {//on status == 200
+            console.log(data.message);
+        }).catch(function (error) {//on status != 200
+            alert(error.message);
+        });
 
         this.handleClose();
     }
@@ -109,11 +156,11 @@ class HomePage extends React.Component {
                      </div>
                      <div>
                          <h3>Event location</h3>
-                         <div>{calloutCard.location}</div>
+                         <div>{calloutCard.eventLocationValue}</div>
                      </div>
                      <div>
                          <h3>Event Description</h3> 
-                         <div>{calloutCard.eventDescription}</div>
+                         <div>{calloutCard.eventDescriptionValue}</div>
                      </div>
                    </Dialog>}
               </div>

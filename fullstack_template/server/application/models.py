@@ -30,7 +30,9 @@ class User(db.Model):
     password = db.Column(db.String(128), unique=False)
     major = db.Column(db.Integer, ForeignKey(Major.id)) 
 
-    events = db.relationship('Event', backref='creator')
+    events_created = db.relationship('Event', backref='creator')
+
+    events = relationship('EventRSVP', back_populates="user")
     
     def __init__(self, first_name, last_name, email, password, major):
         self.first_name = first_name
@@ -97,13 +99,15 @@ class Event(db.Model):
     event_items = db.Column(db.String(256), default=None)
     include_year = db.Column(db.Boolean)
     status = db.Column(db.Integer, default=-1) 
+    participants = relationship('EventRSVP', back_populates="event")
 
     def __repr__(self):
         return '<Event %r %r %r %r %r %r %r %r %r %r %r %r>' % (self.org_id, self.creator, self.description, self.date_created, self.event_start, self.event_end, self.location, self.members_only, self.tags, self.event_items, self.include_year, self.status)
 
     def serialize(self):
         return {
-            'eventTitleValue': self.name, 
+            'eventId': self.id,
+            'eventTitle': self.name, 
             'eventDescriptionValue': self.description,
             'eventLocationValue': self.location,
             'eventMembersOnlyValue': self.members_only,
@@ -115,10 +119,8 @@ class EventRSVP(db.Model):
     event_id = db.Column(db.Integer, ForeignKey(Event.id))
     status = db.Column(db.Integer)
 
-    def __init__(self, user_id, event_id, status):
-        self.user_id = user_id
-        self.event_id = event_id
-        self.status = status
+    user = relationship("User", back_populates="events")
+    event = relationship("Event", back_populates="participants")
 
     def __repr__(self):
         return '<EventRSVP %r %r %r>' % (self.user_id, self.event_id, self.status)
