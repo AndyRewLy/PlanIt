@@ -1,7 +1,9 @@
+
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
 import EventCardContainer from '../Card/EventCardContainer';
+
 import React, { Component } from 'react';
 
 class HomePage extends React.Component {
@@ -9,6 +11,7 @@ class HomePage extends React.Component {
         super(props);
 
         this.state={
+
             newEventCards: [],
             showEventInfo: false,
             calloutEventId: undefined,
