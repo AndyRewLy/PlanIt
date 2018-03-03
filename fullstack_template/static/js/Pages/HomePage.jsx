@@ -1,4 +1,4 @@
-import CardContainer from '../Card/CardContainer';
+import NewEventsContainer from '../Card/NewEventsContainer';
 import React, { Component } from 'react';
 
 class HomePage extends React.Component {
@@ -6,15 +6,15 @@ class HomePage extends React.Component {
         super(props);
 
         this.state={
-            cards: []
+            cards: [{eventTitle: "Eat Hot Cheetos"}]
         }
     }
 
     render() {
         return (
               <div>
-                  <p> My Upcoming Events </p>
-                  <CardContainer cards={this.state.cards}/>
+                  <p> Discover Events </p>
+                  <NewEventsContainer cards={this.state.cards}/>
                   <div className="CardContainer">
                 {/* {this.state.cards.length > 0 &&
                    <div>

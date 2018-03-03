@@ -24,6 +24,7 @@ class MyEvents extends React.Component {
             eventDescriptionValue: undefined,
             eventLocationValue: undefined,
             eventMembersOnlyValue: false,
+            maxParticipants: 0,
             cards: []
         }
 
@@ -35,6 +36,7 @@ class MyEvents extends React.Component {
         this.handleEventDescriptionChange = this.handleEventDescriptionChange.bind(this);
         this.handleEventLocationChange = this.handleEventLocationChange.bind(this);
         this.handleMembersOnlyCheck = this.handleMembersOnlyCheck.bind(this);
+        this.handleMaxParticipantsChange = this.handleMaxParticipantsChange.bind(this);
 
         this.submitEvent = this.submitEvent.bind(this);
         this.closeEventDialog = this.closeEventDialog.bind(this);
@@ -105,6 +107,10 @@ class MyEvents extends React.Component {
         this.setState({eventMembersOnlyValue: !this.state.eventMembersOnlyValue});
     }
 
+    handleMaxParticipantsChange(event, value) {
+        this.setState({maxParticipants: value});
+    }
+
     showCreateEventCallout(title) {
         var that = this;
 
@@ -166,6 +172,10 @@ class MyEvents extends React.Component {
                         </div>
                         <div>
                             <Checkbox label="Members Only" checked={this.state.eventMembersOnlyValue} onCheck={this.handleMembersOnlyCheck}/>
+                        </div>
+                        <div>
+                            <div>Maximum Participants</div>
+                            <TextField label="Type maximum participants here" onChange={this.handleMaxParticipantsChange}/>
                         </div>
                         <div>
                             <div>Tags</div>
