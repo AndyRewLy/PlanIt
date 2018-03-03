@@ -1,9 +1,11 @@
 //App.jsx
 
-import React, { Component } from 'react';
-//import injectTapEventPlugin from 'react-tap-event-plugin';
+import RaisedButton from 'material-ui/RaisedButton';
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-//injectTapEventPlugin();
+import React, { Component } from 'react';
 
 import LoginScreen from './Pages/LoginScreen';
 import HomeScreen from './Pages/HomeScreen';
@@ -32,10 +34,12 @@ class App extends React.Component {
 	  
 	render() {
 	    return (
-	      <div className="App">
-	        {this.state.loginPage}
-	        {this.state.homeScreen}
-	      </div>
+		  <MuiThemeProvider>
+	        <div className="App">
+	          {this.state.loginPage}
+	          {this.state.homeScreen}
+	        </div>
+		  </MuiThemeProvider>
 	    );
 	}
 

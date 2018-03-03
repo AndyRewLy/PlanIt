@@ -116,29 +116,29 @@ class MyOrganizations extends React.Component {
 
     submitOrganization() {
         //Make API CAll here to create the new organization currently logs the information to send
-            console.log(this.state);
-            fetch('/orgs', {
-              method: 'POST',
-              dataType: 'json',
-              headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
-              body: JSON.stringify(this.state)
-            }).then(function (response) {
-              if (response.status == 200) {
-                return response.json()
-              }
-              else {
-                return response.json().catch(err => {
-                  throw new Error(response.statusText);
-                }).then(json => {
-                  throw new Error(json.message);
-                });
-              }
-            }).then(function (data) {//on status == 200
-              console.log(data.message);
-            }).catch(function (error) {//on status != 200
-              alert(error.message);
-            });
-        console.log("I'm currently submitting" + this.state.organizationName + " " + this.state.organizationType);
+        var that = this;
+        fetch('/orgs', {
+           method: 'POST',
+           dataType: 'json',
+           headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
+           body: JSON.stringify(this.state)
+        }).then(function (response) {
+           if (response.status == 200) {
+              that.closeOrgDialog();
+              return response.json()
+           }
+           else {
+              return response.json().catch(err => {
+                 throw new Error(response.statusText);
+              }).then(json => {
+                 throw new Error(json.message);
+              });
+           }
+        }).then(function (data) {//on status == 200
+           console.log(data.message);
+        }).catch(function (error) {//on status != 200
+           alert(error.message);
+        });
     }
 
     renderOrgForm() {

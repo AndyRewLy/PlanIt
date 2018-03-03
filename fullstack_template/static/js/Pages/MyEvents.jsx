@@ -20,12 +20,14 @@ class MyEvents extends React.Component {
         this.state={
             callOutTitle: undefined,
             callOutIsVisible: false,
-            eventTileValue: undefined,
+            eventTitleValue: undefined,
             eventDescriptionValue: undefined,
             eventLocationValue: undefined,
             eventMembersOnlyValue: false,
-            maxParticipants: 0,
-            cards: []
+            cards: [],
+            showEventInfo: false,
+            calloutEventId: 0,
+            canRSVP: false,
         }
 
         this.getAllEvents = this.getAllEvents.bind(this);
@@ -40,6 +42,10 @@ class MyEvents extends React.Component {
 
         this.submitEvent = this.submitEvent.bind(this);
         this.closeEventDialog = this.closeEventDialog.bind(this);
+
+        this.renderEventInfo = this.renderEventInfo.bind(this);
+        this.getEventCardWithId = this.getEventCardWithId.bind(this);
+        this.handleClose = this.handleClose.bind(this);
     }
 
     componentDidMount() {
@@ -152,6 +158,8 @@ class MyEvents extends React.Component {
         const submit = <FlatButton label="Submit" primary={true} onClick={this.submitEvent}/>
         const organizationTypes = ["Academic", "Community Service", "Council", "Cultural", "Environmental", "Honor", "National Society", "Performing Arts", "Political", "Professional", "Recreational", "Religious", "Special Interest"];
         
+        var calloutCard = this.getEventCardWithId();
+
         return (
             <Dialog title={"Create New Event for " + this.state.callOutTitle} 
                     modal={true}
@@ -203,9 +211,35 @@ class MyEvents extends React.Component {
         this.setState({callOutIsVisible: false});
     }
 
+    handleClose() {
+        this.setState({showEventInfo: !this.state.showEventInfo});
+    }
+
+    renderEventInfo(eventId, canRSVP) {
+        this.setState({showEventInfo: !this.state.showEventInfo, 
+                       calloutEventId: eventId, 
+                       canRSVP: canRSVP});
+    }
+
+    getEventCardWithId() {
+        for (var orgIdx in this.state.cards) {
+            var org = this.state.cards[orgIdx];
+            var events = org["events"];
+            for(var eventIdx in events) {
+                var eventCard = events[eventIdx]
+                if (eventCard.eventId === this.state.calloutEventId) {
+                    return eventCard;
+                }
+            }
+        }
+
+        return {};
+    }
+
     render() {
         var cards = this.state.cards;
         var rowComponents = [];
+        var calloutCard = this.getEventCardWithId();
 
         for (var i = 0; i < cards.length; i++) {
             rowComponents.push(
@@ -217,7 +251,7 @@ class MyEvents extends React.Component {
                        <RaisedButton label="Create Event" primary={true} style={style} onClick={this.showCreateEventCallout(cards[i].title)}/>}
                     </MuiThemeProvider>
                   </div>
-                  <EventCardContainer cards={this.state.cards[i].events}/>
+                  <EventCardContainer cards={this.state.cards[i].events} canRSVP={false} renderEventInfo={this.renderEventInfo}/>
                 </div>
             );
         }
@@ -234,12 +268,24 @@ class MyEvents extends React.Component {
                 <MuiThemeProvider>
                      { this.renderEventForm() }
                 </MuiThemeProvider>
-                  {/* <div className="rowComponent">
-                  <MuiThemeProvider>
-                      <h1 style={{paddingTop: 20 + 'px', fontSize: 16 + 'px'}}>Organizations You Are an Admin of: </h1>
-                  </MuiThemeProvider>
-                  </div>
-                  <EventCardContainer cards={this.state.cards}/> */}
+                {this.state.cards.length > 0 && 
+                   <Dialog
+                     title={calloutCard.eventTitle}
+                     open={this.state.showEventInfo}
+                     onRequestClose={this.handleClose}>
+                     <div>
+                         <h3>Event Time</h3>
+                         <div>{calloutCard.startTime} - {calloutCard.endTime}</div>
+                     </div>
+                     <div>
+                         <h3>Event location</h3>
+                         <div>{calloutCard.eventLocationValue}</div>
+                     </div>
+                     <div>
+                         <h3>Event Description</h3> 
+                         <div>{calloutCard.eventDescriptionValue}</div>
+                     </div>
+                   </Dialog>}
             </div>
         );
       }
