@@ -5,4 +5,3 @@ import ReactDOM from "react-dom";
 import App from "./App";
 
 ReactDOM.render(<App />, document.getElementById("content"));
-ReactDOM.render(<App />, document.getElementById("test"));
