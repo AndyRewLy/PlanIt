@@ -82,7 +82,8 @@ def create_organization():
 
     org_type = OrganizationType.query.filter_by(name=request_data["organizationType"]).first()
     data = Organization(name=request_data["organizationName"], 
-                        description=request_data["organizationDescription"])
+                        description=request_data["organizationDescription"],
+                        image=request_data["organizationImage"])
     data.org_type = org_type
     data.admins = [current_identity]
     
@@ -114,7 +115,8 @@ def create_event():
     data = Event(name=request_data["eventTitle"], 
                  description=request_data["eventDescription"],
                  location=request_data["eventLocation"],
-                 members_only=request_data["eventMembersOnly"])
+                 members_only=request_data["eventMembersOnly"],
+                 max_participants=request_data["maxParticipants"])
     
     org_name = request_data["callOutTitle"]
     data.organization = Organization.query.filter_by(name=org_name).first()

@@ -24,6 +24,7 @@ class MyEvents extends React.Component {
             eventDescription: undefined,
             eventLocation: undefined,
             eventMembersOnly: false,
+            maxParticipants: 0,
             cards: [],
             showEventInfo: false,
             calloutEventId: 0,

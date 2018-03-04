@@ -54,13 +54,10 @@ class Organization(db.Model):
     name = db.Column(db.String(128), unique=True) 
     org_type_id = db.Column(db.Integer, ForeignKey(OrganizationType.id))
     description = db.Column(db.String(1024))
+    image = db.Column(db.String(1024))
     events = relationship("Event", backref='organization')
     admins = db.relationship('User', secondary=organization_admins,
         backref=db.backref('organization_admins'))
-
-    def __init__(self, name, description): 
-        self.name = name
-        self.description = description
 
     def __repr__(self):
         return '<Organization %r %r %r>' % (self.name, self.org_type, self.description)
@@ -69,7 +66,8 @@ class Organization(db.Model):
         return {
             'organizationName': self.name, 
             'organizationType': self.org_type.name,
-            'organizationDescription': self.description
+            'organizationDescription': self.description,
+            'organizationImage': self.image
         }
 
 class OrganizationMember(db.Model):
@@ -98,6 +96,7 @@ class Event(db.Model):
     tags = db.Column(db.String(512)) 
     event_items = db.Column(db.String(256), default=None)
     include_year = db.Column(db.Boolean)
+    max_participants = db.Column(db.Integer)
     status = db.Column(db.Integer, default=-1) 
     participants = relationship('EventRSVP', back_populates="event")
 
@@ -111,8 +110,10 @@ class Event(db.Model):
             'eventDescription': self.description,
             'eventLocation': self.location,
             'eventMembersOnly': self.members_only,
-            'eventOrganization': self.organization.name
+            'eventOrganization': self.organization.name,
+            'maxParticipants': self.max_participants
         }
+
 class EventRSVP(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.id)) 
