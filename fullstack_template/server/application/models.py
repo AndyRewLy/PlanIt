@@ -108,10 +108,10 @@ class Event(db.Model):
         return {
             'eventId': self.id,
             'eventTitle': self.name, 
-            'eventDescriptionValue': self.description,
-            'eventLocationValue': self.location,
-            'eventMembersOnlyValue': self.members_only,
-            'eventOrganizationValue': self.organization.name
+            'eventDescription': self.description,
+            'eventLocation': self.location,
+            'eventMembersOnly': self.members_only,
+            'eventOrganization': self.organization.name
         }
 class EventRSVP(db.Model):
     id = db.Column(db.Integer, primary_key=True)

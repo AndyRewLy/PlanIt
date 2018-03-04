@@ -111,10 +111,10 @@ def get_organizations(sel):
 @jwt_required()
 def create_event():
     request_data = request.get_json()
-    data = Event(name=request_data["eventTitleValue"], 
-                 description=request_data["eventDescriptionValue"],
-                 location=request_data["eventLocationValue"],
-                 members_only=request_data["eventMembersOnlyValue"])
+    data = Event(name=request_data["eventTitle"], 
+                 description=request_data["eventDescription"],
+                 location=request_data["eventLocation"],
+                 members_only=request_data["eventMembersOnly"])
     
     org_name = request_data["callOutTitle"]
     data.organization = Organization.query.filter_by(name=org_name).first()
