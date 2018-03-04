@@ -118,12 +118,15 @@ def join_organization():
 @jwt_required()
 def get_organizations(sel):
     serialized = ""
-    print(current_identity.organizations_as_admin)
+
     if sel == 'true':
+        #get all organizations you are an admin of
         orgs = current_identity.organizations_as_admin
-        serialized = [Organization.serialize(item) for item in orgs]
     else :
-        print("Get all organizations you are a member of")
+        #get all organizations you are a member of
+        orgs = current_identity.organizations_as_member
+
+    serialized = [Organization.serialize(item) for item in orgs]
     return jsonify(message=serialized), 200
 
 @app.route('/events',methods=['POST'])
