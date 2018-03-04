@@ -17,8 +17,10 @@ class OrgCardContainer extends React.Component {
                        {
                            this.props.cards.slice(0).reverse().map(card =>
                               <OrgCard
+                                key={card.organizationName}
                                 organizationName={card.organizationName}
                                 organizationDescription={card.organizationDescription}
+                                organizationImage={card.organizationImage}
                               />)
                        }
                    </div>

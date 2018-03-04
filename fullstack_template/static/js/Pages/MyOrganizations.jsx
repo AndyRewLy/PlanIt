@@ -34,8 +34,6 @@ class MyOrganizations extends React.Component {
             organizationDescription: undefined,
             adminOrgs: [],
             memberOrgs: [],
-            //orgCards: [{organizationName: "WISH", organizationDescription: "Women in software and hardware"},
-            //           {organizationName: "Natasha", organizationDescription: "Cats"}],
             orgCards: [],
         }
 
@@ -69,7 +67,6 @@ class MyOrganizations extends React.Component {
           headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
         }).then(function (response) {
           if (response.status == 200) {
-            console.log("we here now");
             return response.json()
           }
           else {
@@ -80,7 +77,9 @@ class MyOrganizations extends React.Component {
             });
           }
         }).then(function (data) {//on status == 200
-          console.log(data.message);
+          for (var i = 0; i < data.message.length; i++) {
+              data.message[i].organizationImage = "https://www.pixilart.com/images/art/00aba8c44e03ba1.png";
+          }
           that.setState({orgCards: data.message});
         }).catch(function (error) {//on status != 200
           alert(error.message);
@@ -101,7 +100,7 @@ class MyOrganizations extends React.Component {
     }
 
     handleImageFileChange(event, value) {
-        this.setState({organizationImage: event.target.files[0]});
+        this.setState({organizationImage: value});
     }
 
     closeOrgDialog() {
@@ -166,12 +165,10 @@ class MyOrganizations extends React.Component {
                             <div>Organization Description</div>
                             <TextField hintText="Type organization description here" onChange={this.handleOrgDescriptionChange} multiLine={true}/>
                         </div>
-                        {/* <div>
+                        <div>
                             <div> Organization Image</div>
-                            <RaisedButton>
-                                <input type="file" onChange={this.handleImageFileChange}/>
-                            </RaisedButton>
-                        </div> */}
+                            <TextField hintText="Type image URL here" onChange={this.handleImageFileChange}></TextField>
+                        </div>
                     </div>
                     <div>
                         {cancel}
@@ -198,23 +195,7 @@ class MyOrganizations extends React.Component {
                      { this.renderOrgForm() }
                   </MuiThemeProvider>
                   <OrgCardContainer cards={this.state.orgCards}/>
-                  <div className="OrgCardContainer">
-                {/* {this.state.orgCards.length > 0 &&
-                   <div>
-                       {
-                           this.state.orgCards.slice(0).reverese().map(card =>
-                              <OrgCard
-                              organizationName={card.organizationName}
-                              organizationDescription={card.organizationDescription}
-                              />)
-                       }
-                   </div>
-                }
-                {this.state.cards.length == 0 &&
-                    <div>
-                        <h1> You are not an admin of any organizations. </h1>
-                    </div>
-                } */}                
+                  <div className="OrgCardContainer">            
             </div>
               </div>
         );

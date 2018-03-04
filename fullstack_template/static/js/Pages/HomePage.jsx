@@ -147,7 +147,7 @@ class HomePage extends React.Component {
                   <EventCardContainer cards={this.state.newEventCards} 
                     canRSVP={true} 
                     renderEventInfo={this.renderEventInfo}/>
-                  {this.state.newEventCards.length && 
+                  {this.state.newEventCards.length ?
                    <Dialog
                      title={calloutCard.eventTitle}
                      actions={actions}
@@ -165,7 +165,7 @@ class HomePage extends React.Component {
                          <h3>Event Description</h3> 
                          <div>{calloutCard.eventDescriptionValue}</div>
                      </div>
-                   </Dialog>}
+                   </Dialog> : ''}
               </div>
         );
       }
