@@ -31,7 +31,6 @@ class User(db.Model):
     major = db.Column(db.Integer, ForeignKey(Major.id)) 
 
     events_created = db.relationship('Event', backref='creator')
-
     events = relationship('EventRSVP', back_populates="user")
     
     def __init__(self, first_name, last_name, email, password, major):
@@ -49,6 +48,11 @@ organization_admins = db.Table('organization_admins',
     db.Column('org_id', db.Integer, db.ForeignKey('organization.id'), primary_key=True)
 )
 
+organization_members = db.Table('organization_members',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('org_id', db.Integer, db.ForeignKey('organization.id'), primary_key=True)
+)
+
 class Organization(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True) 
@@ -57,30 +61,21 @@ class Organization(db.Model):
     image = db.Column(db.String(1024))
     events = relationship("Event", backref='organization')
     admins = db.relationship('User', secondary=organization_admins,
-        backref=db.backref('organization_admins'))
+        backref=db.backref('organizations_as_admin'))
+    members = db.relationship('User', secondary=organization_members,
+        backref=db.backref('organizations_as_member'))
 
     def __repr__(self):
         return '<Organization %r %r %r>' % (self.name, self.org_type, self.description)
     
     def serialize(self):
         return {
+            'organizationId': self.id,
             'organizationName': self.name, 
             'organizationType': self.org_type.name,
             'organizationDescription': self.description,
             'organizationImage': self.image
-        }
-
-class OrganizationMember(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey(User.id))
-    org_id = db.Column(db.Integer, ForeignKey(Organization.id)) 
-
-    def __init__(self, user_id, org_id): 
-        self.user_id = user_id
-        self.org_id = org_id
-
-    def __repr__(self):
-        return '<Organization admin %r %r>' % (self.user_id, self.org_id)     
+        } 
 
 class Event(db.Model): 
     id = db.Column(db.Integer, primary_key=True)

@@ -113,7 +113,7 @@ class MyOrganizations extends React.Component {
     submitOrganization() {
         //Make API CAll here to create the new organization currently logs the information to send
         var that = this;
-        fetch('/orgs', {
+        fetch('/orgs/create', {
            method: 'POST',
            dataType: 'json',
            headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
