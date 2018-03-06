@@ -80,9 +80,6 @@ class MyOrganizations extends React.Component {
             });
           }
         }).then(function (data) {//on status == 200
-          for (var i = 0; i < data.message.length; i++) {
-              data.message[i].organizationImage = "https://www.pixilart.com/images/art/00aba8c44e03ba1.png";
-          }
           that.setState({orgCards: data.message});
         }).catch(function (error) {//on status != 200
           alert(error.message);
@@ -123,7 +120,7 @@ class MyOrganizations extends React.Component {
     submitOrganization() {
         //Make API CAll here to create the new organization currently logs the information to send
         var that = this;
-        fetch('/orgs', {
+        fetch('/orgs/create', {
            method: 'POST',
            dataType: 'json',
            headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},

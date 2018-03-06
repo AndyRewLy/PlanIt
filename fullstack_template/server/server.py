@@ -75,46 +75,69 @@ def print_all_users():
             db.session.rollback()
     return "success"
 
-@app.route('/orgs',methods=['POST'])
+@app.route('/orgs/create',methods=['POST'])
 @jwt_required()
 def create_organization():
     request_data = request.get_json()
 
     org_type = OrganizationType.query.filter_by(name=request_data["organizationType"]).first()
-    data = Organization(name=request_data["organizationName"], 
-                        description=request_data["organizationDescription"])
-    data.org_type = org_type
-    data.admins = [current_identity]
+    org = Organization(name=request_data["organizationName"], 
+                        description=request_data["organizationDescription"],
+                        image=request_data["organizationImage"])
+    org.org_type = org_type
+    org.admins = [current_identity]
     
     try:     
-        db.session.add(data)
+        db.session.add(org)
         db.session.commit()
     except:
         db.session.rollback()
 
     return jsonify(message="successful organization creation")
 
+#adds the current user as a member of the specified organization
+@app.route('/orgs/join',methods=['POST'])
+@jwt_required()
+def join_organization():
+    request_data = request.get_json()
+
+    #org = Organization.query.get(request_data["organizationId"])
+    org = Organization.query.get(1)
+    org.members.append(current_identity)
+    
+    try:     
+        db.session.add(org)
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    return jsonify(message="successful organization joining")
+
 #returns the orgs you are a member of or an admin of
 @app.route('/orgs/admin=<sel>',methods=['GET'])
 @jwt_required()
 def get_organizations(sel):
     serialized = ""
-    print(current_identity.organization_admins)
+
     if sel == 'true':
-        orgs = current_identity.organization_admins
-        serialized = [Organization.serialize(item) for item in orgs]
+        #get all organizations you are an admin of
+        orgs = current_identity.organizations_as_admin
     else :
-        print("Get all organizations you are a member of")
+        #get all organizations you are a member of
+        orgs = current_identity.organizations_as_member
+
+    serialized = [Organization.serialize(item) for item in orgs]
     return jsonify(message=serialized), 200
 
 @app.route('/events',methods=['POST'])
 @jwt_required()
 def create_event():
     request_data = request.get_json()
-    data = Event(name=request_data["eventTitleValue"], 
-                 description=request_data["eventDescriptionValue"],
-                 location=request_data["eventLocationValue"],
-                 members_only=request_data["eventMembersOnlyValue"])
+    data = Event(name=request_data["eventTitle"], 
+                 description=request_data["eventDescription"],
+                 location=request_data["eventLocation"],
+                 members_only=request_data["eventMembersOnly"],
+                 max_participants=request_data["maxParticipants"])
     
     org_name = request_data["callOutTitle"]
     data.organization = Organization.query.filter_by(name=org_name).first()
@@ -133,16 +156,19 @@ def create_event():
 @jwt_required()
 def get_events(sel):
     serialized = ""
+
     if sel == 'true':
-        orgs = current_identity.organization_admins
-        serialized = [{"title" : item.name,
+        #gets all the events for the orgs you are an admin of
+        orgs = current_identity.organizations_as_admin
+    else :
+        #gets all the events for the orgs you are a member of
+        orgs = current_identity.organizations_as_member
+
+    serialized = [{"title" : item.name,
                        "admin" : True,
                        "events" : 
                           [Event.serialize(i) for i in item.events]
                        } for item in orgs]
-    else :
-        print("Get all events for the orgs you are a member of")
-  
 
     return jsonify(message=serialized), 200
     

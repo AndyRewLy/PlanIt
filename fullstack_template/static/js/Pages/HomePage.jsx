@@ -159,11 +159,11 @@ class HomePage extends React.Component {
                      </div>
                      <div>
                          <h3>Event location</h3>
-                         <div>{calloutCard.eventLocationValue}</div>
+                         <div>{calloutCard.eventLocation}</div>
                      </div>
                      <div>
                          <h3>Event Description</h3> 
-                         <div>{calloutCard.eventDescriptionValue}</div>
+                         <div>{calloutCard.eventDescription}</div>
                      </div>
                    </Dialog> : ''}
               </div>
