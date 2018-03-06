@@ -95,6 +95,16 @@ def create_organization():
 
     return jsonify(message="successful organization creation")
 
+@app.route('/orgs/all',methods=['GET'])
+def get_all_orgs():
+    serialized = ""
+    try: 
+        orgs = Organization.query.all()
+        serialized = [Organization.serialize(item) for item in orgs]
+    except:
+        db.session.rollback()
+    return jsonify(message=serialized), 200 
+
 #adds the current user as a member of the specified organization
 @app.route('/orgs/join',methods=['POST'])
 @jwt_required()
@@ -129,7 +139,7 @@ def get_organizations(sel):
     serialized = [Organization.serialize(item) for item in orgs]
     return jsonify(message=serialized), 200
 
-@app.route('/events',methods=['POST'])
+@app.route('/events/create',methods=['POST'])
 @jwt_required()
 def create_event():
     request_data = request.get_json()
@@ -150,6 +160,16 @@ def create_event():
         db.session.rollback()
 
     return jsonify(message="successful event creation")
+
+@app.route('/events/all',methods=['GET'])
+def get_all_events():
+    serialized = ""
+    try: 
+        events = Event.query.all()
+        serialized = [Event.serialize(item) for item in events]
+    except:
+        db.session.rollback()
+    return jsonify(message=serialized), 200 
 
 #returns the events you are a member of or an admin of
 @app.route('/events/admin=<sel>',methods=['GET'])
