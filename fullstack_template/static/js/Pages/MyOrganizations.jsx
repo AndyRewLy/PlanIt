@@ -32,10 +32,13 @@ class MyOrganizations extends React.Component {
             organizationName: undefined,
             organizationImage: undefined,
             organizationDescription: undefined,
+            memberStatus: "Admin",
             adminOrgs: [],
             memberOrgs: [],
             orgCards: [],
         }
+
+        this.handleOrgRoleChange = this.handleOrgRoleChange.bind(this);
 
         this.renderOrgForm = this.renderOrgForm.bind(this);
         this.showCreateOrgCallOut = this.showCreateOrgCallOut.bind(this);
@@ -61,7 +64,7 @@ class MyOrganizations extends React.Component {
     getUserAdminOrganizations() {
         var that = this;
         console.log("Getting all the user admin orgs...");
-        fetch('/orgs/admin=true', {
+        fetch('/orgs/admin=' + (this.state.memberStatus === "Admin" ? true : false) , {
           method: 'GET',
           dataType: 'json',
           headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
@@ -82,6 +85,10 @@ class MyOrganizations extends React.Component {
           alert(error.message);
         });
 
+    }
+
+    handleOrgRoleChange(event, index, value) {
+        this.setState({memberStatus: value});
     }
 
     handleOrgNameChange(event, value) {
@@ -182,19 +189,44 @@ class MyOrganizations extends React.Component {
     render() {
         return (
             <div style={style}>
+               {this.state.memberStatus === "Admin" ?
+               <div>
                   <div className="rowComponent">
-                  <MuiThemeProvider>
-                      <h1 style={{paddingTop: 20 + 'px', fontSize: 16 + 'px'}}>Organizations You Are an Admin of: </h1>
-                      <RaisedButton label="Create Organization" primary={true} style={style} onClick={this.showCreateOrgCallOut}/>
-                  </MuiThemeProvider>
+                     <MuiThemeProvider>
+                        <div className="sub-row">
+                           <h1 className="float-left" style={{paddingTop: 20 + 'px', fontSize: 16 + 'px'}}>Organizations You Are an Admin of: </h1>
+                           <RaisedButton className="float-left" label="Create Organization" primary={true} style={style} onClick={this.showCreateOrgCallOut}/>
+                        </div>
+                        <DropDownMenu value={this.state.memberStatus} onChange={this.handleOrgRoleChange} className="admin-selector">
+                           <MenuItem value={"Admin"} key={0} primaryText={"Admin"}/>
+                           <MenuItem value={"Member"} key={1} primaryText={"Member"}/>
+                        </DropDownMenu>
+                     </MuiThemeProvider>
                   </div>
                   <MuiThemeProvider>
                      { this.renderOrgForm() }
                   </MuiThemeProvider>
                   <OrgCardContainer cards={this.state.orgCards}/>
-                  <div className="OrgCardContainer">            
-            </div>
               </div>
+              :
+              <div>
+                  <div className="rowComponent">
+                     <MuiThemeProvider>
+                        <h1 style={{paddingTop: 20 + 'px', fontSize: 16 + 'px'}}>Organizations You Are a Member of: </h1>
+                        <DropDownMenu value={this.state.memberStatus} onChange={this.handleOrgRoleChange}>
+                           <MenuItem value={"Admin"} key={0} primaryText={"Admin"}/>
+                           <MenuItem value={"Member"} key={1} primaryText={"Member"}/>
+                        </DropDownMenu>
+                     </MuiThemeProvider>
+                  </div>
+                  <MuiThemeProvider>
+                     { this.renderOrgForm() }
+                  </MuiThemeProvider>
+                  <OrgCardContainer cards={this.state.orgCards}/>
+              </div>
+               }
+
+            </div>
         );
       }
 }
