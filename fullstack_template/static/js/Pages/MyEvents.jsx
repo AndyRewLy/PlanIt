@@ -68,7 +68,7 @@ class MyEvents extends React.Component {
     submitEvent() {
         //This is where we need to submit the event or create a post call
         
-        fetch('/events', {
+        fetch('/events/create', {
             method: 'POST',
             dataType: 'json',
             headers: { 'Content-Type': 'application/json', 'Authorization': this.getCookie("access_token") },
