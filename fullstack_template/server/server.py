@@ -86,6 +86,7 @@ def create_organization():
                         image=request_data["organizationImage"])
     org.org_type = org_type
     org.admins = [current_identity]
+    org.members.append(current_identity)
     
     try:     
         db.session.add(org)
@@ -111,8 +112,8 @@ def get_all_orgs():
 def join_organization():
     request_data = request.get_json()
 
-    #org = Organization.query.get(request_data["organizationId"])
-    org = Organization.query.get(1)
+    org = Organization.query.get(request_data["organizationId"])
+    # org = Organization.query.get(1)
     org.members.append(current_identity)
     
     try:     
