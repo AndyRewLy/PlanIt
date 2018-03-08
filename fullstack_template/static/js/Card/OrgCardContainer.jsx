@@ -20,7 +20,7 @@ class OrgCardContainer extends React.Component {
                            this.props.cards.slice(0).reverse().map(card => 
                               filterText === undefined ||
                                (filterText && 
-                                card.organizationName.includes(filterText)) ?
+                                card.organizationName.match(new RegExp(filterText, 'i'))) ?
                               <OrgCard
                                 renderOrgInfo={this.props.renderOrgInfo ? this.props.renderOrgInfo : undefined}
                                 key={card.organizationId}
