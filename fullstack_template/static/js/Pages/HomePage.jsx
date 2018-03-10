@@ -132,10 +132,6 @@ class HomePage extends React.Component {
                 newOrgCards[i].canJoin = true;
 
                 for (var j in memberOrgs) {
-                    console.log('---current new card');
-                    console.log(newOrgCards[i]);
-                    console.log('---old card');
-                    console.log(memberOrgs[j]);
                     if (newOrgCards[i].organizationId === memberOrgs[j].organizationId) {
                         newOrgCards[i].canJoin = false;
                         break;
@@ -155,6 +151,8 @@ class HomePage extends React.Component {
     }
 
     changeOrgJoinStatus() {
+        var that = this;
+
         fetch('/orgs/join', {
             method: 'POST',
             dataType: 'json',
@@ -173,14 +171,15 @@ class HomePage extends React.Component {
             }
         }).then(function (data) {//on status == 200
             console.log(data.message);
+            that.handleOrgClose();        
         }).catch(function (error) {//on status != 200
             alert(error.message);
         });
 
-        this.handleOrgClose();
     }
 
     updateOrgFilter(e, value) {
+        console.log("Filter is now the value: "  + value);
         this.setState({orgFilter: value});
     }
     handleClose() {
