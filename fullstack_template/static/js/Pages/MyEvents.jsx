@@ -18,12 +18,13 @@ class MyEvents extends React.Component {
         super(props);
 
         this.state={
-            callOutTitle: undefined,
+            callOutTitle: undefined, //organization name
             callOutIsVisible: false,
-            eventTitleValue: undefined,
-            eventDescriptionValue: undefined,
-            eventLocationValue: undefined,
-            eventMembersOnlyValue: false,
+            eventTitle: undefined,
+            eventDescription: undefined,
+            eventLocation: undefined,
+            eventMembersOnly: false,
+            maxParticipants: 0,
             cards: [],
             showEventInfo: false,
             calloutEventId: 0,
@@ -66,13 +67,8 @@ class MyEvents extends React.Component {
 
     submitEvent() {
         //This is where we need to submit the event or create a post call
-        console.log(this.state.eventTitleValue + " " +
-                    this.state.eventDescriptionValue + " " +
-                    this.state.eventLocationValue + " " + 
-                    this.state.eventMembersOnlyValue
-                );
         
-        fetch('/events', {
+        fetch('/events/create', {
             method: 'POST',
             dataType: 'json',
             headers: { 'Content-Type': 'application/json', 'Authorization': this.getCookie("access_token") },
@@ -98,19 +94,19 @@ class MyEvents extends React.Component {
     }
 
     handleEventTitleChange(event, value) {
-        this.setState({eventTitleValue: value});
+        this.setState({eventTitle: value});
     }
 
     handleEventDescriptionChange(event, value) {
-        this.setState({eventDescriptionValue: value});
+        this.setState({eventDescription: value});
     }
 
     handleEventLocationChange(event, value) {
-        this.setState({eventLocationValue: value});
+        this.setState({eventLocation: value});
     }
 
     handleMembersOnlyCheck(event) {
-        this.setState({eventMembersOnlyValue: !this.state.eventMembersOnlyValue});
+        this.setState({eventMembersOnly: !this.state.eventMembersOnly});
     }
 
     handleMaxParticipantsChange(event, value) {
@@ -179,7 +175,7 @@ class MyEvents extends React.Component {
                             <TextField hintText="Type event location here" onChange={this.handleEventLocationChange}/>
                         </div>
                         <div>
-                            <Checkbox label="Members Only" checked={this.state.eventMembersOnlyValue} onCheck={this.handleMembersOnlyCheck}/>
+                            <Checkbox label="Members Only" checked={this.state.eventMembersOnly} onCheck={this.handleMembersOnlyCheck}/>
                         </div>
                         <div>
                             <div>Maximum Participants</div>
@@ -279,11 +275,11 @@ class MyEvents extends React.Component {
                      </div>
                      <div>
                          <h3>Event location</h3>
-                         <div>{calloutCard.eventLocationValue}</div>
+                         <div>{calloutCard.eventLocation}</div>
                      </div>
                      <div>
                          <h3>Event Description</h3> 
-                         <div>{calloutCard.eventDescriptionValue}</div>
+                         <div>{calloutCard.eventDescription}</div>
                      </div>
                    </Dialog>}
             </div>

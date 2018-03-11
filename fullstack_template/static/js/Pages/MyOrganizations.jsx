@@ -32,12 +32,13 @@ class MyOrganizations extends React.Component {
             organizationName: undefined,
             organizationImage: undefined,
             organizationDescription: undefined,
+            memberStatus: "Admin",
             adminOrgs: [],
             memberOrgs: [],
-            //orgCards: [{organizationName: "WISH", organizationDescription: "Women in software and hardware"},
-            //           {organizationName: "Natasha", organizationDescription: "Cats"}],
             orgCards: [],
         }
+
+        this.handleOrgRoleChange = this.handleOrgRoleChange.bind(this);
 
         this.renderOrgForm = this.renderOrgForm.bind(this);
         this.showCreateOrgCallOut = this.showCreateOrgCallOut.bind(this);
@@ -63,13 +64,12 @@ class MyOrganizations extends React.Component {
     getUserAdminOrganizations() {
         var that = this;
         console.log("Getting all the user admin orgs...");
-        fetch('/orgs/admin=true', {
+        fetch('/orgs/admin=' + (this.state.memberStatus === "Admin" ? true : false) , {
           method: 'GET',
           dataType: 'json',
           headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
         }).then(function (response) {
           if (response.status == 200) {
-            console.log("we here now");
             return response.json()
           }
           else {
@@ -80,12 +80,15 @@ class MyOrganizations extends React.Component {
             });
           }
         }).then(function (data) {//on status == 200
-          console.log(data.message);
           that.setState({orgCards: data.message});
         }).catch(function (error) {//on status != 200
           alert(error.message);
         });
 
+    }
+
+    handleOrgRoleChange(event, index, value) {
+        this.setState({memberStatus: value});
     }
 
     handleOrgNameChange(event, value) {
@@ -101,7 +104,7 @@ class MyOrganizations extends React.Component {
     }
 
     handleImageFileChange(event, value) {
-        this.setState({organizationImage: event.target.files[0]});
+        this.setState({organizationImage: value});
     }
 
     closeOrgDialog() {
@@ -117,7 +120,7 @@ class MyOrganizations extends React.Component {
     submitOrganization() {
         //Make API CAll here to create the new organization currently logs the information to send
         var that = this;
-        fetch('/orgs', {
+        fetch('/orgs/create', {
            method: 'POST',
            dataType: 'json',
            headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
@@ -166,12 +169,10 @@ class MyOrganizations extends React.Component {
                             <div>Organization Description</div>
                             <TextField hintText="Type organization description here" onChange={this.handleOrgDescriptionChange} multiLine={true}/>
                         </div>
-                        {/* <div>
+                        <div>
                             <div> Organization Image</div>
-                            <RaisedButton>
-                                <input type="file" onChange={this.handleImageFileChange}/>
-                            </RaisedButton>
-                        </div> */}
+                            <TextField hintText="Type image URL here" onChange={this.handleImageFileChange}></TextField>
+                        </div>
                     </div>
                     <div>
                         {cancel}
@@ -188,35 +189,44 @@ class MyOrganizations extends React.Component {
     render() {
         return (
             <div style={style}>
+               {this.state.memberStatus === "Admin" ?
+               <div>
                   <div className="rowComponent">
-                  <MuiThemeProvider>
-                      <h1 style={{paddingTop: 20 + 'px', fontSize: 16 + 'px'}}>Organizations You Are an Admin of: </h1>
-                      <RaisedButton label="Create Organization" primary={true} style={style} onClick={this.showCreateOrgCallOut}/>
-                  </MuiThemeProvider>
+                     <MuiThemeProvider>
+                        <div className="sub-row">
+                           <h1 className="float-left" style={{paddingTop: 20 + 'px', fontSize: 16 + 'px'}}>Organizations You Are an Admin of: </h1>
+                           <RaisedButton className="float-left" label="Create Organization" primary={true} style={style} onClick={this.showCreateOrgCallOut}/>
+                        </div>
+                        <DropDownMenu value={this.state.memberStatus} onChange={this.handleOrgRoleChange} className="admin-selector">
+                           <MenuItem value={"Admin"} key={0} primaryText={"Admin"}/>
+                           <MenuItem value={"Member"} key={1} primaryText={"Member"}/>
+                        </DropDownMenu>
+                     </MuiThemeProvider>
                   </div>
                   <MuiThemeProvider>
                      { this.renderOrgForm() }
                   </MuiThemeProvider>
                   <OrgCardContainer cards={this.state.orgCards}/>
-                  <div className="OrgCardContainer">
-                {/* {this.state.orgCards.length > 0 &&
-                   <div>
-                       {
-                           this.state.orgCards.slice(0).reverese().map(card =>
-                              <OrgCard
-                              organizationName={card.organizationName}
-                              organizationDescription={card.organizationDescription}
-                              />)
-                       }
-                   </div>
-                }
-                {this.state.cards.length == 0 &&
-                    <div>
-                        <h1> You are not an admin of any organizations. </h1>
-                    </div>
-                } */}                
-            </div>
               </div>
+              :
+              <div>
+                  <div className="rowComponent">
+                     <MuiThemeProvider>
+                        <h1 style={{paddingTop: 20 + 'px', fontSize: 16 + 'px'}}>Organizations You Are a Member of: </h1>
+                        <DropDownMenu value={this.state.memberStatus} onChange={this.handleOrgRoleChange}>
+                           <MenuItem value={"Admin"} key={0} primaryText={"Admin"}/>
+                           <MenuItem value={"Member"} key={1} primaryText={"Member"}/>
+                        </DropDownMenu>
+                     </MuiThemeProvider>
+                  </div>
+                  <MuiThemeProvider>
+                     { this.renderOrgForm() }
+                  </MuiThemeProvider>
+                  <OrgCardContainer cards={this.state.orgCards}/>
+              </div>
+               }
+
+            </div>
         );
       }
 }

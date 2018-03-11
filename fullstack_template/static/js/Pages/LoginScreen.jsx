@@ -31,7 +31,6 @@ class LoginScreen extends React.Component {
   	}
 
   	render() {
-  	    console.log(this.state.buttonLabel);
     	return (
       		<div className="Login">
         		{this.state.loginscreen}
@@ -48,7 +47,6 @@ class LoginScreen extends React.Component {
   	}	
 
   	handleClick(event) {
-  		// console.log("event",event);
     	var loginmessage;
     	if(this.state.isLogin){
       		var loginscreen=[];

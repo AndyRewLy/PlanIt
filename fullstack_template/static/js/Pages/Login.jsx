@@ -45,8 +45,6 @@ class Login extends Component {
 		var self = this;
 		var app = self.props.appContext;
 
-		console.log(self);
-
 		fetch('/login', {
 			method: 'POST',
 			dataType: 'json',

@@ -31,7 +31,6 @@ class User(db.Model):
     major = db.Column(db.Integer, ForeignKey(Major.id)) 
 
     events_created = db.relationship('Event', backref='creator')
-
     events = relationship('EventRSVP', back_populates="user")
     
     def __init__(self, first_name, last_name, email, password, major):
@@ -49,40 +48,34 @@ organization_admins = db.Table('organization_admins',
     db.Column('org_id', db.Integer, db.ForeignKey('organization.id'), primary_key=True)
 )
 
+organization_members = db.Table('organization_members',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('org_id', db.Integer, db.ForeignKey('organization.id'), primary_key=True)
+)
+
 class Organization(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True) 
     org_type_id = db.Column(db.Integer, ForeignKey(OrganizationType.id))
     description = db.Column(db.String(1024))
+    image = db.Column(db.String(1024))
     events = relationship("Event", backref='organization')
     admins = db.relationship('User', secondary=organization_admins,
-        backref=db.backref('organization_admins'))
-
-    def __init__(self, name, description): 
-        self.name = name
-        self.description = description
+        backref=db.backref('organizations_as_admin'))
+    members = db.relationship('User', secondary=organization_members,
+        backref=db.backref('organizations_as_member'))
 
     def __repr__(self):
         return '<Organization %r %r %r>' % (self.name, self.org_type, self.description)
     
     def serialize(self):
         return {
+            'organizationId': self.id,
             'organizationName': self.name, 
             'organizationType': self.org_type.name,
-            'organizationDescription': self.description
-        }
-
-class OrganizationMember(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey(User.id))
-    org_id = db.Column(db.Integer, ForeignKey(Organization.id)) 
-
-    def __init__(self, user_id, org_id): 
-        self.user_id = user_id
-        self.org_id = org_id
-
-    def __repr__(self):
-        return '<Organization admin %r %r>' % (self.user_id, self.org_id)     
+            'organizationDescription': self.description,
+            'organizationImage': self.image
+        } 
 
 class Event(db.Model): 
     id = db.Column(db.Integer, primary_key=True)
@@ -98,6 +91,7 @@ class Event(db.Model):
     tags = db.Column(db.String(512)) 
     event_items = db.Column(db.String(256), default=None)
     include_year = db.Column(db.Boolean)
+    max_participants = db.Column(db.Integer)
     status = db.Column(db.Integer, default=-1) 
     participants = relationship('EventRSVP', back_populates="event")
 
@@ -108,11 +102,13 @@ class Event(db.Model):
         return {
             'eventId': self.id,
             'eventTitle': self.name, 
-            'eventDescriptionValue': self.description,
-            'eventLocationValue': self.location,
-            'eventMembersOnlyValue': self.members_only,
-            'eventOrganizationValue': self.organization.name
+            'eventDescription': self.description,
+            'eventLocation': self.location,
+            'eventMembersOnly': self.members_only,
+            'eventOrganization': self.organization.name,
+            'maxParticipants': self.max_participants
         }
+
 class EventRSVP(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.id)) 
