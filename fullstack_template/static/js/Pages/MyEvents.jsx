@@ -189,7 +189,7 @@ class MyEvents extends React.Component {
                         </div>
                         <div>
                             <div>Tags</div>
-                            <TextField hintText="Type tags here #CS #TechTalk #WISH" onChange={this.handleEventTagsChange}/>
+                            <TextField hintText="#CS #TechTalk #WISH" onChange={this.handleEventTagsChange}/>
                         </div>
                         <div>
                             <div>Event Items</div>

@@ -145,7 +145,7 @@ def get_organizations(sel):
 def create_event():
     request_data = request.get_json()
 
-    eventTags = ''.join(request_data["eventTags"].split())
+    eventTags = ''.join(request_data["eventTags"].split()) + "#"
 
     data = Event(name=request_data["eventTitle"], 
                  description=request_data["eventDescription"],
@@ -171,6 +171,18 @@ def get_all_events():
     serialized = ""
     try: 
         events = Event.query.all()
+        serialized = [Event.serialize(item) for item in events]
+    except:
+        db.session.rollback()
+    return jsonify(message=serialized), 200 
+
+
+@app.route('/events/filter=<tag>',methods=['GET'])
+def get_events_filtered(tag):
+
+    serialized = ""
+    try: 
+        events = Event.query.filter(Event.tags.like("%#" + tag + "#%")).all()
         serialized = [Event.serialize(item) for item in events]
     except:
         db.session.rollback()
