@@ -1,3 +1,8 @@
+.App {
+	background: rgb(231, 231, 231);	
+	height: 100%;
+}
+
 .Login {
 	text-align: center;
 	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial;

@@ -5,6 +5,7 @@ import TextField from 'material-ui/TextField';
 
 import React, { Component } from 'react';
 
+require('../../css/Login.css');
 class Login extends Component {
 	constructor(props) {
 		super(props);
@@ -23,10 +24,10 @@ class Login extends Component {
 
 	render() {
 		return (
-			<div>
+			<div className="center">
 				<MuiThemeProvider>
 					<div>
-					<AppBar title="Login"/>
+					<h1 className="planit-title">Welcome to PlanIt!</h1>
 					<TextField hintText="Enter your Email" floatingLabelText="Email" onChange={(event, newValue) => 
 						this.setState({username: newValue})}/>
 					<br/>
