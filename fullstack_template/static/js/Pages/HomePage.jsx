@@ -7,6 +7,8 @@ import EventCardContainer from '../Card/EventCardContainer';
 import React, { Component } from 'react';
 import OrgCardContainer from '../Card/OrgCardContainer';
 
+require('../../css/HomePage.css');
+
 class HomePage extends React.Component {
     constructor(props){
         super(props);
@@ -298,15 +300,19 @@ class HomePage extends React.Component {
 
         return (
               <div>
-                  <p style={style}> Discover Events </p>
-                  <TextField hintText="Search for an Event" onChange={this.updateEventFilter}/>
+                  <div className="search-row">
+                    <p className="row-item" style={style}> Discover Events </p>
+                    <TextField className="row-item" hintText="Search for an Event" onChange={this.updateEventFilter}/>
+                  </div>
                   <EventCardContainer filterText={this.state.eventFilter}
                     cards={this.state.newEventCards} 
                     canRSVP={true} 
                     renderEventInfo={this.renderEventInfo}/>
                   <br/>
-                  <p style={style}> Discover Organizations </p>
-                  <TextField hintText="Search for an Org" onChange={this.updateOrgFilter}/>
+                  <div className="search-row">
+                    <p className="row-item" style={style}> Discover Organizations </p>
+                    <TextField className="row-item" hintText="Search for an Org" onChange={this.updateOrgFilter}/>
+                  </div>
                   <OrgCardContainer filterText={this.state.orgFilter}
                     cards={this.state.newOrgCards}
                     renderOrgInfo={this.renderOrgInfo}/>

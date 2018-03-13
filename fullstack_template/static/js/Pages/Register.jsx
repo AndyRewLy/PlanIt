@@ -5,6 +5,7 @@ import TextField from 'material-ui/TextField';
 
 import React, { Component } from 'react';
 
+require('../../css/Login.css')
 class Register extends React.Component {
 	constructor(props) {
 		super(props);
@@ -18,12 +19,10 @@ class Register extends React.Component {
 
 	render() {
 		return (
-			<div>
+			<div className="center">
         <MuiThemeProvider>
           <div>
-          <AppBar
-             title="Register"
-           />
+           <h1 className="planit-title">Welcome to PlanIt!</h1>
            <TextField
              hintText="Enter your First Name"
              floatingLabelText="First Name"
