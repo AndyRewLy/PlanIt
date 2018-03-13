@@ -36,6 +36,7 @@ class HomePage extends React.Component {
         this.changeOrgJoinStatus = this.changeOrgJoinStatus.bind(this);
 
         this.updateOrgFilter = this.updateOrgFilter.bind(this);
+        this.updateEventFilter = this.updateEventFilter.bind(this);
 
         this.sendEventResponse = this.sendEventResponse.bind(this);
     }
@@ -182,6 +183,12 @@ class HomePage extends React.Component {
         console.log("Filter is now the value: "  + value);
         this.setState({orgFilter: value});
     }
+
+    updateEventFilter(e, value) {
+        console.log("Filter is now the value: " + value);
+        this.setState({eventFilter: value});
+    }
+
     handleClose() {
         this.setState({showEventInfo: !this.state.showEventInfo});
     }
@@ -292,7 +299,9 @@ class HomePage extends React.Component {
         return (
               <div>
                   <p style={style}> Discover Events </p>
-                  <EventCardContainer cards={this.state.newEventCards} 
+                  <TextField hintText="Search for an Event" onChange={this.updateEventFilter}/>
+                  <EventCardContainer filterText={this.state.eventFilter}
+                    cards={this.state.newEventCards} 
                     canRSVP={true} 
                     renderEventInfo={this.renderEventInfo}/>
                   <br/>
