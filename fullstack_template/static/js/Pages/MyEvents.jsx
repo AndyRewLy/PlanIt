@@ -23,6 +23,7 @@ class MyEvents extends React.Component {
             eventTitle: undefined,
             eventDescription: undefined,
             eventLocation: undefined,
+            eventTags:undefined, 
             eventMembersOnly: false,
             maxParticipants: 0,
             cards: [],
@@ -40,6 +41,7 @@ class MyEvents extends React.Component {
         this.handleEventLocationChange = this.handleEventLocationChange.bind(this);
         this.handleMembersOnlyCheck = this.handleMembersOnlyCheck.bind(this);
         this.handleMaxParticipantsChange = this.handleMaxParticipantsChange.bind(this);
+        this.handleEventTagsChange = this.handleEventTagsChange.bind(this);
 
         this.submitEvent = this.submitEvent.bind(this);
         this.closeEventDialog = this.closeEventDialog.bind(this);
@@ -113,6 +115,10 @@ class MyEvents extends React.Component {
         this.setState({maxParticipants: value});
     }
 
+    handleEventTagsChange(event, value) {
+        this.setState({eventTags: value});
+    }
+
     showCreateEventCallout(title) {
         var that = this;
 
@@ -183,7 +189,7 @@ class MyEvents extends React.Component {
                         </div>
                         <div>
                             <div>Tags</div>
-                            <TextField disabled={true}/>
+                            <TextField hintText="Type tags here #CS #TechTalk #WISH" onChange={this.handleEventTagsChange}/>
                         </div>
                         <div>
                             <div>Event Items</div>
