@@ -17,6 +17,7 @@ class HomePage extends React.Component {
             newEventCards: [],
             showEventInfo: false,
             calloutEventId: undefined,
+            eventFilter: "",
             canRSVP: false,
             newOrgCards: [],
             showOrgInfo: false,
@@ -40,6 +41,8 @@ class HomePage extends React.Component {
         this.updateOrgFilter = this.updateOrgFilter.bind(this);
         this.updateEventFilter = this.updateEventFilter.bind(this);
 
+        this.filterDiscoverEvents = this.filterDiscoverEvents.bind(this);
+        
         this.sendEventResponse = this.sendEventResponse.bind(this);
     }
 
@@ -67,8 +70,13 @@ class HomePage extends React.Component {
     getNewEvents() {
         //Function to get all new events that the user has not RSVPed to yet
         var that = this;
+        that.filterDiscoverEvents(that.state.eventFilter)
+    }
 
-        fetch('/events/rsvp=true', {
+    filterDiscoverEvents(tag) {
+        var that = this;
+
+        fetch('/events?filter=' + tag, {
           method: 'GET',
           dataType: 'json',
           headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
@@ -89,7 +97,6 @@ class HomePage extends React.Component {
           alert(error.message);
         });
     }
-
     getAllOrgs() {
         var that = this;
         var newOrgCards;
@@ -153,14 +160,13 @@ class HomePage extends React.Component {
         
     }
 
-    changeOrgJoinStatus() {
+    changeOrgJoinStatus(response) {
         var that = this;
-
-        fetch('/orgs/join', {
+        //ex: /orgs?join=true&org_id=1
+        fetch('/orgs?join=' + response + '&org_id=' + this.state.calloutOrgId, {
             method: 'POST',
             dataType: 'json',
-            headers: { 'Content-Type': 'application/json', 'Authorization': this.getCookie("access_token") },
-            body: JSON.stringify({"organizationId" : this.state.calloutOrgId})
+            headers: {'Authorization': this.getCookie("access_token") }
         }).then(function (response) {
             if (response.status == 200) {
                 return response.json()
@@ -288,11 +294,11 @@ class HomePage extends React.Component {
             <FlatButton
                 label="Join Org"
                 primary={true}
-                onClick={() => this.changeOrgJoinStatus()}/>,
+                onClick={() => this.changeOrgJoinStatus("true")}/>,
             <FlatButton
                 label="Leave Org"
                 primary={true}
-                onClick={() => console.log("Leave the org")}/>
+                onClick={() => this.changeOrgJoinStatus("false")}/>
         ];
         
         var calloutCard = this.getEventCardWithId();

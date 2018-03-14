@@ -21,9 +21,6 @@ class EventCardContainer extends React.Component {
                    <div className="card-subcontainer">
                        {
                            this.props.cards.slice(0).reverse().map(card =>
-                              filterText === undefined || 
-                               (filterText && 
-                                card.eventTitle.match(new RegExp(filterText, 'i'))) ?
                               <EventCard
                                 renderEventInfo={this.props.renderEventInfo}
                                 eventId={card.eventId}                                
@@ -33,7 +30,7 @@ class EventCardContainer extends React.Component {
                                 eventLocation={card.location}
                                 key={card.eventTitle}
                                 canRSVP={this.props.canRSVP}
-                              /> : '')
+                              /> )
                        }
                    </div>
                 }
