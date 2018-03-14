@@ -106,23 +106,30 @@ def get_all_orgs():
         db.session.rollback()
     return jsonify(message=serialized), 200 
 
-#adds the current user as a member of the specified organization
-@app.route('/orgs/join',methods=['POST'])
+#adds or removes the current user as a member of the specified organization
+#orgs?join=true&org_id=1
+#orgs?join=false&org_id=1
+@app.route('/orgs',methods=['POST'])
 @jwt_required()
 def join_organization():
-    request_data = request.get_json()
+    message = ""
+    join = request.args.get("join")
+    org_id = int(request.args.get("org_id"))
 
-    org = Organization.query.get(request_data["organizationId"])
-    # org = Organization.query.get(1)
-    org.members.append(current_identity)
-    
+    org = Organization.query.get(org_id)
+    if join == "true":
+        org.members.append(current_identity)
+        message = "successful organization joining"
+    else:
+        org.members.remove(current_identity)
+        message = "successful organization leaving"
+
     try:     
         db.session.add(org)
         db.session.commit()
     except:
         db.session.rollback()
-
-    return jsonify(message="successful organization joining")
+    return jsonify(message=message)
 
 #returns the orgs you are a member of or an admin of
 @app.route('/orgs/admin=<sel>',methods=['GET'])
