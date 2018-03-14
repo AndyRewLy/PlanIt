@@ -153,10 +153,18 @@ def create_event():
     request_data = request.get_json()
 
     eventTags = ''.join(request_data["eventTags"].split()) + "#"
+    dateFormat = '%m/%d/%y %I:%M%p'
+    eventStart = datetime.strptime(request_data["eventStartTime"], dateFormat)
+    eventEnd = datetime.strptime(request_data["eventEndTime"], dateFormat)
+
+    print(eventStart)
+    print(eventEnd)
 
     data = Event(name=request_data["eventTitle"], 
                  description=request_data["eventDescription"],
                  location=request_data["eventLocation"],
+                 event_start=eventStart,
+                 event_end=eventEnd,
                  members_only=request_data["eventMembersOnly"],
                  max_participants=request_data["maxParticipants"],
                  tags=eventTags)

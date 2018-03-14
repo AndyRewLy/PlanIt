@@ -1,6 +1,7 @@
 from application.db_connector import db
 from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
+from datetime import datetime, timedelta
 
 class OrganizationType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -104,6 +105,8 @@ class Event(db.Model):
             'eventTitle': self.name, 
             'eventDescription': self.description,
             'eventLocation': self.location,
+            'eventStartTime': self.event_start.strftime('%m/%d/%y %I:%M%p'),
+            'eventEndTime': self.event_end.strftime('%m/%d/%y %I:%M%p'),
             'eventMembersOnly': self.members_only,
             'eventOrganization': self.organization.name,
             'maxParticipants': self.max_participants,
