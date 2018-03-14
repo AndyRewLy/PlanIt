@@ -144,12 +144,16 @@ def get_organizations(sel):
 @jwt_required()
 def create_event():
     request_data = request.get_json()
+
+    eventTags = ''.join(request_data["eventTags"].split()) + "#"
+
     data = Event(name=request_data["eventTitle"], 
                  description=request_data["eventDescription"],
                  location=request_data["eventLocation"],
                  members_only=request_data["eventMembersOnly"],
-                 max_participants=request_data["maxParticipants"])
-    
+                 max_participants=request_data["maxParticipants"],
+                 tags=eventTags)
+
     org_name = request_data["callOutTitle"]
     data.organization = Organization.query.filter_by(name=org_name).first()
     data.creator = current_identity
@@ -167,6 +171,18 @@ def get_all_events():
     serialized = ""
     try: 
         events = Event.query.all()
+        serialized = [Event.serialize(item) for item in events]
+    except:
+        db.session.rollback()
+    return jsonify(message=serialized), 200 
+
+
+@app.route('/events/filter=<tag>',methods=['GET'])
+def get_events_filtered(tag):
+
+    serialized = ""
+    try: 
+        events = Event.query.filter(Event.tags.like("%#" + tag + "#%")).all()
         serialized = [Event.serialize(item) for item in events]
     except:
         db.session.rollback()

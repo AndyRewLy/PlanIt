@@ -106,7 +106,8 @@ class Event(db.Model):
             'eventLocation': self.location,
             'eventMembersOnly': self.members_only,
             'eventOrganization': self.organization.name,
-            'maxParticipants': self.max_participants
+            'maxParticipants': self.max_participants,
+            'eventTags': self.tags
         }
 
 class EventRSVP(db.Model):
