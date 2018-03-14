@@ -176,16 +176,26 @@ def get_all_events():
         db.session.rollback()
     return jsonify(message=serialized), 200 
 
-
-@app.route('/events/filter=<tag>',methods=['GET'])
-def get_events_filtered(tag):
-
+#returns all the events that you have not rsvp to that has the <tag> in the event title or tags list
+#path ex: /events?filter=<tag>
+@app.route('/events',methods=['GET'])
+@jwt_required()
+def get_events_filtered():
     serialized = ""
+    tag = request.args.get("filter")
+
+    #default when there is no filter, returns all the events you have not rsvp to 
+    if tag == "":
+        return get_events_rsvp("false")
+
     try: 
-        events = Event.query.filter(Event.tags.like("%#" + tag + "#%")).all()
+        subquery = EventRSVP.query.with_entities(EventRSVP.event_id).filter_by(user_id=current_identity.id)
+        events = db.session.query(Event).filter(~Event.id.in_(subquery)) \
+                                        .filter((Event.tags.like("%#" + tag + "#%")) | (Event.name.like("%" + tag + "%"))).all()
         serialized = [Event.serialize(item) for item in events]
     except:
         db.session.rollback()
+
     return jsonify(message=serialized), 200 
 
 #returns the events you are a member of or an admin of
@@ -233,7 +243,7 @@ def set_RSVP():
 @jwt_required()
 def get_events_rsvp(sel):
     serialized = ""
-    if sel == 'true':
+    if sel == 'false':
         subquery = EventRSVP.query.with_entities(EventRSVP.event_id).filter_by(user_id=current_identity.id)
         events = db.session.query(Event).filter(~Event.id.in_(subquery)).all()
         

@@ -17,6 +17,7 @@ class HomePage extends React.Component {
             newEventCards: [],
             showEventInfo: false,
             calloutEventId: undefined,
+            eventFilter: "",
             canRSVP: false,
             newOrgCards: [],
             showOrgInfo: false,
@@ -40,6 +41,8 @@ class HomePage extends React.Component {
         this.updateOrgFilter = this.updateOrgFilter.bind(this);
         this.updateEventFilter = this.updateEventFilter.bind(this);
 
+        this.filterDiscoverEvents = this.filterDiscoverEvents.bind(this);
+        
         this.sendEventResponse = this.sendEventResponse.bind(this);
     }
 
@@ -67,8 +70,13 @@ class HomePage extends React.Component {
     getNewEvents() {
         //Function to get all new events that the user has not RSVPed to yet
         var that = this;
+        that.filterDiscoverEvents(that.state.eventFilter)
+    }
 
-        fetch('/events/rsvp=true', {
+    filterDiscoverEvents(tag) {
+        var that = this;
+
+        fetch('/events?filter=' + tag, {
           method: 'GET',
           dataType: 'json',
           headers: { 'Content-Type': 'application/json', 'Authorization' : this.getCookie("access_token")},
@@ -89,7 +97,6 @@ class HomePage extends React.Component {
           alert(error.message);
         });
     }
-
     getAllOrgs() {
         var that = this;
         var newOrgCards;
