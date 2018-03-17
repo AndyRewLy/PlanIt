@@ -330,7 +330,7 @@ class HomePage extends React.Component {
                      onRequestClose={this.handleClose}>
                      <div>
                          <h3>Event Time</h3>
-                         <div>{calloutCard.startTime} - {calloutCard.endTime}</div>
+                         <div>{calloutCard.eventStartTime} - {calloutCard.eventEndTime}</div>
                      </div>
                      <div>
                          <h3>Event location</h3>

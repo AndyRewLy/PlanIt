@@ -23,6 +23,8 @@ class MyEvents extends React.Component {
             eventTitle: undefined,
             eventDescription: undefined,
             eventLocation: undefined,
+            eventStartTime: undefined,
+            eventEndTime: undefined,
             eventTags:undefined, 
             eventMembersOnly: false,
             maxParticipants: 0,
@@ -39,6 +41,8 @@ class MyEvents extends React.Component {
         this.handleEventTitleChange = this.handleEventTitleChange.bind(this);
         this.handleEventDescriptionChange = this.handleEventDescriptionChange.bind(this);
         this.handleEventLocationChange = this.handleEventLocationChange.bind(this);
+        this.handleEventStartTimeChange = this.handleEventStartTimeChange.bind(this);
+        this.handleEventEndTimeChange = this.handleEventEndTimeChange.bind(this);
         this.handleMembersOnlyCheck = this.handleMembersOnlyCheck.bind(this);
         this.handleMaxParticipantsChange = this.handleMaxParticipantsChange.bind(this);
         this.handleEventTagsChange = this.handleEventTagsChange.bind(this);
@@ -119,6 +123,14 @@ class MyEvents extends React.Component {
         this.setState({eventTags: value});
     }
 
+    handleEventStartTimeChange(event, value) {
+        this.setState({eventStartTime: value});
+    }
+
+    handleEventEndTimeChange(event, value) {
+        this.setState({eventEndTime: value});
+    }
+
     showCreateEventCallout(title) {
         var that = this;
 
@@ -179,6 +191,14 @@ class MyEvents extends React.Component {
                         <div>
                             <div>Event Location</div>
                             <TextField hintText="Type event location here" onChange={this.handleEventLocationChange}/>
+                        </div>
+                        <div>
+                            <div>Event Start Time</div>
+                            <TextField hintText="03/14/18 4:00PM" onChange={this.handleEventStartTimeChange}/>
+                        </div>
+                        <div>
+                            <div>Event End Time</div>
+                            <TextField hintText="03/14/18 6:00PM" onChange={this.handleEventEndTimeChange}/>
                         </div>
                         <div>
                             <Checkbox label="Members Only" checked={this.state.eventMembersOnly} onCheck={this.handleMembersOnlyCheck}/>
@@ -277,7 +297,7 @@ class MyEvents extends React.Component {
                      onRequestClose={this.handleClose}>
                      <div>
                          <h3>Event Time</h3>
-                         <div>{calloutCard.startTime} - {calloutCard.endTime}</div>
+                         <div>{calloutCard.eventStartTime} - {calloutCard.eventEndTime}</div>
                      </div>
                      <div>
                          <h3>Event location</h3>
