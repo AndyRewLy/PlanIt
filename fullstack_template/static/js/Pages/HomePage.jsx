@@ -303,6 +303,11 @@ class HomePage extends React.Component {
         
         var calloutCard = this.getEventCardWithId();
         var orgCalloutCard = this.getOrgCardWithId();
+        var membersOnlyMsg = "Members only";
+
+        if (!calloutCard.eventMembersOnly) {
+            membersOnlyMsg = "Open to everyone"
+        }
 
         return (
               <div>
@@ -329,16 +334,25 @@ class HomePage extends React.Component {
                      open={this.state.showEventInfo}
                      onRequestClose={this.handleClose}>
                      <div>
-                         <h3>Event Time</h3>
-                         <div>{calloutCard.eventStartTime} - {calloutCard.eventEndTime}</div>
+                         <h5>Description</h5> 
+                         <div>{calloutCard.eventDescription}</div>
                      </div>
                      <div>
-                         <h3>Event location</h3>
+                         <h5>Location</h5>
                          <div>{calloutCard.eventLocation}</div>
                      </div>
                      <div>
-                         <h3>Event Description</h3> 
-                         <div>{calloutCard.eventDescription}</div>
+                     <h5>Date and Time</h5>
+                         <div>Start: {calloutCard.eventStartTime}</div>
+                         <div>End: {calloutCard.eventEndTime} </div>
+                     </div>
+                     <div>
+                         <h5>Maximum Participants</h5>
+                         <div>{calloutCard.maxParticipants}</div>
+                     </div>
+                     <div>
+                         <h5>Event Type</h5>
+                         <div>{membersOnlyMsg}</div>
                      </div>
                    </Dialog> : ''}
                    {this.state.newOrgCards.length ?
