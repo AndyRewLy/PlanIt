@@ -26,8 +26,8 @@ class EventCardContainer extends React.Component {
                                 eventId={card.eventId}                                
                                 eventTitle={card.eventTitle}
                                 eventImage={card.eventImage}
-                                eventStartTime={card.startTime}
-                                eventLocation={card.location}
+                                eventStartTime={card.eventStartTime}
+                                eventLocation={card.eventLocation}
                                 key={card.eventTitle}
                                 canRSVP={this.props.canRSVP}
                               /> )

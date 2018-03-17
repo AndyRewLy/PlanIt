@@ -181,11 +181,11 @@ class MyOrganizations extends React.Component {
              open={this.state.isOrgInformationVisible}
              onRequestClose={this.changeOrgInfoVisible}>
                 <div>
-                    <h3>Organization Type</h3>
+                    <h5>Organization Type</h5>
                     <div>{orgCalloutCard.organizationType}</div>
                 </div>
                 <div>
-                    <h3>Organization Description</h3>
+                    <h5>Organization Description</h5>
                     <div>{orgCalloutCard.organizationDescription}</div>
                 </div>
             </Dialog>

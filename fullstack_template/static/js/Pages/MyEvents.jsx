@@ -119,6 +119,10 @@ class MyEvents extends React.Component {
         this.setState({maxParticipants: value});
     }
 
+    handleImageFileChange(event, value) {
+        this.setState({organizationImage: value});
+    }
+
     handleEventTagsChange(event, value) {
         this.setState({eventTags: value});
     }
@@ -262,6 +266,11 @@ class MyEvents extends React.Component {
         var cards = this.state.cards;
         var rowComponents = [];
         var calloutCard = this.getEventCardWithId();
+        var membersOnlyMsg = "For members only";
+
+        if (!calloutCard.eventMembersOnly) {
+            membersOnlyMsg = "Open to everyone"
+        }
 
         for (var i = 0; i < cards.length; i++) {
             rowComponents.push(
@@ -296,16 +305,25 @@ class MyEvents extends React.Component {
                      open={this.state.showEventInfo}
                      onRequestClose={this.handleClose}>
                      <div>
-                         <h3>Event Time</h3>
-                         <div>{calloutCard.eventStartTime} - {calloutCard.eventEndTime}</div>
+                         <h5>Description</h5>
+                         <div>{calloutCard.eventDescription}</div>
                      </div>
                      <div>
-                         <h3>Event location</h3>
+                         <h5>Location</h5>
                          <div>{calloutCard.eventLocation}</div>
                      </div>
                      <div>
-                         <h3>Event Description</h3> 
-                         <div>{calloutCard.eventDescription}</div>
+                         <h5>Date and Time</h5>
+                         <div>Start: {calloutCard.eventStartTime}</div>
+                         <div>End: {calloutCard.eventEndTime} </div>
+                     </div>
+                     <div>
+                         <h5>Maximum Participants</h5>
+                         <div>{calloutCard.maxParticipants}</div>
+                     </div>
+                     <div>
+                         <h5>Event Type</h5>
+                         <div>{membersOnlyMsg}</div>
                      </div>
                    </Dialog>}
             </div>
