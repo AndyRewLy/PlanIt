@@ -20,12 +20,12 @@ class MyEvents extends React.Component {
         this.state={
             callOutTitle: undefined, //organization name
             callOutIsVisible: false,
-            eventTitle: undefined,
-            eventDescription: undefined,
-            eventLocation: undefined,
-            eventStartTime: undefined,
-            eventEndTime: undefined,
-            eventTags:undefined, 
+            eventTitle: "",
+            eventDescription: "",
+            eventLocation: "",
+            eventStartTime: "03/19/18 12:00PM",
+            eventEndTime: "03/19/18 01:00PM",
+            eventTags:"", 
             eventMembersOnly: false,
             maxParticipants: 0,
             cards: [],
