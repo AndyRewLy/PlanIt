@@ -28,6 +28,7 @@ class MyOrganizations extends React.Component {
 
         this.state={
             isCreateCallOutVisible: false,
+            isOrgInformationVisible: false,
             organizationType: undefined,
             organizationName: undefined,
             organizationImage: undefined,
@@ -36,19 +37,23 @@ class MyOrganizations extends React.Component {
             adminOrgs: [],
             memberOrgs: [],
             orgCards: [],
+            visibleOrg: undefined,
         }
 
         this.handleOrgRoleChange = this.handleOrgRoleChange.bind(this);
 
         this.renderOrgForm = this.renderOrgForm.bind(this);
+        this.renderOrgDialog = this.renderOrgDialog.bind(this);
         this.showCreateOrgCallOut = this.showCreateOrgCallOut.bind(this);
         this.handleOrgTypeChange = this.handleOrgTypeChange.bind(this);
         this.handleOrgNameChange = this.handleOrgNameChange.bind(this);
         this.handleOrgDescriptionChange = this.handleOrgDescriptionChange.bind(this);
         this.handleImageFileChange = this.handleImageFileChange.bind(this);
         this.closeOrgDialog = this.closeOrgDialog.bind(this);
+        this.changeOrgInfoVisible = this.changeOrgInfoVisible.bind(this);
         this.submitOrganization = this.submitOrganization.bind(this);
 
+        this.getOrgCardWithId = this.getOrgCardWithId.bind(this);
         this.getUserAdminOrganizations = this.getUserAdminOrganizations.bind(this);
     }
 
@@ -111,6 +116,15 @@ class MyOrganizations extends React.Component {
         this.setState({isCreateCallOutVisible: false});
     }
 
+    changeOrgInfoVisible(orgId) {
+
+        console.log("Logging orgId of " + orgId);
+        this.setState({
+            isOrgInformationVisible: !this.state.isOrgInformationVisible,
+            calloutOrgId: orgId
+        });
+    }
+
     getCookie(name) {
         var value = "; " + document.cookie;
         var parts = value.split("; " + name + "=");
@@ -142,6 +156,40 @@ class MyOrganizations extends React.Component {
         }).catch(function (error) {//on status != 200
            alert(error.message);
         });
+    }
+
+    getOrgCardWithId() {
+
+        for (var cardIdx in this.state.orgCards) {
+            var card = this.state.orgCards[cardIdx];
+            if (card.organizationId === this.state.calloutOrgId) {
+                return card;
+            }
+        }
+
+        return {};
+    }
+
+    renderOrgDialog() {
+        const exit = <FlatButton label="Exit" primary={true} onClick={this.changeOrgInfoVisible}/>
+
+        var orgCalloutCard = this.getOrgCardWithId();
+
+        return (
+            <Dialog actions={[exit]}
+             title={orgCalloutCard.organizationName}
+             open={this.state.isOrgInformationVisible}
+             onRequestClose={this.changeOrgInfoVisible}>
+                <div>
+                    <h5>Organization Type</h5>
+                    <div>{orgCalloutCard.organizationType}</div>
+                </div>
+                <div>
+                    <h5>Organization Description</h5>
+                    <div>{orgCalloutCard.organizationDescription}</div>
+                </div>
+            </Dialog>
+        );
     }
 
     renderOrgForm() {
@@ -206,7 +254,7 @@ class MyOrganizations extends React.Component {
                   <MuiThemeProvider>
                      { this.renderOrgForm() }
                   </MuiThemeProvider>
-                  <OrgCardContainer cards={this.state.orgCards}/>
+                  <OrgCardContainer cards={this.state.orgCards} renderOrgInfo={this.changeOrgInfoVisible}/>
               </div>
               :
               <div>
@@ -222,10 +270,10 @@ class MyOrganizations extends React.Component {
                   <MuiThemeProvider>
                      { this.renderOrgForm() }
                   </MuiThemeProvider>
-                  <OrgCardContainer cards={this.state.orgCards}/>
+                  <OrgCardContainer cards={this.state.orgCards} renderOrgInfo={this.changeOrgInfoVisible}/>
               </div>
                }
-
+               {this.renderOrgDialog()}
             </div>
         );
       }

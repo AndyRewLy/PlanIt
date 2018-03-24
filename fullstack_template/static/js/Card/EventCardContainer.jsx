@@ -9,6 +9,7 @@ class EventCardContainer extends React.Component {
 
     render() {
         var card = undefined;
+        var filterText = this.props.filterText ? this.props.filterText : undefined;
 
         if (this.props.cards && this.props.cards.length > 0) {
             card = (this.props.cards)[0];
@@ -25,11 +26,11 @@ class EventCardContainer extends React.Component {
                                 eventId={card.eventId}                                
                                 eventTitle={card.eventTitle}
                                 eventImage={card.eventImage}
-                                eventStartTime={card.startTime}
-                                eventLocation={card.location}
+                                eventStartTime={card.eventStartTime}
+                                eventLocation={card.eventLocation}
                                 key={card.eventTitle}
                                 canRSVP={this.props.canRSVP}
-                              />)
+                              /> )
                        }
                    </div>
                 }
