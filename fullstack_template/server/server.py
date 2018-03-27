@@ -111,23 +111,30 @@ def get_all_orgs():
         db.session.rollback()
     return jsonify(message=serialized), 200 
 
-#adds the current user as a member of the specified organization
-@app.route('/orgs/join',methods=['POST'])
+#adds or removes the current user as a member of the specified organization
+#orgs?join=true&org_id=1
+#orgs?join=false&org_id=1
+@app.route('/orgs',methods=['POST'])
 @jwt_required()
 def join_organization():
-    request_data = request.get_json()
+    message = ""
+    join = request.args.get("join")
+    org_id = int(request.args.get("org_id"))
 
-    org = Organization.query.get(request_data["organizationId"])
-    # org = Organization.query.get(1)
-    org.members.append(current_identity)
-    
+    org = Organization.query.get(org_id)
+    if join == "true":
+        org.members.append(current_identity)
+        message = "successful organization joining"
+    else:
+        org.members.remove(current_identity)
+        message = "successful organization leaving"
+
     try:     
         db.session.add(org)
         db.session.commit()
     except:
         db.session.rollback()
-
-    return jsonify(message="successful organization joining")
+    return jsonify(message=message)
 
 #returns the orgs you are a member of or an admin of
 @app.route('/orgs/admin=<sel>',methods=['GET'])
@@ -149,12 +156,24 @@ def get_organizations(sel):
 @jwt_required()
 def create_event():
     request_data = request.get_json()
+
+    eventTags = ''.join(request_data["eventTags"].split()) + "#"
+    dateFormat = '%m/%d/%y %I:%M%p'
+    eventStart = datetime.strptime(request_data["eventStartTime"], dateFormat)
+    eventEnd = datetime.strptime(request_data["eventEndTime"], dateFormat)
+
+    print(eventStart)
+    print(eventEnd)
+
     data = Event(name=request_data["eventTitle"], 
                  description=request_data["eventDescription"],
                  location=request_data["eventLocation"],
+                 event_start=eventStart,
+                 event_end=eventEnd,
                  members_only=request_data["eventMembersOnly"],
-                 max_participants=request_data["maxParticipants"])
-    
+                 max_participants=request_data["maxParticipants"],
+                 tags=eventTags)
+
     org_name = request_data["callOutTitle"]
     data.organization = Organization.query.filter_by(name=org_name).first()
     data.creator = current_identity
@@ -175,6 +194,28 @@ def get_all_events():
         serialized = [Event.serialize(item) for item in events]
     except:
         db.session.rollback()
+    return jsonify(message=serialized), 200 
+
+#returns all the events that you have not rsvp to that has the <tag> in the event title or tags list
+#path ex: /events?filter=<tag>
+@app.route('/events',methods=['GET'])
+@jwt_required()
+def get_events_filtered():
+    serialized = ""
+    tag = request.args.get("filter")
+
+    #default when there is no filter, returns all the events you have not rsvp to 
+    if tag == "":
+        return get_events_rsvp("false")
+
+    try: 
+        subquery = EventRSVP.query.with_entities(EventRSVP.event_id).filter_by(user_id=current_identity.id)
+        events = db.session.query(Event).filter(~Event.id.in_(subquery)) \
+                                        .filter((Event.tags.like("%#" + tag + "#%")) | (Event.name.like("%" + tag + "%"))).all()
+        serialized = [Event.serialize(item) for item in events]
+    except:
+        db.session.rollback()
+
     return jsonify(message=serialized), 200 
 
 #returns the events you are a member of or an admin of
@@ -222,7 +263,7 @@ def set_RSVP():
 @jwt_required()
 def get_events_rsvp(sel):
     serialized = ""
-    if sel == 'true':
+    if sel == 'false':
         subquery = EventRSVP.query.with_entities(EventRSVP.event_id).filter_by(user_id=current_identity.id)
         events = db.session.query(Event).filter(~Event.id.in_(subquery)).all()
         

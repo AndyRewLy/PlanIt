@@ -20,9 +20,12 @@ class MyEvents extends React.Component {
         this.state={
             callOutTitle: undefined, //organization name
             callOutIsVisible: false,
-            eventTitle: undefined,
-            eventDescription: undefined,
-            eventLocation: undefined,
+            eventTitle: "",
+            eventDescription: "",
+            eventLocation: "",
+            eventStartTime: "03/19/18 12:00PM",
+            eventEndTime: "03/19/18 01:00PM",
+            eventTags:"", 
             eventMembersOnly: false,
             maxParticipants: 0,
             cards: [],
@@ -38,8 +41,11 @@ class MyEvents extends React.Component {
         this.handleEventTitleChange = this.handleEventTitleChange.bind(this);
         this.handleEventDescriptionChange = this.handleEventDescriptionChange.bind(this);
         this.handleEventLocationChange = this.handleEventLocationChange.bind(this);
+        this.handleEventStartTimeChange = this.handleEventStartTimeChange.bind(this);
+        this.handleEventEndTimeChange = this.handleEventEndTimeChange.bind(this);
         this.handleMembersOnlyCheck = this.handleMembersOnlyCheck.bind(this);
         this.handleMaxParticipantsChange = this.handleMaxParticipantsChange.bind(this);
+        this.handleEventTagsChange = this.handleEventTagsChange.bind(this);
 
         this.submitEvent = this.submitEvent.bind(this);
         this.closeEventDialog = this.closeEventDialog.bind(this);
@@ -113,6 +119,22 @@ class MyEvents extends React.Component {
         this.setState({maxParticipants: value});
     }
 
+    handleImageFileChange(event, value) {
+        this.setState({organizationImage: value});
+    }
+
+    handleEventTagsChange(event, value) {
+        this.setState({eventTags: value});
+    }
+
+    handleEventStartTimeChange(event, value) {
+        this.setState({eventStartTime: value});
+    }
+
+    handleEventEndTimeChange(event, value) {
+        this.setState({eventEndTime: value});
+    }
+
     showCreateEventCallout(title) {
         var that = this;
 
@@ -175,6 +197,14 @@ class MyEvents extends React.Component {
                             <TextField hintText="Type event location here" onChange={this.handleEventLocationChange}/>
                         </div>
                         <div>
+                            <div>Event Start Time</div>
+                            <TextField hintText="03/14/18 4:00PM" onChange={this.handleEventStartTimeChange}/>
+                        </div>
+                        <div>
+                            <div>Event End Time</div>
+                            <TextField hintText="03/14/18 6:00PM" onChange={this.handleEventEndTimeChange}/>
+                        </div>
+                        <div>
                             <Checkbox label="Members Only" checked={this.state.eventMembersOnly} onCheck={this.handleMembersOnlyCheck}/>
                         </div>
                         <div>
@@ -183,7 +213,7 @@ class MyEvents extends React.Component {
                         </div>
                         <div>
                             <div>Tags</div>
-                            <TextField disabled={true}/>
+                            <TextField hintText="#CS #TechTalk #WISH" onChange={this.handleEventTagsChange}/>
                         </div>
                         <div>
                             <div>Event Items</div>
@@ -236,6 +266,11 @@ class MyEvents extends React.Component {
         var cards = this.state.cards;
         var rowComponents = [];
         var calloutCard = this.getEventCardWithId();
+        var membersOnlyMsg = "For members only";
+
+        if (!calloutCard.eventMembersOnly) {
+            membersOnlyMsg = "Open to everyone"
+        }
 
         for (var i = 0; i < cards.length; i++) {
             rowComponents.push(
@@ -270,16 +305,25 @@ class MyEvents extends React.Component {
                      open={this.state.showEventInfo}
                      onRequestClose={this.handleClose}>
                      <div>
-                         <h3>Event Time</h3>
-                         <div>{calloutCard.startTime} - {calloutCard.endTime}</div>
+                         <h5>Description</h5>
+                         <div>{calloutCard.eventDescription}</div>
                      </div>
                      <div>
-                         <h3>Event location</h3>
+                         <h5>Location</h5>
                          <div>{calloutCard.eventLocation}</div>
                      </div>
                      <div>
-                         <h3>Event Description</h3> 
-                         <div>{calloutCard.eventDescription}</div>
+                         <h5>Date and Time</h5>
+                         <div>Start: {calloutCard.eventStartTime}</div>
+                         <div>End: {calloutCard.eventEndTime} </div>
+                     </div>
+                     <div>
+                         <h5>Maximum Participants</h5>
+                         <div>{calloutCard.maxParticipants}</div>
+                     </div>
+                     <div>
+                         <h5>Event Type</h5>
+                         <div>{membersOnlyMsg}</div>
                      </div>
                    </Dialog>}
             </div>
