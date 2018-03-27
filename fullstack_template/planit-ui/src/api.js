@@ -58,23 +58,6 @@ export function del(endpoint) {
         ...reqConf
     })
 }
-// fetch('/login', {
-//     method: 'POST',
-//     dataType: 'json',
-//     headers: { 'Content-Type': 'application/json' },
-//     body: JSON.stringify({username: self.state.username, password: self.state.password})
-// }).then(function (response) {
-//     if (response.status != 200) {
-//         self.toggleErrorMessage();
-//     }
-//     return response.json();
-// }).then(function (data) {
-//     const json = data;
-//     //storing JWT to a cookie
-//     document.cookie = "access_token= JWT " + json["access_token"]
-//     app.handleLogin(self.state.username)
-// }).catch(function (error) {
-// });
 
 export function signIn(cred) {
     console.log("API signin with " + cred);
@@ -93,6 +76,21 @@ export function signIn(cred) {
      })
 }
 
+export function register(userInfo) {
+    console.log("API register with " + userInfo);
+
+    return post("register", userInfo)
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+        return 200;
+     });
+}
 export function serverConnectError() {
     return Promise.reject(["Server Connect Error"]);
 }

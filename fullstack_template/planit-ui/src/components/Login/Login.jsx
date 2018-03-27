@@ -1,7 +1,9 @@
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
+import Dialog from 'material-ui/Dialog';
 
 import React, { Component } from 'react';
 
@@ -26,7 +28,9 @@ class Login extends Component {
             password: this.state.password
         }, () => {
             this.props.history.push("/");
-        });
+		}, () => {
+			this.toggleErrorMessage();
+		});
     }
 
 	toggleErrorMessage() {
@@ -36,9 +40,12 @@ class Login extends Component {
 	render() {
 		return (
 			<div className="center">
-				<MuiThemeProvider>
-					<div>
-					<h1 className="planit-title">Welcome to PlanIt!</h1>
+				<Dialog
+				 open={true}
+				 className="dialog-style"
+				 contentStyle={{width: "25%", maxWidth: "none"}}>
+					<div className="center">
+					<h1 className="planit-title">Log in to PlanIt!</h1>
 					<TextField hintText="Enter your Email" floatingLabelText="Email" onChange={(event, newValue) => 
 						this.setState({username: newValue})}/>
 					<br/>
@@ -47,8 +54,10 @@ class Login extends Component {
 					<br/>
 					{this.state.errorMessageVisible && <p>Invalid Email or Password</p>}
 					<RaisedButton label="Submit" primary={true} style={style} onClick={() => this.logIn()}/>
+					<br/>
+					<FlatButton label="Not Registered? Click Here" primary={true} onClick={() => this.props.history.push("/register")}/>
 					</div>
-				</MuiThemeProvider>
+				</Dialog>
 			</div>
 		);
     }
