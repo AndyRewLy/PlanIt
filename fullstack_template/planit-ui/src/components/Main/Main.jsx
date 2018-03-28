@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { Login, Register } from '../index';
+import { Login, Register, MyOrgs } from '../index';
 import { Route, Switch, Redirect, Link } from 'react-router-dom';
 
 import Drawer from 'material-ui/Drawer';
@@ -34,7 +34,7 @@ class Main extends Component {
 
         return (
             <div>
-                <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>    
+                <MuiThemeProvider> {/*muiTheme={getMuiTheme(darkBaseTheme)}>*/}    
                     {this.signedIn() ? 
                         <div>
                             <AppBar className="PlanIt" 
@@ -52,6 +52,8 @@ class Main extends Component {
                                 <MenuItem value="myOrgs" primaryText="My Organizations" 
                                  rightIcon={<Group/>}
                                  onClick={() => {
+                                    this.props.getAllAdminOrgs();
+                                    this.props.getAllMemberOrgs();
                                     this.props.history.push("/orgs");
                                     this.handleToggle();
                                  }}>
@@ -91,6 +93,8 @@ class Main extends Component {
                          render={() => <Register {...this.props} />}/>
                         <Route path='/home'
                          render={() => <div>Home</div>}/>
+                        <Route path='/orgs'
+                         render={() => <MyOrgs {...this.props}/>}/>
                 </Switch>
                 </MuiThemeProvider>
             </div>

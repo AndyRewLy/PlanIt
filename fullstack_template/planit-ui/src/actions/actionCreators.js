@@ -34,3 +34,37 @@ export function register(userInfo, cb, errCb) {
          .catch((error) => {if (errCb) errCb();})
     }
 }
+
+export function getAllAdminOrgs(cb, errCb) {
+    console.log("Get all Admin Orgs Action Creator");
+
+    return (dispatch, prevState) => {
+        api.getAllAdminOrgs()
+         .then(adminOrgs => dispatch({adminOrgs: adminOrgs, type: "GET_ADMIN_ORGS"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function getAllMemberOrgs(cb, errCb) {
+    console.log("Get all Member Orgs Action Creator");
+
+    return (dispatch, prevState) => {
+        api.getAllMemberOrgs()
+         .then(memberOrgs => dispatch({memberOrgs: memberOrgs, type: "GET_MEMBER_ORGS"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function createNewOrg(org, cb, errCb) {
+    console.log("Post new Member Orgs Action Creator");
+
+    return (dispatch, prevState) => {
+        api.postOrg(org)
+         .then(() => dispatch({org: org, type: "ADD_ADMIN_ORG"}))
+         .then(() => { if (cb) cb(); })
+         .catch((error) => {if (errCb) errCb();})
+    }
+
+}

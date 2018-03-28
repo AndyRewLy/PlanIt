@@ -4,7 +4,7 @@ var cookie;
 
 headers.set('Content-Type', 'application/json');
 
-const reqConf = {
+var reqConf = {
     headers: headers,
     credentials: 'include',
 };
@@ -71,7 +71,14 @@ export function signIn(cred) {
         return createErrorPromise(response);
      })
      .then(json => {
-         cookie = json["access_token"];
+         console.log(json);
+         cookie = "JWT " + json["access_token"];
+         console.log(cookie);
+         headers.set("Authorization", cookie);
+         reqConf = {
+             headers: headers,
+             credentials: "include"
+         }
          return {username: cred.username};
      })
 }
@@ -97,6 +104,55 @@ export function register(userInfo) {
         return 200;
      });
 }
+
+export function getAllAdminOrgs() {
+    headers.set("Authorization", cookie);
+
+    return get("orgs/admin=true")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+        return json["message"];
+     });
+}
+
+export function getAllMemberOrgs() {
+    headers.set("Authorization", cookie);
+
+    return get("orgs/admin=false")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+        return json["message"];
+     });
+}
+
+export function postOrg(org) {
+    headers.set("Authorization", cookie);
+
+    return post("orgs/create", org)
+     .then((response) => {
+         if (response.ok) {
+            return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+        return json;
+     });
+}
+
 export function serverConnectError() {
     return Promise.reject(["Server Connect Error"]);
 }

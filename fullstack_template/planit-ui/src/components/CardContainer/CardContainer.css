@@ -1,0 +1,16 @@
+.CardContainer {
+	padding: 10px;
+}
+
+.CardContainer > .card-subcontainer {
+	background: #ececec;
+	padding: 10px;
+	border-radius: 5px;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  flex: 0 0 100%;
+  overflow: auto;
+  word-wrap: break-word;
+  height: 240px;
+}

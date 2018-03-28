@@ -13,7 +13,9 @@ import Main from './Main/Main';
 function mapStateToProps(state) {
    console.log("State is " + JSON.stringify(state));
    return {
-       User: state.User
+       User: state.User,
+       AdminOrgs: state.AdminOrgs,
+       MemberOrgs: state.MemberOrgs
    };
 }
 
