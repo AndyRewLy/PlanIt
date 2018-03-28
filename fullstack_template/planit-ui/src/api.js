@@ -76,6 +76,12 @@ export function signIn(cred) {
      })
 }
 
+export function signOut() {
+    cookie = "access_token=undefined";
+    
+    return 200;
+}
+
 export function register(userInfo) {
     console.log("API register with " + userInfo);
 

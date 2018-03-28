@@ -1,9 +1,29 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { Login, Register } from '../index';
 import { Route, Switch, Redirect, Link } from 'react-router-dom';
 
+import Drawer from 'material-ui/Drawer';
+import MenuItem from 'material-ui/MenuItem';
+import AppBar from 'material-ui/AppBar';
+import {Home, Group, Event, ExitToApp} from 'material-ui-icons';
+
+
 class Main extends Component {
+    constructor(props) {
+        super(props);
+        this.state={
+            open: false
+        }
+
+        this.handleToggle = this.handleToggle.bind(this);
+    }
+    
+    handleToggle() {
+        this.setState({open: !this.state.open});
+    }
 
     signedIn() {
         return Object.keys(this.props.User).length !== 0;
@@ -14,11 +34,52 @@ class Main extends Component {
 
         return (
             <div>
-                <MuiThemeProvider>    
+                <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>    
+                    {this.signedIn() ? 
+                        <div>
+                            <AppBar className="PlanIt" 
+                             title="PlanIt" 
+                             iconClassNameRight="muidocs-icon-navigation-expand-more" 
+                             onLeftIconButtonClick={this.handleToggle}/>
+                            <Drawer docked={false} width={200} open={this.state.open} onRequestChange={(open) => this.setState({open})}>
+                                <MenuItem value="home" primaryText="Home" 
+                                 rightIcon={<Home/>}
+                                 onClick={() => {
+                                    this.props.history.push("/home");
+                                    this.handleToggle();
+                                 }}>
+                                </MenuItem>
+                                <MenuItem value="myOrgs" primaryText="My Organizations" 
+                                 rightIcon={<Group/>}
+                                 onClick={() => {
+                                    this.props.history.push("/orgs");
+                                    this.handleToggle();
+                                 }}>
+                                </MenuItem>
+                                <MenuItem value="myEvents" primaryText="My Events" 
+                                 rightIcon={<Event/>}
+                                 onClick={() => {
+                                    this.props.history.push("/events");
+                                    this.handleToggle();
+                                 }}>
+                                </MenuItem>
+                                <MenuItem value="logOut" primaryText="Logout" 
+                                 rightIcon={<ExitToApp/>}
+                                 onClick={() => {
+                                     var that = this;
+                                     this.props.signOut(() => that.props.history.push("/login"));
+                                     this.handleToggle();
+                                 }}>
+                                </MenuItem>
+                            </Drawer>
+                        </div>
+                    :
+                    ''
+                    }
                     <Switch>
                         <Route exact path='/' render={() => {
                             if (this.signedIn()) {
-                                return (<Redirect to='/about'/>);
+                                return (<Redirect to='/home'/>);
                             }
                             else {
                                 return (<Redirect to='/login'/>);
@@ -28,8 +89,8 @@ class Main extends Component {
                          render={() => <Login {...this.props} />}/>
                         <Route path='/register'
                          render={() => <Register {...this.props} />}/>
-                        <Route path='/about'
-                         render={() => <div>about</div>}/>
+                        <Route path='/home'
+                         render={() => <div>Home</div>}/>
                 </Switch>
                 </MuiThemeProvider>
             </div>

@@ -15,6 +15,16 @@ export function signIn(credentials, cb, errCb) {
     };
 }
 
+export function signOut(cb) {
+    console.log("Sign Out Action Creator");
+
+    return (dispatch, prevState) => {
+        api.signOut();
+        dispatch({type: "SIGN_OUT"});
+        if (cb) cb();
+         
+    };
+}
 export function register(userInfo, cb, errCb) {
     console.log("Register Action Creator");
 
