@@ -22,6 +22,7 @@ class MyEvents extends React.Component {
         this.toggleCreateEvent = this.toggleCreateEvent.bind(this);
         this.toggleEventInfo = this.toggleEventInfo.bind(this);
         this.getEventCardWithId = this.getEventCardWithId.bind(this);
+        this.createRowComponents = this.createRowComponents.bind(this);
     }
 
     toggleCreateEvent(title) {
@@ -59,12 +60,10 @@ class MyEvents extends React.Component {
         return {};
     }
 
-    render() {
-        var rowComponents = [];
+    createRowComponents() {
+        var rowComponents = [];        
         var cards = this.props.Events;
 
-        console.log(this.props.Events);
-        console.log(this.props);
         for (var i = 0; i < cards.length; i++) {
             rowComponents.push(
                 <div key={cards[i].title}>
@@ -83,6 +82,12 @@ class MyEvents extends React.Component {
                 <p> You currently have no Events for your Organizations</p>
             );
         }
+
+        return rowComponents;
+    }
+    
+    render() {
+        var rowComponents = this.createRowComponents();
 
         return (
             <div style={style}>
