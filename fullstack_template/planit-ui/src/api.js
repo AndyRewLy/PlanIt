@@ -153,6 +153,38 @@ export function postOrg(org) {
      });
 }
 
+export function getEvents() {
+    headers.set("Authorization", cookie);
+
+    return get("events/admin=true")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         return json["message"];
+     })
+}
+
+export function postEvent(eventInfo) {
+    headers.set("Authorization", cookie);
+
+    return post("events/create", eventInfo)
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         return json["message"];
+     })
+}
+
 export function serverConnectError() {
     return Promise.reject(["Server Connect Error"]);
 }

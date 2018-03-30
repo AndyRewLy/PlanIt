@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { Login, Register, MyOrgs } from '../index';
+import { Login, Register, MyOrgs, MyEvents } from '../index';
 import { Route, Switch, Redirect, Link } from 'react-router-dom';
 
 import Drawer from 'material-ui/Drawer';
@@ -61,8 +61,9 @@ class Main extends Component {
                                 <MenuItem value="myEvents" primaryText="My Events" 
                                  rightIcon={<Event/>}
                                  onClick={() => {
+                                    this.props.getAllEvents();
                                     this.props.history.push("/events");
-                                    this.handleToggle();
+                                    this.handleToggle();                                
                                  }}>
                                 </MenuItem>
                                 <MenuItem value="logOut" primaryText="Logout" 
@@ -95,6 +96,8 @@ class Main extends Component {
                          render={() => <div>Home</div>}/>
                         <Route path='/orgs'
                          render={() => <MyOrgs {...this.props}/>}/>
+                        <Route path='/events'
+                         render={() => <MyEvents {...this.props}/>}/> 
                 </Switch>
                 </MuiThemeProvider>
             </div>

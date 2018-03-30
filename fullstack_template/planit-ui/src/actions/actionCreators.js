@@ -68,3 +68,26 @@ export function createNewOrg(org, cb, errCb) {
     }
 
 }
+
+export function getAllEvents(cb, errCb) {
+    console.log("Get all events Action Creator");
+
+    return (dispatch, prevState) => {
+        api.getEvents()
+         .then((events) => dispatch({events: events, type: "GET_ALL_EVENTS"}))
+         .then(() => { if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function postEvent(eventInfo, cb, errCb) {
+    console.log("Creating event action creator");
+
+    return (dispatch, prevState) => {
+        api.postEvent(eventInfo)
+         .then(() => api.getEvents())
+         .then((events) => dispatch({events: events, type: "GET_ALL_EVENTS"}))
+         .then(() => { if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
