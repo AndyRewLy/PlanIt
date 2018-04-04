@@ -31,8 +31,9 @@ class Login extends Component {
         }, () => {
 			this.props.getAllOrgs(() => 
 			   that.props.getAllMemberOrgs(() => 
-			      that.props.history.push("/")
-			));
+				  that.props.getAllFilteredEvents("",() =>
+					that.props.history.push("/")
+			)));
 		}, () => {
 			this.toggleErrorMessage();
 		});

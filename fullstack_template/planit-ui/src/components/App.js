@@ -17,7 +17,8 @@ function mapStateToProps(state) {
        AdminOrgs: state.AdminOrgs,
        MemberOrgs: state.MemberOrgs,
        AllOrgs: state.AllOrgs,
-       Events: state.Events
+       AdminEvents: state.AdminEvents,
+       AllEvents: state.AllEvents
    };
 }
 

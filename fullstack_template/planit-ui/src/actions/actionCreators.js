@@ -80,12 +80,23 @@ export function createNewOrg(org, cb, errCb) {
 
 }
 
-export function getAllEvents(cb, errCb) {
+export function getAllFilteredEvents(filter, cb, errCb) {
+    console.log("Get all events with the filter Action Creator");
+
+    return (dispatch, prevState) => {
+        api.getAllFilteredEvents(filter)
+         .then((events) => dispatch({events: events, type: "GET_FILTERED_EVENTS"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function getAllAdminEvents(cb, errCb) {
     console.log("Get all events Action Creator");
 
     return (dispatch, prevState) => {
-        api.getEvents()
-         .then((events) => dispatch({events: events, type: "GET_ALL_EVENTS"}))
+        api.getAdminEvents()
+         .then((events) => dispatch({events: events, type: "GET_ADMIN_EVENTS"}))
          .then(() => { if (cb) cb();})
          .catch((error) => {if (errCb) errCb();})
     }
@@ -96,8 +107,8 @@ export function postEvent(eventInfo, cb, errCb) {
 
     return (dispatch, prevState) => {
         api.postEvent(eventInfo)
-         .then(() => api.getEvents())
-         .then((events) => dispatch({events: events, type: "GET_ALL_EVENTS"}))
+         .then(() => api.getAdminEvents())
+         .then((events) => dispatch({events: events, type: "GET_ADMIN_EVENTS"}))
          .then(() => { if (cb) cb();})
          .catch((error) => {if (errCb) errCb();})
     }
@@ -106,10 +117,11 @@ export function postEvent(eventInfo, cb, errCb) {
 export function postEventResponse(status, eventId, cb, errCb) {
     console.log("Posting Event Response Action Creator");
 
+    console.log({status, eventId});
     return (dispatch, prevState) => {
         api.postEventResponse({status, eventId})
-         .then(() => api.getEvents())
-         .then((events) => dispatch({events: events, type: "GET_ALL_EVENTS"}))
+         .then(() => api.getAllFilteredEvents(""))
+         .then((events) => dispatch({events: events, type: "GET_FILTERED_EVENTS"}))
          .then(() => { if (cb) cb();})
          .catch((error) => {if (errCb) errCb();})
     }

@@ -62,7 +62,7 @@ class Main extends Component {
                                 <MenuItem value="myEvents" primaryText="My Events" 
                                  rightIcon={<Event/>}
                                  onClick={() => {
-                                    this.props.getAllEvents();
+                                    this.props.getAllAdminEvents();
                                     this.props.history.push("/events");
                                     this.handleToggle();                                
                                  }}>

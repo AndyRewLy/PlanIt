@@ -4,8 +4,9 @@ import User from './User';
 import AllOrgs from './AllOrgs';
 import AdminOrgs from './AdminOrgs';
 import MemberOrgs from './MemberOrgs';
-import Events from './Events';
+import AdminEvents from './AdminEvents';
+import AllEvents from './AllEvents';
 
-const rootReducer = combineReducers({User, AllOrgs, AdminOrgs, MemberOrgs, Events});
+const rootReducer = combineReducers({User, AllOrgs, AdminOrgs, MemberOrgs, AdminEvents, AllEvents});
 
 export default rootReducer;

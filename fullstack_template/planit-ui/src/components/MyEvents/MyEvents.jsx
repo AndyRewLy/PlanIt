@@ -45,7 +45,7 @@ class MyEvents extends React.Component {
     }
 
     getEventCardWithId() {
-        var cards = this.props.Events
+        var cards = this.props.AdminEvents
         for (var orgIdx in cards) {
             var org = cards[orgIdx];
             var events = org["events"];
@@ -62,7 +62,7 @@ class MyEvents extends React.Component {
 
     createRowComponents() {
         var rowComponents = [];        
-        var cards = this.props.Events;
+        var cards = this.props.AdminEvents;
 
         for (var i = 0; i < cards.length; i++) {
             rowComponents.push(

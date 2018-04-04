@@ -181,7 +181,25 @@ export function postOrgJoinStatus(response, orgId) {
      .then(json => json);
 }
 
-export function getEvents() {
+export function getAllFilteredEvents(filter) {
+    headers.set("Authorization", cookie);
+
+    console.log("Getting all filtered events");
+
+    return get("events?filter=" + filter)
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         return json["message"];
+     })
+}
+
+export function getAdminEvents() {
     headers.set("Authorization", cookie);
 
     return get("events/admin=true")
