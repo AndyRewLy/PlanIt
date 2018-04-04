@@ -35,6 +35,17 @@ export function register(userInfo, cb, errCb) {
     }
 }
 
+export function getAllOrgs(cb, errCb) {
+    console.log("Get all Orgs Action Creator");
+
+    return (dispatch, prevState) => {
+        api.getAllOrgs()
+         .then(orgs => dispatch({orgs, type: "GET_ALL_ORGS"}))
+         .then(() => { if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
+
 export function getAllAdminOrgs(cb, errCb) {
     console.log("Get all Admin Orgs Action Creator");
 
@@ -89,5 +100,32 @@ export function postEvent(eventInfo, cb, errCb) {
          .then((events) => dispatch({events: events, type: "GET_ALL_EVENTS"}))
          .then(() => { if (cb) cb();})
          .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function postEventResponse(status, eventId, cb, errCb) {
+    console.log("Posting Event Response Action Creator");
+
+    return (dispatch, prevState) => {
+        api.postEventResponse({status, eventId})
+         .then(() => api.getEvents())
+         .then((events) => dispatch({events: events, type: "GET_ALL_EVENTS"}))
+         .then(() => { if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function postOrgJoinStatus(response, orgId, cb, errCb) {
+
+    return (dispatch, prevState) => {
+        api.postOrgJoinStatus(response, orgId)
+         .then(() => { if (cb) cb();})
+         .then(() => api.getAllOrgs())
+         .then(orgs => dispatch({orgs, type: "GET_ALL_ORGS"}))
+         .then(() => api.getAllAdminOrgs())
+         .then(adminOrgs => dispatch({adminOrgs: adminOrgs, type: "GET_ADMIN_ORGS"}))
+         .then(() => api.getAllMemberOrgs())
+         .then(memberOrgs => dispatch({memberOrgs: memberOrgs, type: "GET_MEMBER_ORGS"}))
+         .catch((error) => { if (errCb) errCb();})
     }
 }

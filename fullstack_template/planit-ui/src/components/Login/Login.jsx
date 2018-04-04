@@ -22,12 +22,17 @@ class Login extends Component {
 	}
 
     logIn() {
+		var that = this;
         console.log("Component log in with " + this.state);
-        this.props.signIn({
+		
+		this.props.signIn({
             username: this.state.username,
             password: this.state.password
         }, () => {
-            this.props.history.push("/");
+			this.props.getAllOrgs(() => 
+			   that.props.getAllMemberOrgs(() => 
+			      that.props.history.push("/")
+			));
 		}, () => {
 			this.toggleErrorMessage();
 		});

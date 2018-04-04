@@ -105,6 +105,22 @@ export function register(userInfo) {
      });
 }
 
+export function getAllOrgs() {
+    headers.set("Authorization", cookie);
+
+    return get("orgs/all")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         return json["message"];
+     })
+}
+
 export function getAllAdminOrgs() {
     headers.set("Authorization", cookie);
 
@@ -153,6 +169,18 @@ export function postOrg(org) {
      });
 }
 
+export function postOrgJoinStatus(response, orgId) {
+    return post("orgs?join=" + response + "&org_id=" + orgId)
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => json);
+}
+
 export function getEvents() {
     headers.set("Authorization", cookie);
 
@@ -185,6 +213,21 @@ export function postEvent(eventInfo) {
      })
 }
 
+export function postEventResponse(body) {
+    headers.set("Authorization", cookie);
+
+    return post("events/rsvp", body)
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+        return json["message"];
+     });
+}
 export function serverConnectError() {
     return Promise.reject(["Server Connect Error"]);
 }

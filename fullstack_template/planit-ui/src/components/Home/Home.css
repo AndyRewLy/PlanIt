@@ -1,0 +1,8 @@
+.search-row {
+    clear: both;
+    overflow: hidden;
+}
+
+.row-item {
+    float: left;
+}
