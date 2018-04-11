@@ -53,6 +53,7 @@ class Register extends React.Component {
            <TextField
              hintText="Enter your First Name"
              floatingLabelText="First Name"
+             errorStyle={errorStyle}
              errorText={this.state.firstNameError}
              onChange = {(event,newValue) => {
                if (newValue) {
@@ -67,6 +68,7 @@ class Register extends React.Component {
            <TextField
              hintText="Enter your Last Name"
              floatingLabelText="Last Name"
+             errorStyle={errorStyle}
              errorText={this.state.lastNameError}
              onChange = {(event,newValue) => {
               if (newValue) {
@@ -81,6 +83,7 @@ class Register extends React.Component {
            <TextField
              hintText="Enter your Email"
              type="email"
+             errorStyle={errorStyle}
              errorText={this.state.emailError}
              floatingLabelText="Email"
              onChange = {(event,newValue) => {
@@ -97,6 +100,7 @@ class Register extends React.Component {
              type = "password"
              hintText="Enter your Password"
              floatingLabelText="Password"
+             errorStyle={errorStyle}
              errorText={this.state.passwordError}
              onChange = {(event,newValue) => {
               if (newValue.length >= 6) {
@@ -122,5 +126,9 @@ class Register extends React.Component {
 const style = {
     margin: 15,
 };
+
+const errorStyle = {
+    textAlign: 'left'
+}
 
 export default Register;
