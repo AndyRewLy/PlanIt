@@ -21,11 +21,14 @@ class Register extends React.Component {
       firstNameError: '',
       lastNameError: '',
       emailError:'',
-      passwordError:''
+      passwordError:'',
+      validationError: false
     }
     
     this.toggleErrorMessage = this.toggleErrorMessage.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.validateInput = this.validateInput.bind(this);
+    this.toggleValidationError = this.toggleValidationError.bind(this);
 	}
 
   handleClick() {
@@ -37,8 +40,23 @@ class Register extends React.Component {
       () => this.toggleErrorMessage()); 
   }
 
+  validateInput() {
+    var state = this.state;
+
+    if (state.firstNameError || state.lastNameError || state.emailError || state.passwordError) {
+      this.toggleValidationError();
+    }
+    else {
+      this.handleClick();
+    }
+  }
+
   toggleErrorMessage() {
     this.setState({errorMessageVisible: !this.state.errorMessageVisible});
+  }
+
+  toggleValidationError() {
+    this.setState({validationError: !this.state.validationError});
   }
 
 	render() {
@@ -113,7 +131,8 @@ class Register extends React.Component {
              />
            <br/>
            {this.state.errorMessageVisible ? <p>Email already in use</p> : ''}
-           <RaisedButton label="Register" primary={true} style={style} onClick={(event) => this.handleClick()}/>
+           {this.state.validationError ? <p>Please fix your form errors</p>: ''}
+           <RaisedButton label="Register" primary={true} style={style} onClick={(event) => this.validateInput()}/>
            <br/>
 					<FlatButton label="Already Registered? Click Here" primary={true} onClick={() => this.props.history.push("/login")}/>           
           </div>
