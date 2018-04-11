@@ -2,12 +2,16 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 from flask_sqlalchemy import SQLAlchemy
 from application.models import User, OrganizationType, Organization, Event, EventRSVP
 from flask_jwt import JWT, jwt_required, current_identity
+from flask_cors import CORS, cross_origin
+
 from application.db_connector import db
 from util.hash_password import hash_password, check_password
 from datetime import datetime, timedelta
 import os
 
 app = Flask(__name__, static_folder="../static/dist", template_folder="../static")
+cors = CORS(app, resources={r"/*": {"origins": "http://localhost:3000", "supports_credentials": True}})
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 #flask_jwt setup
 app.config['JWT_AUTH_URL_RULE'] = "/login"
@@ -17,6 +21,7 @@ app.config['JWT_EXPIRATION_DELTA'] = timedelta(hours=2)
 
 current_orgs = [{"organizationName": "test", "organizationType": "service"},
                 {"organizationName": "test2", "organizationType": "Melinda"}]
+    
 @app.route("/")
 def home():
    return render_template("index.html")
@@ -271,4 +276,4 @@ def get_events_rsvp(sel):
 
 if __name__ == "__main__":
    app.secret_key = os.urandom(12)
-   app.run(port=5000)
+   app.run(port=5000, threaded=True)

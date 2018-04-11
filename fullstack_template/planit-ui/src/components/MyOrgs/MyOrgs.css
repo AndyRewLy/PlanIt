@@ -1,0 +1,19 @@
+.rowComponent{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.sub-row {
+    display: inline;
+    clear: both;
+    overflow: hidden;
+}
+
+.float-left {
+    float: left;
+}
+
+.admin-selector {
+    justify-content: flex-end;
+}

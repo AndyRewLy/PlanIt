@@ -5,3 +5,4 @@ PyMySQL==0.8.0
 pep8==1.7.1
 Flask-JWT==0.3.2
 Flask-SocketIO==2.9.3
+Flask-Cors==3.0.3
