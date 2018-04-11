@@ -1,3 +1,9 @@
+/* actionCreators.js
+ *
+ * An intermediate file between the components and the api calls.
+ * The functions in this file call functions in api.js.
+ * The functions 'dispatch' events based on a given type.
+ */
 import * as api from '../api';
 
 export function signIn(credentials, cb, errCb) {
