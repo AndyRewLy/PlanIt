@@ -103,7 +103,7 @@ def create_organization():
 
 @app.route('/orgs/all',methods=['GET'])
 def get_all_orgs():
-    serialized = ""
+    serialized = []
     try: 
         orgs = Organization.query.all()
         serialized = [Organization.serialize(item) for item in orgs]
@@ -140,7 +140,7 @@ def join_organization():
 @app.route('/orgs/admin=<sel>',methods=['GET'])
 @jwt_required()
 def get_organizations(sel):
-    serialized = ""
+    serialized = []
 
     if sel == 'true':
         #get all organizations you are an admin of
@@ -188,7 +188,7 @@ def create_event():
 
 @app.route('/events/all',methods=['GET'])
 def get_all_events():
-    serialized = ""
+    serialized = []
     try: 
         events = Event.query.all()
         serialized = [Event.serialize(item) for item in events]
@@ -201,7 +201,7 @@ def get_all_events():
 @app.route('/events',methods=['GET'])
 @jwt_required()
 def get_events_filtered():
-    serialized = ""
+    serialized = []
     tag = request.args.get("filter")
 
     #default when there is no filter, returns all the events you have not rsvp to 
@@ -222,7 +222,7 @@ def get_events_filtered():
 @app.route('/events/admin=<sel>',methods=['GET'])
 @jwt_required()
 def get_events(sel):
-    serialized = ""
+    serialized = []
 
     if sel == 'true':
         #gets all the events for the orgs you are an admin of
@@ -258,18 +258,23 @@ def set_RSVP():
 
     return jsonify(message="set rsvp successful")
 
-#returns all the events that the current user has not RSVP to
 @app.route('/events/rsvp=<sel>',methods=['GET'])
 @jwt_required()
 def get_events_rsvp(sel):
-    serialized = ""
+    serialized = []
     if sel == 'false':
+        #returns all the events that the current user has not RSVP to 
         subquery = EventRSVP.query.with_entities(EventRSVP.event_id).filter_by(user_id=current_identity.id)
         events = db.session.query(Event).filter(~Event.id.in_(subquery)).all()
         
         serialized = [Event.serialize(e) for e in events]
-    else :
-        print("Get all events you have rsvp for")
+    else:
+        #returns all the events that the current user has RSVP to depending on the selector
+        subquery = EventRSVP.query.with_entities(EventRSVP.event_id) \
+                                                .filter_by(user_id=current_identity.id) \
+                                                .filter_by(status = int(sel))
+        events = db.session.query(Event).filter(Event.id.in_(subquery)).all()
+        serialized = [Event.serialize(e) for e in events]
   
     return jsonify(message=serialized), 200
 

@@ -10,6 +10,7 @@ class CreateEventDialog extends React.Component {
         super(props);
 
         this.state = {
+            eventMembersOnly: false
         }
 
         this.handleEventTitleChange = this.handleEventTitleChange.bind(this);
