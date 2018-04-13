@@ -18,7 +18,8 @@ function mapStateToProps(state) {
        MemberOrgs: state.MemberOrgs,
        AllOrgs: state.AllOrgs,
        AdminEvents: state.AdminEvents,
-       AllEvents: state.AllEvents
+       AllEvents: state.AllEvents,
+       RSVPEvents: state.RSVPEvents
    };
 }
 

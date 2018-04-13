@@ -6,6 +6,7 @@ from flask_cors import CORS, cross_origin
 
 from application.db_connector import db
 from util.hash_password import hash_password, check_password
+from util.converters import get_rsvp_status_string
 from datetime import datetime, timedelta
 import os
 
@@ -270,26 +271,15 @@ def get_events_rsvp(sel):
         
         serialized = [Event.serialize(e) for e in events]
     else:
-        #returns all the events that the current user has RSVPed to, grouped by organization 
-        subquery = EventRSVP.query.with_entities(EventRSVP.event_id) \
-                                                .filter_by(user_id=current_identity.id)
-
-        events = db.session.query(Event).filter(Event.id.in_(subquery)).order_by(Event.event_start).all()  
-        print("events:")
-        print(events)
-
-        event_ids = db.session.query(Event.id).filter(Event.id.in_(subquery)).order_by(Event.event_start).all()  
-        
-        print("events_ids:")
-        print(event_ids)
+        #returns all the events that the current user has RSVPed to, grouped by organization   
+        events_and_status = db.session.query(Event, Event.org_id, EventRSVP.status).outerjoin(EventRSVP) \
+                                                .filter(EventRSVP.user_id.is_(current_identity.id)).all()
 
         orgs = current_identity.organizations_as_member
-        print("orgs_events")
-        print(orgs[0].events)
 
         serialized = [{"title" : item.name,
                         "events": 
-                            [Event.serialize(i) for i in item.events if (i.id,) in event_ids]
+                            [(Event.serialize(event), get_rsvp_status_string(rsvp_status)) for (event, org_id, rsvp_status) in events_and_status if org_id is item.id]
                         } for item in orgs]
 
     return jsonify(message=serialized), 200
