@@ -1,3 +1,7 @@
+/* api.js
+ *
+ * File that contains all direct api calls to the baseURL.
+ */
 const baseURL = "http://localhost:5000/";
 const headers = new Headers();
 var cookie;
