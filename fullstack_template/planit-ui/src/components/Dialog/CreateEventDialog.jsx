@@ -17,7 +17,8 @@ class CreateEventDialog extends React.Component {
             tagsError: '',
             startTimeError: '',
             stopTimeError: '',
-            validationError: false
+            validationError: false,
+            eventMembersOnly: false
         }
 
         this.handleEventTitleChange = this.handleEventTitleChange.bind(this);

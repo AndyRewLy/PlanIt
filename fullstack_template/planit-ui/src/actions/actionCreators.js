@@ -147,3 +147,14 @@ export function postOrgJoinStatus(response, orgId, cb, errCb) {
          .catch((error) => { if (errCb) errCb();})
     }
 }
+
+export function getAllRSVPEvents(cb, errCb) {
+    console.log("Get all RSVP Events Action Creator");
+
+    return (dispatch, prevState) => {
+        api.getAllRSVPEvents()
+         .then(events => dispatch({events: events, type: "GET_RSVP_EVENTS"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}

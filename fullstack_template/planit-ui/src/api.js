@@ -268,3 +268,19 @@ function createErrorPromise(response, body) {
     else
        return Promise.reject(["Unknown error"]);
  }
+
+ export function getAllRSVPEvents(sel) {
+    headers.set("Authorization", cookie);
+
+    return get("events/rsvp=" + sel)
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         return json["message"];
+     })
+}
