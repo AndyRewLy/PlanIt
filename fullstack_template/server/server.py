@@ -258,6 +258,7 @@ def set_RSVP():
 
     return jsonify(message="set rsvp successful")
 
+#returns the events you've RSVPed to 
 @app.route('/events/rsvp=<sel>',methods=['GET'])
 @jwt_required()
 def get_events_rsvp(sel):
@@ -269,13 +270,28 @@ def get_events_rsvp(sel):
         
         serialized = [Event.serialize(e) for e in events]
     else:
-        #returns all the events that the current user has RSVP to depending on the selector
+        #returns all the events that the current user has RSVPed to, grouped by organization 
         subquery = EventRSVP.query.with_entities(EventRSVP.event_id) \
-                                                .filter_by(user_id=current_identity.id) \
-                                                .filter_by(status = int(sel))
-        events = db.session.query(Event).filter(Event.id.in_(subquery)).all()
-        serialized = [Event.serialize(e) for e in events]
-  
+                                                .filter_by(user_id=current_identity.id)
+
+        events = db.session.query(Event).filter(Event.id.in_(subquery)).order_by(Event.event_start).all()  
+        print("events:")
+        print(events)
+
+        event_ids = db.session.query(Event.id).filter(Event.id.in_(subquery)).order_by(Event.event_start).all()  
+        
+        print("events_ids:")
+        print(event_ids)
+
+        orgs = current_identity.organizations_as_member
+        print("orgs_events")
+        print(orgs[0].events)
+
+        serialized = [{"title" : item.name,
+                        "events": 
+                            [Event.serialize(i) for i in item.events if (i.id,) in event_ids]
+                        } for item in orgs]
+
     return jsonify(message=serialized), 200
 
 

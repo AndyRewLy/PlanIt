@@ -60,7 +60,7 @@ class Organization(db.Model):
     org_type_id = db.Column(db.Integer, ForeignKey(OrganizationType.id))
     description = db.Column(db.String(1024))
     image = db.Column(db.String(1024))
-    events = relationship("Event", backref='organization')
+    events = relationship("Event", backref='organization', order_by='Event.event_start')
     admins = db.relationship('User', secondary=organization_admins,
         backref=db.backref('organizations_as_admin'))
     members = db.relationship('User', secondary=organization_members,
