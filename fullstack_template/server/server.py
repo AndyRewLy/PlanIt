@@ -284,8 +284,9 @@ def get_events_rsvp(sel):
                                                 .filter(EventRSVP.user_id.is_(current_identity.id)) \
                                                 .order_by(Event.event_start.desc()).all()
 
-        orgs = current_identity.organizations_as_member
-
+        orgs = db.session.query(Organization).outerjoin(Event).outerjoin(EventRSVP) \
+                                                .filter(EventRSVP.user_id.is_(current_identity.id)).all()
+        
         serialized = [{"title" : item.name,
                         "events": 
                             [(Event.serialize(event), get_rsvp_status_string(rsvp_status)) for (event, org_id, rsvp_status) in events_and_status if org_id is item.id]
