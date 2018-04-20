@@ -6,9 +6,9 @@ class EventCard extends React.Component {
     	super(props);
     	this.state={
               eventTitle:'',
-              image: undefined,
               eventStartTime: '',
               eventLocation: '',
+              eventImage: ''
         };
       }
       
@@ -17,9 +17,10 @@ class EventCard extends React.Component {
           
         <div className="Card" onClick={() => this.props.renderEventInfo(this.props.eventId, this.props.canRSVP)}>
             <div className="card-content">
+                <img class="card-sub-item" src= {this.props.eventImage}></img>
                 <h1 className="card-sub-item">{this.props.eventTitle}</h1>
-                <h1 className="card-sub-item">{this.props.eventLocation}</h1>
-                <h1 className="card-sub-item">{this.props.eventStartTime}</h1>
+                <h2 className="card-sub-item">{this.props.eventLocation}</h2>
+                <h2 className="card-sub-item">{this.props.eventStartTime}</h2>
             </div>
         </div>);
       }

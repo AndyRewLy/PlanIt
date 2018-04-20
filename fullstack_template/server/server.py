@@ -172,7 +172,8 @@ def create_event():
                  event_start=eventStart,
                  event_end=eventEnd,
                  members_only=request_data["eventMembersOnly"],
-                 max_participants=request_data["maxParticipants"],
+                 max_participants=request_data["maxParticipants"], 
+                 image=request_data["eventImage"],
                  tags=eventTags)
 
     org_name = request_data["callOutTitle"]

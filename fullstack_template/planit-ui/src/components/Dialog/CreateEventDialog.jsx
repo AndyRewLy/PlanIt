@@ -17,6 +17,7 @@ class CreateEventDialog extends React.Component {
             tagsError: '',
             startTimeError: '',
             stopTimeError: '',
+            eventImgError: '',
             validationError: false,
             eventMembersOnly: false
         }
@@ -29,6 +30,7 @@ class CreateEventDialog extends React.Component {
         this.handleMembersOnlyCheck = this.handleMembersOnlyCheck.bind(this);
         this.handleMaxParticipantsChange = this.handleMaxParticipantsChange.bind(this);
         this.handleEventTagsChange = this.handleEventTagsChange.bind(this);
+        this.handleImageFileChange = this.handleImageFileChange.bind(this);
 
         this.submitEvent = this.submitEvent.bind(this); 
         this.showError = this.showError.bind(this);  
@@ -59,6 +61,7 @@ class CreateEventDialog extends React.Component {
         state.tagsError = '';
         state.startTimeError = '';
         state.stopTimeError = '';
+        state.eventImgError = '';
         state.validationError = false;
 
         this.props.close();
@@ -112,10 +115,6 @@ class CreateEventDialog extends React.Component {
         }
     }
 
-    handleImageFileChange(event, value) {
-        this.setState({organizationImage: value});
-    }
-
     handleEventTagsChange(event, value) {
 
         if(value) {
@@ -147,10 +146,20 @@ class CreateEventDialog extends React.Component {
         }
     }
 
+    handleImageFileChange(event, value) {
+
+        if(value) {
+            this.setState({eventImgError: '', eventImage: value})
+        }
+        else{
+            this.setState({eventImgError: 'Image URL is required', eventImage: value})
+        }
+    }
+
     validateInput() {
         var state = this.state;
 
-        if (state.eventNameError || state.eventDescError || state.eventLocError 
+        if (state.eventNameError || state.eventDescError || state.eventLocError || state.eventImgError
             || state.maxPartError || state.tagsError || state.startTimeError || state.stopTimeError) {
             this.toggleValidationError();
         }
@@ -201,6 +210,10 @@ class CreateEventDialog extends React.Component {
                         <div>Maximum Participants</div>
                         <TextField label="Type maximum participants here" errorText = {this.state.maxPartError} onChange={this.handleMaxParticipantsChange} />
                     </div>
+                    <div>
+                        <div> Event Image</div>
+                            <TextField hintText="Type image URL here" errorText = {this.state.eventImgError} onChange={this.handleImageFileChange}></TextField>
+                        </div>
                     <div>
                         <div>Tags</div>
                         <TextField hintText="#CS #TechTalk #WISH" errorText = {this.state.tagsError} onChange={this.handleEventTagsChange} />
