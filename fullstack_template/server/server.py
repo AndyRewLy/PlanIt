@@ -242,16 +242,23 @@ def get_events(sel):
     return jsonify(message=serialized), 200
     
 #set the rsvp status for an event
-@app.route('/events/rsvp',methods=['POST'])
+@app.route('/events/rsvp',methods=['POST', 'PUT'])
 @jwt_required()
 def set_RSVP():
-    request_data = request.get_json()
-    event = Event.query.get(request_data["eventId"])
+    if request.method == 'POST':
+        request_data = request.get_json()
+        event = Event.query.get(request_data["eventId"])
 
-    rsvp = EventRSVP(status = request_data["status"])
-    rsvp.event = event
-    rsvp.user = current_identity
-        
+        rsvp = EventRSVP(status = request_data["status"])
+        rsvp.event = event
+        rsvp.user = current_identity
+    else:
+        request_data = request.get_json()
+        rsvp = EventRSVP.query.filter_by(
+            user_id=current_identity.id,
+            event_id=request_data["eventId"]).first()
+        rsvp.status = status = request_data["status"]
+
     try:     
         db.session.add(rsvp)
         db.session.commit()
@@ -274,7 +281,8 @@ def get_events_rsvp(sel):
     else:
         #returns all the events that the current user has RSVPed to, grouped by organization   
         events_and_status = db.session.query(Event, Event.org_id, EventRSVP.status).outerjoin(EventRSVP) \
-                                                .filter(EventRSVP.user_id.is_(current_identity.id)).all()
+                                                .filter(EventRSVP.user_id.is_(current_identity.id)) \
+                                                .order_by(Event.event_start.desc()).all()
 
         orgs = current_identity.organizations_as_member
 
