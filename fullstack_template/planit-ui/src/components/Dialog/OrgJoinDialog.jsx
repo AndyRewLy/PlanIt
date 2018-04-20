@@ -18,11 +18,11 @@ class OrgJoinDialog extends React.Component {
             <FlatButton
                 label="Join Org"
                 primary={true}
-                onClick={() => this.props.submit("true", this.props.org.orgId)} />,
+                onClick={() => this.props.submit("true", this.props.org.organizationId)} />,
             <FlatButton
                 label="Leave Org"
                 primary={true}
-                onClick={() => this.props.submit("false", this.props.org.orgId)} />
+                onClick={() => this.props.submit("false", this.props.org.organizationId)} />
         ];
 
         return (

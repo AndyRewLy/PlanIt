@@ -1,9 +1,25 @@
 import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import React, { Component } from 'react';
 
 class RSVPEventInfoDialog extends React.Component {
 
     render() {
+        const actions = [
+            <FlatButton
+                label="Going"
+                primary={true}
+                onClick={() => this.props.rsvp(2, this.props.event.eventId)} />,
+            <FlatButton
+                label="Interested"
+                primary={true}
+                onClick={() => this.props.rsvp(1, this.props.event.eventId)} />,
+            <FlatButton
+                label="Not Going"
+                primary={true}
+                onClick={() => this.props.rsvp(0, this.props.event.eventId)} />
+        ];
+
         const event = this.props.event;
         const rsvp_status = this.props.rsvp_status;
 
@@ -11,7 +27,9 @@ class RSVPEventInfoDialog extends React.Component {
             <Dialog
                 title={event.eventTitle}
                 open={this.props.isVisible}
-                onRequestClose={this.props.close}>
+                actions={actions}
+                onRequestClose={this.props.close}
+                autoScrollBodyContent={true}>
                 <div>
                     <h5>Description</h5>
                     <div>{event.eventDescription}</div>
@@ -37,7 +55,6 @@ class RSVPEventInfoDialog extends React.Component {
                     <h5>RSVP Status</h5>
                     <div>{rsvp_status}</div>
                 </div>
-
             </Dialog>
         );
 }

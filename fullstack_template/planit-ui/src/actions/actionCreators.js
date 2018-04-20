@@ -133,6 +133,19 @@ export function postEventResponse(status, eventId, cb, errCb) {
     }
 }
 
+export function updateEventResponse(status, eventId, cb, errCb) {
+    console.log("Updating Event Response Action Creator");
+
+    console.log({status, eventId});
+    return (dispatch, prevState) => {
+        api.updateEventResponse({status, eventId})
+        .then(() => api.getAllRSVPEvents("true"))
+        .then(events => dispatch({events: events, type: "GET_RSVP_EVENTS"}))
+        .then(() => {if (cb) cb();})
+        .catch((error) => {if (errCb) errCb();})
+    }
+}
+
 export function postOrgJoinStatus(response, orgId, cb, errCb) {
 
     return (dispatch, prevState) => {

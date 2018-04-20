@@ -18,7 +18,8 @@ class RSVPEvents extends React.Component {
             calloutEventId: undefined,
             canRSVP: false
         }
-
+        
+        this.rsvpToEvent = this.rsvpToEvent.bind(this);
         this.toggleCreateEvent = this.toggleCreateEvent.bind(this);
         this.toggleEventInfo = this.toggleEventInfo.bind(this);
         this.getEventCardWithId = this.getEventCardWithId.bind(this);
@@ -78,6 +79,10 @@ class RSVPEvents extends React.Component {
         return {};
     }
 
+    rsvpToEvent(response, eventId) {
+        this.props.updateEventResponse(response, eventId, this.toggleEventInfo);
+    }
+
     createRowComponents() {
         var rowComponents = [];        
         var cards = this.props.RSVPEvents;
@@ -108,7 +113,9 @@ class RSVPEvents extends React.Component {
             <div style={style}>
                 {rowComponents}
                 {this.state.calloutEventId ?
-                   <RSVPEventInfoDialog event={this.getEventCardWithId()}  rsvp_status = {this.getEventRSVPWithId()}
+                   <RSVPEventInfoDialog event={this.getEventCardWithId()}  
+                    rsvp_status = {this.getEventRSVPWithId()}
+                    rsvp={this.rsvpToEvent}
                     isVisible={this.state.showEventVisible}
                     close={this.toggleEventInfo}/>
                 : ''}

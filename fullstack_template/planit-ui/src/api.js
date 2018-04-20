@@ -250,6 +250,23 @@ export function postEventResponse(body) {
         return json["message"];
      });
 }
+
+export function updateEventResponse(body) {
+    headers.set("Authorization", cookie);
+
+    return put("events/rsvp", body)
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+        return json["message"];
+     });
+}
+
 export function serverConnectError() {
     return Promise.reject(["Server Connect Error"]);
 }
