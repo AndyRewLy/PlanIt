@@ -93,6 +93,7 @@ class Event(db.Model):
     event_items = db.Column(db.String(256), default=None)
     include_year = db.Column(db.Boolean)
     max_participants = db.Column(db.Integer)
+    image = db.Column(db.String(1024))
     status = db.Column(db.Integer, default=-1) 
     participants = relationship('EventRSVP', back_populates="event")
 
@@ -110,6 +111,7 @@ class Event(db.Model):
             'eventMembersOnly': self.members_only,
             'eventOrganization': self.organization.name,
             'maxParticipants': self.max_participants,
+            'eventImage': self.image,
             'eventTags': self.tags
         }
 

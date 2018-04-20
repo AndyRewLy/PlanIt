@@ -1,6 +1,6 @@
 .Card {
       position: relative;
-      height: 220px;
+      height: 240px;
       flex: 0 0 180px;
       display: flex;
       flex-direction: row;
@@ -18,7 +18,7 @@
 }
 
 .Card:hover {
-      height: 220px;
+      height: 240px;
       flex: 0 0 180px;
       display: flex;
       flex-direction: row;
@@ -48,7 +48,6 @@ h1.card-sub-item, h2.card-sub-item {
 }
 
 h1.card-sub-item {
-      padding-top: 8px;
       font-size: 15px;
 }
 
@@ -57,7 +56,7 @@ img.card-sub-item {
       text-overflow: ellipsis;
       white-space: pre-wrap;
       width: 100%;
-      height: 75%;
+      height: 65%;
 }
 
 .wrap-div {
