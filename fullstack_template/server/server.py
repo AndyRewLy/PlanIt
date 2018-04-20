@@ -257,7 +257,7 @@ def set_RSVP():
         rsvp = EventRSVP.query.filter_by(
             user_id=current_identity.id,
             event_id=request_data["eventId"]).first()
-        rsvp.status = status = request_data["status"]
+        rsvp.status = request_data["status"]
 
     try:     
         db.session.add(rsvp)
