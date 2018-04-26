@@ -1,9 +1,10 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from application.models import User, OrganizationType, Organization, Event, EventRSVP
+from application.models import User, OrganizationType, Organization, Event, EventRSVP, EventComment
 from flask_jwt import JWT, jwt_required, current_identity
 from flask_cors import CORS, cross_origin
 
+from time import time, gmtime, strftime, localtime
 from application.db_connector import db
 from util.hash_password import hash_password, check_password
 from util.converters import get_rsvp_status_string
@@ -294,6 +295,40 @@ def get_events_rsvp(sel):
 
     return jsonify(message=serialized), 200
 
+#adds a comment to the specified event
+@app.route('/event/<id>/comments',methods=['POST'])
+@jwt_required()
+def add_comment(id):
+    if request.method == 'POST':
+        request_data = request.get_json()
+        event = Event.query.get(id)
+        #converting epoch time to ms
+        date_posted = round(time() * 1000)
+        
+        comment = EventComment(content = request_data["content"],
+                               date_posted = date_posted)
+        comment.event = event
+        comment.user = current_identity
+
+    try:     
+        db.session.add(comment)
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    return jsonify(message="add comment successful")
+
+#returns a list of comments posted for the specified event
+@app.route('/event/<id>/comments',methods=['GET'])
+@jwt_required()
+def get_event_comments(id):
+    serialized = []
+    event = Event.query.get(id)
+    
+    #[print(strftime("%m-%d-%y %I:%M:%S%p", localtime(item.date_posted/1000))) for item in event.comments]
+    serialized = [EventComment.serialize(item) for item in event.comments]
+
+    return jsonify(message=serialized), 200
 
 if __name__ == "__main__":
    app.secret_key = os.urandom(12)

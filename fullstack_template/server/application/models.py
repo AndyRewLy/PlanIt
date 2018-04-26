@@ -1,5 +1,5 @@
 from application.db_connector import db
-from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, DateTime, BigInteger
 from sqlalchemy.orm import relationship
 from datetime import datetime, timedelta
 
@@ -32,7 +32,8 @@ class User(db.Model):
     major = db.Column(db.Integer, ForeignKey(Major.id)) 
 
     events_created = db.relationship('Event', backref='creator')
-    events = relationship('EventRSVP', back_populates="user")
+    events_rsvped = relationship('EventRSVP', back_populates="user")
+    event_comments = relationship('EventComment', back_populates="user")
     
     def __init__(self, first_name, last_name, email, password, major):
         self.first_name = first_name
@@ -95,7 +96,8 @@ class Event(db.Model):
     max_participants = db.Column(db.Integer)
     image = db.Column(db.String(1024))
     status = db.Column(db.Integer, default=-1) 
-    participants = relationship('EventRSVP', back_populates="event")
+    rsvps = relationship('EventRSVP', back_populates="event")
+    comments = relationship('EventComment', back_populates="event")
 
     def __repr__(self):
         return '<Event %r %r %r %r %r %r %r %r %r %r %r %r>' % (self.org_id, self.creator, self.description, self.date_created, self.event_start, self.event_end, self.location, self.members_only, self.tags, self.event_items, self.include_year, self.status)
@@ -121,8 +123,8 @@ class EventRSVP(db.Model):
     event_id = db.Column(db.Integer, ForeignKey(Event.id))
     status = db.Column(db.Integer)
 
-    user = relationship("User", back_populates="events")
-    event = relationship("Event", back_populates="participants")
+    user = relationship("User", back_populates="events_rsvped")
+    event = relationship("Event", back_populates="rsvps")
 
     def __repr__(self):
         return '<EventRSVP %r %r %r>' % (self.user_id, self.event_id, self.status)
@@ -131,30 +133,20 @@ class EventComment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.id)) 
     event_id = db.Column(db.Integer, ForeignKey(Event.id))
-    comment = db.Column(db.String(1024))
-    date = db.Column(DateTime(timezone=True))
+    content = db.Column(db.String(1024))
+    #epoch time in ms
+    date_posted = db.Column(db.BigInteger)
 
-    def __init__(self, user_id, event_id, comment, date):
-        self.user_id = user_id
-        self.event_id = event_id
-        self.comment = comment
-        self.date = date 
+    user = relationship("User", back_populates="event_comments")
+    event = relationship("Event", back_populates="comments")
 
     def __repr__(self):
-        return '<EventComment %r %r %r %r>' % (self.user_id, self.event_id, self.comment, self.date) 
-
-class AdminComment(db.Model): 
-    id = db.Column(db.Integer, primary_key=True)
-    #user_id = db.Column(db.Integer, ForeignKey(OrganizationAdmin.id)) 
-    event_id = db.Column(db.Integer, ForeignKey(Event.id))
-    comment = db.Column(db.String(1024))
-    date = db.Column(DateTime(timezone=True))
-
-    def __init__(self, user_id, event_id, comment, date):
-        self.user_id = user_id
-        self.event_id = event_id
-        self.comment = comment
-        self.date = date 
-
-    def __repr__(self):
-        return '<AdminComment %r %r %r %r>' % (self.user_id, self.event_id, self.comment, self.date) 
+        return '<EventComment %r %r %r %r>' % (self.user_id, self.event_id, self.content, self.date_posted) 
+    
+    def serialize(self):
+        return {
+            'eventId': self.event_id,
+            'user': self.user.first_name + " " + self.user.last_name,
+            'content': self.content,
+            'datePosted': self.date_posted
+        }
