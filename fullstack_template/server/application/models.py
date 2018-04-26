@@ -60,7 +60,7 @@ class Organization(db.Model):
     org_type_id = db.Column(db.Integer, ForeignKey(OrganizationType.id))
     description = db.Column(db.String(1024))
     image = db.Column(db.String(1024))
-    events = relationship("Event", backref='organization')
+    events = relationship("Event", backref='organization', order_by='desc(Event.event_start)')
     admins = db.relationship('User', secondary=organization_admins,
         backref=db.backref('organizations_as_admin'))
     members = db.relationship('User', secondary=organization_members,
@@ -93,6 +93,7 @@ class Event(db.Model):
     event_items = db.Column(db.String(256), default=None)
     include_year = db.Column(db.Boolean)
     max_participants = db.Column(db.Integer)
+    image = db.Column(db.String(1024))
     status = db.Column(db.Integer, default=-1) 
     participants = relationship('EventRSVP', back_populates="event")
 
@@ -110,6 +111,7 @@ class Event(db.Model):
             'eventMembersOnly': self.members_only,
             'eventOrganization': self.organization.name,
             'maxParticipants': self.max_participants,
+            'eventImage': self.image,
             'eventTags': self.tags
         }
 

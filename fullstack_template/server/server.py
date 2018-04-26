@@ -2,12 +2,17 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 from flask_sqlalchemy import SQLAlchemy
 from application.models import User, OrganizationType, Organization, Event, EventRSVP
 from flask_jwt import JWT, jwt_required, current_identity
+from flask_cors import CORS, cross_origin
+
 from application.db_connector import db
 from util.hash_password import hash_password, check_password
+from util.converters import get_rsvp_status_string
 from datetime import datetime, timedelta
 import os
 
 app = Flask(__name__, static_folder="../static/dist", template_folder="../static")
+cors = CORS(app, resources={r"/*": {"origins": "http://localhost:3000", "supports_credentials": True}})
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 #flask_jwt setup
 app.config['JWT_AUTH_URL_RULE'] = "/login"
@@ -17,6 +22,7 @@ app.config['JWT_EXPIRATION_DELTA'] = timedelta(hours=2)
 
 current_orgs = [{"organizationName": "test", "organizationType": "service"},
                 {"organizationName": "test2", "organizationType": "Melinda"}]
+    
 @app.route("/")
 def home():
    return render_template("index.html")
@@ -98,7 +104,7 @@ def create_organization():
 
 @app.route('/orgs/all',methods=['GET'])
 def get_all_orgs():
-    serialized = ""
+    serialized = []
     try: 
         orgs = Organization.query.all()
         serialized = [Organization.serialize(item) for item in orgs]
@@ -135,7 +141,7 @@ def join_organization():
 @app.route('/orgs/admin=<sel>',methods=['GET'])
 @jwt_required()
 def get_organizations(sel):
-    serialized = ""
+    serialized = []
 
     if sel == 'true':
         #get all organizations you are an admin of
@@ -166,7 +172,8 @@ def create_event():
                  event_start=eventStart,
                  event_end=eventEnd,
                  members_only=request_data["eventMembersOnly"],
-                 max_participants=request_data["maxParticipants"],
+                 max_participants=request_data["maxParticipants"], 
+                 image=request_data["eventImage"],
                  tags=eventTags)
 
     org_name = request_data["callOutTitle"]
@@ -183,7 +190,7 @@ def create_event():
 
 @app.route('/events/all',methods=['GET'])
 def get_all_events():
-    serialized = ""
+    serialized = []
     try: 
         events = Event.query.all()
         serialized = [Event.serialize(item) for item in events]
@@ -196,7 +203,7 @@ def get_all_events():
 @app.route('/events',methods=['GET'])
 @jwt_required()
 def get_events_filtered():
-    serialized = ""
+    serialized = []
     tag = request.args.get("filter")
 
     #default when there is no filter, returns all the events you have not rsvp to 
@@ -217,7 +224,7 @@ def get_events_filtered():
 @app.route('/events/admin=<sel>',methods=['GET'])
 @jwt_required()
 def get_events(sel):
-    serialized = ""
+    serialized = []
 
     if sel == 'true':
         #gets all the events for the orgs you are an admin of
@@ -235,16 +242,23 @@ def get_events(sel):
     return jsonify(message=serialized), 200
     
 #set the rsvp status for an event
-@app.route('/events/rsvp',methods=['POST'])
+@app.route('/events/rsvp',methods=['POST', 'PUT'])
 @jwt_required()
 def set_RSVP():
-    request_data = request.get_json()
-    event = Event.query.get(request_data["eventId"])
+    if request.method == 'POST':
+        request_data = request.get_json()
+        event = Event.query.get(request_data["eventId"])
 
-    rsvp = EventRSVP(status = request_data["status"])
-    rsvp.event = event
-    rsvp.user = current_identity
-        
+        rsvp = EventRSVP(status = request_data["status"])
+        rsvp.event = event
+        rsvp.user = current_identity
+    else:
+        request_data = request.get_json()
+        rsvp = EventRSVP.query.filter_by(
+            user_id=current_identity.id,
+            event_id=request_data["eventId"]).first()
+        rsvp.status = request_data["status"]
+
     try:     
         db.session.add(rsvp)
         db.session.commit()
@@ -253,22 +267,34 @@ def set_RSVP():
 
     return jsonify(message="set rsvp successful")
 
-#returns all the events that the current user has not RSVP to
+#returns the events you've RSVPed to 
 @app.route('/events/rsvp=<sel>',methods=['GET'])
 @jwt_required()
 def get_events_rsvp(sel):
-    serialized = ""
+    serialized = []
     if sel == 'false':
+        #returns all the events that the current user has not RSVP to 
         subquery = EventRSVP.query.with_entities(EventRSVP.event_id).filter_by(user_id=current_identity.id)
         events = db.session.query(Event).filter(~Event.id.in_(subquery)).all()
         
         serialized = [Event.serialize(e) for e in events]
-    else :
-        print("Get all events you have rsvp for")
-  
+    else:
+        #returns all the events that the current user has RSVPed to, grouped by organization   
+        events_and_status = db.session.query(Event, Event.org_id, EventRSVP.status).outerjoin(EventRSVP) \
+                                                .filter(EventRSVP.user_id.is_(current_identity.id)) \
+                                                .order_by(Event.event_start.desc()).all()
+
+        orgs = db.session.query(Organization).outerjoin(Event).outerjoin(EventRSVP) \
+                                                .filter(EventRSVP.user_id.is_(current_identity.id)).all()
+        
+        serialized = [{"title" : item.name,
+                        "events": 
+                            [(Event.serialize(event), get_rsvp_status_string(rsvp_status)) for (event, org_id, rsvp_status) in events_and_status if org_id is item.id]
+                        } for item in orgs]
+
     return jsonify(message=serialized), 200
 
 
 if __name__ == "__main__":
    app.secret_key = os.urandom(12)
-   app.run(port=5000)
+   app.run(port=5000, threaded=True)
