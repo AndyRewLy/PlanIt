@@ -1,5 +1,6 @@
 import Dialog from 'material-ui/Dialog';
 import React, { Component } from 'react';
+import CommentContainer from '../CommentContainer/CommentContainer';
 
 class EventInfoDialog extends React.Component {
 
@@ -32,6 +33,7 @@ class EventInfoDialog extends React.Component {
                     <h5>Event Type</h5>
                     <div>{event.eventMembersOnly ? "For Members Only" : "Open to Everyone"}</div>
                 </div>
+                <CommentContainer {...this.props}/>
             </Dialog>
         );
 }
