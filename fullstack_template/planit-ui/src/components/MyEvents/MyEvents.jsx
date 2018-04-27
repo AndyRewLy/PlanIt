@@ -99,7 +99,8 @@ class MyEvents extends React.Component {
                 {this.state.calloutEventId ?
                    <EventInfoDialog event={this.getEventCardWithId()} 
                     isVisible={this.state.showEventVisible}
-                    close={this.toggleEventInfo}/>
+                    close={this.toggleEventInfo}
+                    {...this.props}/>
                 : ''}
             </div>
         );

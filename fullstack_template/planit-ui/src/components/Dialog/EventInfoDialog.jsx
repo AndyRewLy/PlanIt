@@ -11,6 +11,7 @@ class EventInfoDialog extends React.Component {
             <Dialog
                 title={event.eventTitle}
                 open={this.props.isVisible}
+                autoScrollBodyContent={true}
                 onRequestClose={this.props.close}>
                 <div>
                     <h5>Description</h5>
