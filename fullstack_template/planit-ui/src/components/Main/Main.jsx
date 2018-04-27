@@ -45,33 +45,45 @@ class Main extends Component {
                                 <MenuItem value="home" primaryText="Home" 
                                  rightIcon={<Home/>}
                                  onClick={() => {
-                                    this.props.getAllOrgs();
-                                    this.props.history.push("/home");
+                                    var that = this;
+
+                                    this.props.getAllOrgs(() => 
+			                           that.props.getAllMemberOrgs(() => 
+                                          that.props.getAllFilteredEvents("")
+                                    ));
+                                    that.props.history.push("/home");
                                     this.handleToggle();
                                  }}>
                                 </MenuItem>
-                                <MenuItem value="myOrgs" primaryText="My Organizations" 
+                                <MenuItem value="manageOrgs" primaryText="Manage Orgs" 
                                  rightIcon={<Group/>}
                                  onClick={() => {
                                     this.props.getAllAdminOrgs();
-                                    this.props.getAllMemberOrgs();
-                                    this.props.history.push("/orgs");
+                                    this.props.history.push("/manageOrgs");
                                     this.handleToggle();
+                                 }}>
+                                 </MenuItem>
+                                 <MenuItem value="myOrgs" primaryText="My Orgs" 
+                                 rightIcon={<Group/>}
+                                 onClick={() => {
+                                    this.props.getAllMemberOrgs();
+                                    this.props.history.push("/myOrgs");
+                                    this.handleToggle();
+                                 }}>
+                                </MenuItem>
+                                <MenuItem value="manageEvents" primaryText="Manage Events" 
+                                 rightIcon={<Event/>}
+                                 onClick={() => {
+                                    this.props.getAllAdminEvents();
+                                    this.props.history.push("/manageEvents");
+                                    this.handleToggle();                                
                                  }}>
                                 </MenuItem>
                                 <MenuItem value="myEvents" primaryText="My Events" 
                                  rightIcon={<Event/>}
                                  onClick={() => {
-                                    this.props.getAllAdminEvents();
-                                    this.props.history.push("/events");
-                                    this.handleToggle();                                
-                                 }}>
-                                </MenuItem>
-                                <MenuItem value="myRSVPs" primaryText="RSVP Events" 
-                                 rightIcon={<Event/>}
-                                 onClick={() => {
                                     this.props.getAllRSVPEvents();
-                                    this.props.history.push("/RSVPEvents");
+                                    this.props.history.push("/myEvents");
                                     this.handleToggle();                                
                                  }}>
                                 </MenuItem>
@@ -103,11 +115,13 @@ class Main extends Component {
                          render={() => <Register {...this.props} />}/>
                         <Route path='/home'
                          render={() => <HomePage {...this.props}/>}/>
-                        <Route path='/orgs'
-                         render={() => <MyOrgs {...this.props}/>}/>
-                        <Route path='/events'
+                        <Route path='/manageOrgs'
+                         render={() => <MyOrgs type="Admin" {...this.props}/>}/>
+                         <Route path='/myOrgs'
+                         render={() => <MyOrgs type="Member" {...this.props}/>}/>
+                        <Route path='/manageEvents'
                          render={() => <MyEvents {...this.props}/>}/> 
-                        <Route path='/RSVPEvents'
+                        <Route path='/myEvents'
                          render={() => <RSVPEvents {...this.props}/>}/> 
 
                 </Switch>
