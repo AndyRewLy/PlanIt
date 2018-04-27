@@ -301,3 +301,18 @@ function createErrorPromise(response, body) {
          return json["message"];
      })
 }
+
+export function postComment(eventId, body) {
+    console.log("Posting comment");
+
+    return post("event/" + eventId + "/comments", body)
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+         return createErrorPromise(response);
+     })
+     .then(json => {
+        return json["message"];
+     });
+}

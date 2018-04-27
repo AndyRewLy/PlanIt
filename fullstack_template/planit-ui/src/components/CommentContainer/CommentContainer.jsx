@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import Comment from './Comment'
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 
@@ -28,20 +28,33 @@ class CommentContainer extends React.Component {
     }
 
     submitComment() {
+        var event = this.props.event;
         //Submit comment
         
         //Remove this section after adding backend in
-        console.log("Submit comment of ..." + this.state.content);
         console.log(this.state.commentList)
+        this.props.postComment(event.eventId, this.state);
+        
         this.setState({commentList: this.state.commentList.concat(<div>{this.state.content}</div>), content: ''});
         
     }
 
     render() {
+        var today = new Date();
+        var dateFormat = today.getMonth()+1 + '/' + today.getDate() + '/' + today.getFullYear();
+
         return (
             <div>
                 <div className="comment-container">
-                    {this.state.commentList /*Should end up being in the props somehow*/}
+                    {   
+                        /*Should end up being in the props somehow*/
+                        this.state.commentList.map(comment=>
+                            <Comment 
+                                posterEmail='namm@planit.com'
+                                postingDate={dateFormat}
+                                content={comment}
+                            />)
+                    }
                 </div>
                 <div className="row">
                     <TextField style={{width: "80%"}} value={this.state.content} hintText="Input your comment..." onChange={this.handleCommentChange} />
