@@ -16,7 +16,8 @@ class MyEvents extends React.Component {
             createEventVisible: false,
             showEventVisible: false,
             calloutEventId: undefined,
-            canRSVP: false
+            canRSVP: false,
+            commentList: []
         }
 
         this.toggleCreateEvent = this.toggleCreateEvent.bind(this);
@@ -72,7 +73,10 @@ class MyEvents extends React.Component {
                         {cards[i].admin &&
                          <RaisedButton label="Create Event" primary={true} style={style} onClick={this.toggleCreateEvent(cards[i].title)} />}
                     </div>
-                    <EventCardContainer cards={cards[i].events} canRSVP={false} renderEventInfo={this.toggleEventInfo} />
+                    <EventCardContainer 
+                        cards={cards[i].events} 
+                        canRSVP={false} 
+                        renderEventInfo={this.toggleEventInfo} />
                 </div>
             );
         }
@@ -97,7 +101,8 @@ class MyEvents extends React.Component {
                  close={this.toggleCreateEvent(undefined)}
                  {...this.props}/>
                 {this.state.calloutEventId ?
-                   <EventInfoDialog event={this.getEventCardWithId()} 
+                   <EventInfoDialog 
+                    event={this.getEventCardWithId()} 
                     isVisible={this.state.showEventVisible}
                     close={this.toggleEventInfo}
                     {...this.props}/>
