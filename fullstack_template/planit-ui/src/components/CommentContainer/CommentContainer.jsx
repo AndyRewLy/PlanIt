@@ -9,8 +9,7 @@ class CommentContainer extends React.Component {
         super(props);
 
         this.state={
-            content:'',
-            comList: [], /* only being used to test UI*/
+            content:''
         }
 
         this.handleCommentChange = this.handleCommentChange.bind(this);

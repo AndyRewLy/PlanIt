@@ -16,8 +16,7 @@ class MyEvents extends React.Component {
             createEventVisible: false,
             showEventVisible: false,
             calloutEventId: undefined,
-            canRSVP: false,
-            commentList: []
+            canRSVP: false
         }
 
         this.toggleCreateEvent = this.toggleCreateEvent.bind(this);
