@@ -15,7 +15,8 @@ class EventCard extends React.Component {
       render() {
       return (
           
-        <div className="Card" onClick={() => this.props.renderEventInfo(this.props.eventId, this.props.canRSVP)}>
+        <div className="Card" 
+            onClick={() => {this.props.renderEventInfo(this.props.eventId, this.props.canRSVP)}}>
             <div className="card-content">
                 <img class="card-sub-item" src= {this.props.eventImage}></img>
                 <h1 className="card-sub-item">{this.props.eventTitle}</h1>

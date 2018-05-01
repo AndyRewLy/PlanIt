@@ -9,8 +9,7 @@ class CommentContainer extends React.Component {
         super(props);
 
         this.state={
-            content:'',
-            commentList: [] /* only being used to test UI*/
+            content:''
         }
 
         this.handleCommentChange = this.handleCommentChange.bind(this);
@@ -29,32 +28,30 @@ class CommentContainer extends React.Component {
 
     submitComment() {
         var event = this.props.event;
+
         //Submit comment
-        
-        //Remove this section after adding backend in
-        console.log(this.state.commentList)
         this.props.postComment(event.eventId, this.state);
-        
-        this.setState({commentList: this.state.commentList.concat(<div>{this.state.content}</div>), content: ''});
-        
     }
 
     render() {
-        var today = new Date();
-        var dateFormat = today.getMonth()+1 + '/' + today.getDate() + '/' + today.getFullYear();
+        let comMsg;
+        if (this.props.comList.length == 0){
+            comMsg = (<p> No comments yet.</p>)
+        }
+        else{
+            comMsg = (
+                this.props.comList.map(comment=>
+                <Comment 
+                    posterEmail={comment.user}
+                    postingDate={comment.datePosted}
+                    content={comment.content}
+                />))
+        }
 
         return (
             <div>
                 <div className="comment-container">
-                    {   
-                        /*Should end up being in the props somehow*/
-                        this.state.commentList.map(comment=>
-                            <Comment 
-                                posterEmail='namm@planit.com'
-                                postingDate={dateFormat}
-                                content={comment}
-                            />)
-                    }
+                    {comMsg}
                 </div>
                 <div className="row">
                     <TextField style={{width: "80%"}} value={this.state.content} hintText="Input your comment..." onChange={this.handleCommentChange} />
