@@ -316,3 +316,21 @@ export function postComment(eventId, body) {
         return json["message"];
      });
 }
+
+export function getEventComments(eventId) {
+    headers.set("Authorization", cookie);
+
+    console.log("Get comments API call");
+
+    return get("event/" + eventId + "/comments")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         return json["message"];
+     })
+}
