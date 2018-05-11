@@ -92,7 +92,10 @@ class RSVPEvents extends React.Component {
                     <div className="rowComponent" key={cards[i].title}>
                         <h1 style={{ paddingTop: 20 + 'px', fontSize: 16 + 'px' }}>{cards[i].title}</h1>
                     </div>
-                    <RSVPEventCardContainer cards={cards[i].events} canRSVP={false} renderEventInfo={this.toggleEventInfo} />
+                    <RSVPEventCardContainer 
+                        cards={cards[i].events} 
+                        canRSVP={false} 
+                        renderEventInfo={this.toggleEventInfo} />
                 </div>
             );
         }
@@ -117,7 +120,8 @@ class RSVPEvents extends React.Component {
                     rsvp_status = {this.getEventRSVPWithId()}
                     rsvp={this.rsvpToEvent}
                     isVisible={this.state.showEventVisible}
-                    close={this.toggleEventInfo}/>
+                    close={this.toggleEventInfo}
+                    {...this.props} />
                 : ''}
             </div>
         );
