@@ -38,9 +38,10 @@ class Main extends Component {
                     {this.signedIn() ? 
                         <div>
                             <AppBar className="PlanIt" 
-                             title="PlanIt" 
+                             title="PLAN IT" 
                              iconClassNameRight="muidocs-icon-navigation-expand-more" 
                              onLeftIconButtonClick={this.handleToggle}/>
+                            <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
                             <Drawer docked={false} width={200} open={this.state.open} onRequestChange={(open) => this.setState({open})}>
                                 <MenuItem value="home" primaryText="Home" 
                                  rightIcon={<Home/>}
@@ -96,6 +97,7 @@ class Main extends Component {
                                  }}>
                                 </MenuItem>
                             </Drawer>
+                            </MuiThemeProvider>
                         </div>
                     :
                     ''

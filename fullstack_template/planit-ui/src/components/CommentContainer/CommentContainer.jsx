@@ -3,13 +3,22 @@ import Comment from './Comment'
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 
+import {
+    Table,
+    TableBody,
+    TableHeader,
+    TableHeaderColumn,
+    TableRow,
+    TableRowColumn,
+} from 'material-ui/Table';
+
 require('./Comment.css')
 class CommentContainer extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state={
-            content:''
+        this.state = {
+            content: ''
         }
 
         this.handleCommentChange = this.handleCommentChange.bind(this);
@@ -18,7 +27,7 @@ class CommentContainer extends React.Component {
     }
 
     handleCommentChange(event, value) {
-        this.setState({content: value});
+        this.setState({ content: value });
     }
 
     validateInput() {
@@ -35,26 +44,35 @@ class CommentContainer extends React.Component {
 
     render() {
         let comMsg;
-        if (this.props.comList.length == 0){
+        if (this.props.comList.length == 0) {
             comMsg = (<p> No comments yet.</p>)
         }
-        else{
+        else {
             comMsg = (
-                this.props.comList.map(comment=>
-                <Comment 
-                    posterEmail={comment.user}
-                    postingDate={comment.datePosted}
-                    content={comment.content}
-                />))
+                this.props.comList.map(comment =>
+                    <Comment
+                        posterEmail={comment.user}
+                        postingDate={comment.datePosted}
+                        content={comment.content}
+                    />))
         }
 
         return (
             <div>
-                <div className="comment-container">
-                    {comMsg}
-                </div>
+                <Table fixedHeader={true} height={200}>
+                    <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                        <TableRow>
+                            <TableHeaderColumn className="com-sub-item">Email</TableHeaderColumn>
+                            <TableHeaderColumn className="com-sub-item">Posting Date</TableHeaderColumn>
+                            <TableHeaderColumn>Comment</TableHeaderColumn>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody stripedRows={true} displayRowCheckbox={false}>
+                        {comMsg}
+                    </TableBody>
+                </Table>
                 <div className="row">
-                    <TextField style={{width: "80%"}} value={this.state.content} hintText="Input your comment..." onChange={this.handleCommentChange} />
+                    <TextField style={{ width: "80%" }} value={this.state.content} hintText="Input your comment..." onChange={this.handleCommentChange} />
                     <FlatButton label="Submit" primary={true} onClick={this.validateInput} />
                 </div>
             </div>
