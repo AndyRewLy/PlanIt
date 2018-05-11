@@ -128,6 +128,8 @@ export function postEventResponse(status, eventId, cb, errCb) {
         api.postEventResponse({status, eventId})
          .then(() => api.getAllFilteredEvents(""))
          .then((events) => dispatch({events: events, type: "GET_FILTERED_EVENTS"}))
+         .then(() => api.getAllRSVPEvents("true"))
+         .then(events => dispatch({events: events, type: "GET_RSVP_EVENTS"}))
          .then(() => { if (cb) cb();})
          .catch((error) => {if (errCb) errCb();})
     }
@@ -201,7 +203,7 @@ export function getOrganizationEvents(orgId, cb, errCb) {
 
     return (dispatch, prevState) => {
         api.getOrganizationEvents(orgId)
-         .then(events => dispatch({events: events, type: "GET_RSVP_EVENTS"}))
+         .then(events => dispatch({events: events, type: "GET_ORG_EVENTS"}))
          .then(() => {if (cb) cb();})
          .catch((error) => {if (errCb) errCb();})
     }

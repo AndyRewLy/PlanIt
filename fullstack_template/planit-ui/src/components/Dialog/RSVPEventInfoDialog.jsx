@@ -9,15 +9,18 @@ class RSVPEventInfoDialog extends React.Component {
             <FlatButton
                 label="Going"
                 primary={true}
-                onClick={() => this.props.rsvp(2, this.props.event.eventId)} />,
+                onClick={() => rsvp_status !== "" ? this.props.updateRsvp(2, this.props.event.eventId) 
+                                                 : this.props.rsvp(2, this.props.event.eventId)} />,
             <FlatButton
                 label="Interested"
                 primary={true}
-                onClick={() => this.props.rsvp(1, this.props.event.eventId)} />,
+                onClick={() => rsvp_status !== "" ? this.props.updateRsvp(1, this.props.event.eventId) 
+                                                 : this.props.rsvp(1, this.props.event.eventId)} />,
             <FlatButton
                 label="Not Going"
                 primary={true}
-                onClick={() => this.props.rsvp(0, this.props.event.eventId)} />
+                onClick={() => rsvp_status !== "" ? this.props.updateRsvp(0, this.props.event.eventId) 
+                                                 : this.props.rsvp(0, this.props.event.eventId)} />
         ];
 
         const event = this.props.event;
