@@ -330,6 +330,30 @@ def get_event_comments(id):
 
     return jsonify(message=serialized), 200
 
+@app.route('/org/<id>/events',methods=['GET'])
+@jwt_required()
+def get_org_events(id):
+    serialized = []
+
+    #events rsvp with status
+    events_and_status = db.session.query(Event, EventRSVP.status).filter_by(org_id=id).outerjoin(EventRSVP) \
+                                                .filter(EventRSVP.user_id.is_(current_identity.id)) \
+                                                .order_by(Event.event_start.desc()).all()
+
+    #events not rsvped to
+    events_rsvp = EventRSVP.query.with_entities(EventRSVP.event_id).filter_by(user_id=current_identity.id).subquery()
+    events_not_rsvp = db.session.query(Event).filter(~Event.id.in_(events_rsvp)).filter_by(org_id=id)\
+                                             .order_by(Event.event_start.desc()).all()
+
+    #print(events_and_status)
+    #print(events_not_rsvp)
+
+    serialized = [(Event.serialize(event), get_rsvp_status_string(rsvp_status)) for (event, rsvp_status) in events_and_status]
+    [serialized.append((Event.serialize(event), "")) for event in events_not_rsvp]
+    
+    #print(serialized)
+    return jsonify(message=serialized), 200
+
 if __name__ == "__main__":
    app.secret_key = os.urandom(12)
    app.run(port=5000, threaded=True)
