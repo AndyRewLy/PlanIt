@@ -195,3 +195,16 @@ export function getEventComments(eventId, cb, errCb) {
          .catch((error) => {if (errCb) errCb();})
     }
 }
+
+export function getOrganizationEvents(orgId, cb, errCb) {
+    console.log("Get all organization events Action Creator");
+
+    return (dispatch, prevState) => {
+        api.getOrganizationEvents(orgId)
+         .then(events => dispatch({events: events, type: "GET_RSVP_EVENTS"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+

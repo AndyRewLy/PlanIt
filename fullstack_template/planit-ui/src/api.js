@@ -334,3 +334,24 @@ export function getEventComments(eventId) {
          return json["message"];
      })
 }
+
+export function getOrganizationEvents(orgId) {
+    headers.set("Authorization", cookie);
+
+    console.log("Get organization events API call");
+
+    return get("org/" + orgId + "/events")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         console.log("------------------")
+         console.log(json["message"])
+         console.log("------------------")
+         return json["message"];
+     })
+}

@@ -334,6 +334,7 @@ def get_event_comments(id):
 @jwt_required()
 def get_org_events(id):
     serialized = []
+    org_name = Organization.query.get(id).name
 
     #events rsvp with status
     events_and_status = db.session.query(Event, EventRSVP.status).filter_by(org_id=id).outerjoin(EventRSVP) \
@@ -348,9 +349,12 @@ def get_org_events(id):
     #print(events_and_status)
     #print(events_not_rsvp)
 
-    serialized = [(Event.serialize(event), get_rsvp_status_string(rsvp_status)) for (event, rsvp_status) in events_and_status]
-    [serialized.append((Event.serialize(event), "")) for event in events_not_rsvp]
+    events_serialized = [(Event.serialize(event), get_rsvp_status_string(rsvp_status)) for (event, rsvp_status) in events_and_status]
+    [events_serialized.append((Event.serialize(event), "")) for event in events_not_rsvp]
     
+    serialized = [{"title" : org_name,
+                   "events": events_serialized
+                  }]
     #print(serialized)
     return jsonify(message=serialized), 200
 

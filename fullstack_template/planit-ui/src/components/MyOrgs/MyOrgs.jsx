@@ -14,8 +14,10 @@ import OrgCard from '../Card/OrgCard';
 
 import CreateOrgDialog from '../Dialog/CreateOrgDialog';
 import OrgInfoDialog from '../Dialog/OrgInfoDialog';
-
+import {RSVPEvents } from '../index';
+import { Route, Switch, Redirect, Link } from 'react-router-dom';
 import React, { Component } from 'react';
+
 
 require('./MyOrgs.css');
 
@@ -29,6 +31,7 @@ class MyOrgs extends React.Component {
             orgInfo: {}
         }
 
+        this.viewAllEvents = this.viewAllEvents.bind(this);
         this.closeCreateDialog = this.closeCreateDialog.bind(this);
         this.closeInfoDialog = this.closeInfoDialog.bind(this);
         this.changeOrgInfoVisible = this.changeOrgInfoVisible.bind(this);
@@ -54,6 +57,13 @@ class MyOrgs extends React.Component {
         this.setState({isInfoVisible: false});
     }
 
+    viewAllEvents(orgId) {
+        console.log("CLICKED ON VIEW ALL EVENTS")
+        this.props.getOrganizationEvents(orgId);
+        this.props.history.push("/myEvents");
+        return <Route path='/myEvents' render={() => <RSVPEvents {...this.props}/>}/> 
+    }
+
     render() {
         return (
             <div style={style}>
@@ -75,7 +85,7 @@ class MyOrgs extends React.Component {
                   <OrgCardContainer cards={this.props.MemberOrgs} renderOrgInfo={this.changeOrgInfoVisible}/>
               </div>
                }
-               <OrgInfoDialog isVisible={this.state.isInfoVisible} close={this.closeInfoDialog} org={this.state.orgInfo} {...this.props}/>
+               <OrgInfoDialog isVisible={this.state.isInfoVisible} close={this.closeInfoDialog} org={this.state.orgInfo} viewAllEvents={this.viewAllEvents} {...this.props}/>
                <CreateOrgDialog isVisible={this.state.isCreateVisible} close={this.closeCreateDialog} {...this.props}/>
                
             </div>
