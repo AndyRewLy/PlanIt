@@ -160,12 +160,10 @@ def create_event():
     request_data = request.get_json()
 
     eventTags = ''.join(request_data["eventTags"].split()) + "#"
-    dateFormat = '%m/%d/%y %I:%M%p'
-    eventStart = datetime.strptime(request_data["eventStartTime"], dateFormat)
-    eventEnd = datetime.strptime(request_data["eventEndTime"], dateFormat)
+    dateFormat = '%Y-%m-%dT%H:%M:%S'
 
-    print(eventStart)
-    print(eventEnd)
+    eventStart = datetime.strptime(request_data["eventStartTime"][:-5], dateFormat) - timedelta(hours=7)
+    eventEnd = datetime.strptime(request_data["eventEndTime"][:-5], dateFormat) - timedelta(hours=7)
 
     data = Event(name=request_data["eventTitle"], 
                  description=request_data["eventDescription"],
