@@ -24,7 +24,6 @@ class MyOrgs extends React.Component {
         super(props);
 
         this.state = {
-            memberStatus: "Admin",
             isCreateVisible: false,
             isInfoVisible: false,
             orgInfo: {}
@@ -33,14 +32,11 @@ class MyOrgs extends React.Component {
         this.closeCreateDialog = this.closeCreateDialog.bind(this);
         this.closeInfoDialog = this.closeInfoDialog.bind(this);
         this.changeOrgInfoVisible = this.changeOrgInfoVisible.bind(this);
-
-        this.renderAdminSelector = this.renderAdminSelector.bind(this);
-        this.handleOrgRoleChange = this.handleOrgRoleChange.bind(this);
     }
 
     changeOrgInfoVisible(orgId) {
         var org = {};
-        this.state.memberStatus === "Admin" ? 
+        this.props.type === "Admin" ? 
          org = this.props.AdminOrgs.filter(org => org.organizationId === orgId)[0]
         :
          org = this.props.MemberOrgs.filter(org => org.organizationId === orgId)[0];
@@ -58,31 +54,16 @@ class MyOrgs extends React.Component {
         this.setState({isInfoVisible: false});
     }
 
-    handleOrgRoleChange(event, index, value) {
-        this.setState({memberStatus: value});
-    }
-
-    renderAdminSelector() {
-        console.log("is this working");
-        return (
-            <DropDownMenu value={this.state.memberStatus} onChange={this.handleOrgRoleChange} className="admin-selector">
-                <MenuItem value={"Admin"} key={0} primaryText={"Admin"}/>
-                <MenuItem value={"Member"} key={1} primaryText={"Member"}/>
-            </DropDownMenu>
-        );
-    }
-    
     render() {
         return (
             <div style={style}>
-               {this.state.memberStatus === "Admin" ?
+               {this.props.type === "Admin" ?
                <div>
                   <div className="rowComponent">
                     <div className="sub-row">
                         <h1 className="float-left" style={{paddingTop: 20 + 'px', fontSize: 16 + 'px'}}>Organizations You Are an Admin of: </h1>
                         <RaisedButton className="float-left" label="Create Organization" primary={true} style={style} onClick={() => this.setState({isCreateVisible:true})}/>
                     </div>
-                    {this.renderAdminSelector()}
                   </div>
                   <OrgCardContainer cards={this.props.AdminOrgs} renderOrgInfo={this.changeOrgInfoVisible}/>
               </div>
@@ -90,7 +71,6 @@ class MyOrgs extends React.Component {
               <div>
                   <div className="rowComponent">
                     <h1 style={{paddingTop: 20 + 'px', fontSize: 16 + 'px'}}>Organizations You Are a Member of: </h1>
-                    {this.renderAdminSelector()}
                   </div>
                   <OrgCardContainer cards={this.props.MemberOrgs} renderOrgInfo={this.changeOrgInfoVisible}/>
               </div>

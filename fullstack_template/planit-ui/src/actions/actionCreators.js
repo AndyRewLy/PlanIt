@@ -171,3 +171,27 @@ export function getAllRSVPEvents(cb, errCb) {
          .catch((error) => {if (errCb) errCb();})
     }
 }
+
+export function postComment(eventId, body, cb, errCb) {
+    console.log("Register Action Creator...");
+    console.log("Stuff" + eventId + " " + body);
+
+    return (dispatch, prevState) => {
+        api.postComment(eventId, body)
+         .then(()=> api.getEventComments(eventId))
+         .then(comments => dispatch({comments: comments, type: "GET_EVENT_COMMENTS"}))
+         .then(() => { if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function getEventComments(eventId, cb, errCb) {
+    console.log("Get all Event Comments Action Creator");
+
+    return (dispatch, prevState) => {
+        api.getEventComments(eventId)
+         .then(comments => dispatch({comments: comments, type: "GET_EVENT_COMMENTS"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
