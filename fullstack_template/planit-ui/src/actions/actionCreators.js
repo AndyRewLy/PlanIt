@@ -165,7 +165,7 @@ export function getAllRSVPEvents(cb, errCb) {
     console.log("Get all RSVP Events Action Creator");
 
     return (dispatch, prevState) => {
-        api.getAllRSVPEvents()
+        api.getAllRSVPEvents(true)
          .then(events => dispatch({events: events, type: "GET_RSVP_EVENTS"}))
          .then(() => {if (cb) cb();})
          .catch((error) => {if (errCb) errCb();})
