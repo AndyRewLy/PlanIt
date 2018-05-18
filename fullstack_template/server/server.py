@@ -322,8 +322,6 @@ def add_comment(id):
 def get_event_comments(id):
     serialized = []
     event = Event.query.get(id)
-    
-    #[print(strftime("%m-%d-%y %I:%M:%S%p", localtime(item.date_posted/1000))) for item in event.comments]
     serialized = [EventComment.serialize(item) for item in event.comments]
 
     return jsonify(message=serialized), 200
@@ -344,17 +342,45 @@ def get_org_events(id):
     events_not_rsvp = db.session.query(Event).filter(~Event.id.in_(events_rsvp)).filter_by(org_id=id)\
                                              .order_by(Event.event_start.desc()).all()
 
-    #print(events_and_status)
-    #print(events_not_rsvp)
-
     events_serialized = [(Event.serialize(event), get_rsvp_status_string(rsvp_status)) for (event, rsvp_status) in events_and_status]
     [events_serialized.append((Event.serialize(event), "")) for event in events_not_rsvp]
     
     serialized = [{"title" : org_name,
                    "events": events_serialized
                   }]
-    #print(serialized)
+
     return jsonify(message=serialized), 200
+
+@app.route('/event/<id>/statistics',methods=['GET'])
+@jwt_required()
+def get_event_statistics(id):
+    
+    going = db.session.query(EventRSVP, User)\
+                    .filter_by(event_id=id).filter_by(status=2)\
+                    .join(User).with_entities(User.first_name, User.last_name).all()
+
+    interested = db.session.query(EventRSVP, User.first_name, User.last_name)\
+                    .filter_by(event_id=id).filter_by(status=1)\
+                    .join(User).with_entities(User.first_name, User.last_name).all()
+
+    not_going = db.session.query(EventRSVP, User.first_name, User.last_name)\
+                    .filter_by(event_id=id).filter_by(status=0)\
+                    .join(User).with_entities(User.first_name, User.last_name).all()
+
+    going = [user[0] + " " + user[1] for user in going]
+    interested = [user[0] + " " + user[1] for user in interested]
+    not_going = [user[0] + " " + user[1] for user in not_going]
+
+    serialized = {
+        "going":going,
+        "interested":interested,
+        "not_going":not_going
+    }
+    
+    return jsonify(message=serialized)
+    
+    
+    
 
 if __name__ == "__main__":
    app.secret_key = os.urandom(12)
