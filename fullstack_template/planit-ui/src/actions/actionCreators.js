@@ -209,6 +209,17 @@ export function getEventComments(eventId, cb, errCb) {
     }
 }
 
+export function getEventRSVPResponses(eventId, cb, errCb) {
+    console.log("Get all Event RSVP Responses Action Creator");
+
+    return (dispatch, prevState) => {
+        api.getEventRSVPResponses(eventId)
+         .then(responses => dispatch({responses: responses, type: "GET_EVENT_RSVP_RESPONSES"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }    
+}
+
 export function getOrganizationEvents(orgId, cb, errCb) {
     console.log("Get all organization events Action Creator");
 

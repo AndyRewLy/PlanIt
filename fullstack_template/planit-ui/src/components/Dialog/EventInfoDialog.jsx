@@ -1,6 +1,7 @@
 import Dialog from 'material-ui/Dialog';
 import React, { Component } from 'react';
 import CommentContainer from '../CommentContainer/CommentContainer';
+import RSVPResponseContainer from '../RSVPResponseContainer/RSVPResponseContainer';
 
 import {
     Table,
@@ -21,6 +22,7 @@ class EventInfoDialog extends React.Component {
 
     componentDidMount() {
         this.props.getEventComments(this.props.event.eventId);
+        this.props.getEventRSVPResponses(this.props.event.eventId);
     }
 
     render() {
@@ -59,6 +61,10 @@ class EventInfoDialog extends React.Component {
                         </TableRow>
                     </TableBody>
                 </Table>
+                <h4>RSVP Responses</h4>
+                <RSVPResponseContainer
+                    responseList={this.props.EventRSVPResponses}
+                    {...this.props} />
                 <h4>Discussion</h4>
                 <CommentContainer
                     comList={this.props.EventComments}
