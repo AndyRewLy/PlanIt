@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { Login, Register, HomePage, MyOrgs, MyEvents, RSVPEvents } from '../index';
+import { Login, Register, HomePage, MyOrgs, MyEvents, RSVPEvents, OrgEvents } from '../index';
 import { Route, Switch, Redirect, Link } from 'react-router-dom';
 
 import Drawer from 'material-ui/Drawer';
@@ -132,7 +132,8 @@ class Main extends Component {
                          render={() => !this.signedIn() ? <Redirect to='/login'/> : <MyEvents {...this.props}/>}/> 
                         <Route path='/myEvents'
                          render={() => !this.signedIn() ? <Redirect to='/login'/> : <RSVPEvents {...this.props}/>}/> 
-
+                        <Route path='/orgEvents'
+                         render={() => !this.signedIn() ? <Redirect to='/login'/> : <OrgEvents {...this.props}/>}/>
                 </Switch>
                 </MuiThemeProvider>
             </div>

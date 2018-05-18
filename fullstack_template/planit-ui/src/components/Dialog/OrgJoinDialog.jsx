@@ -3,6 +3,15 @@ import FlatButton from 'material-ui/FlatButton';
 
 import React, { Component } from 'react';
 
+import {
+    Table,
+    TableBody,
+    TableHeader,
+    TableHeaderColumn,
+    TableRow,
+    TableRowColumn,
+} from 'material-ui/Table';
+
 class OrgJoinDialog extends React.Component {
 
     /* Expected props:
@@ -31,14 +40,18 @@ class OrgJoinDialog extends React.Component {
                 title={this.props.org.organizationName}
                 open={this.props.open}
                 onRequestClose={this.props.onClose}>
-                <div>
-                    <h3>Organization Type</h3>
-                    <div>{this.props.org.organizationType}</div>
-                </div>
-                <div>
-                    <h3>Organization Description</h3>
-                    <div>{this.props.org.organizationDescription}</div>
-                </div>
+                <Table>
+                    <TableBody displayRowCheckbox={false}>
+                        <TableRow>
+                            <TableRowColumn className="bold-row">Type</TableRowColumn>
+                            <TableRowColumn>{this.props.org.organizationType}</TableRowColumn>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowColumn className="bold-row">Description</TableRowColumn>
+                            <TableRowColumn>{this.props.org.organizationDescription}</TableRowColumn>
+                        </TableRow>
+                    </TableBody>
+                </Table>
             </Dialog>
         );
     }
