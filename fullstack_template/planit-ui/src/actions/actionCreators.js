@@ -6,6 +6,17 @@
  */
 import * as api from '../api';
 
+export function persistLogin(token, cb) {
+    console.log("Persisting login...");
+
+    return (dispatch, prevState) => {
+        api.persistLogin(token)
+          .catch((error) => {
+            dispatch({type:"LOG_OUT"})
+          });
+    }
+}
+
 export function signIn(credentials, cb, errCb) {
     console.log("Sign In Action Creator");
 
@@ -26,7 +37,7 @@ export function signOut(cb) {
 
     return (dispatch, prevState) => {
         api.signOut();
-        dispatch({type: "SIGN_OUT"});
+        dispatch({type: "LOG_OUT"});
         if (cb) cb();
          
     };

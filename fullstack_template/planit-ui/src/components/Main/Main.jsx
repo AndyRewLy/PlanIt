@@ -19,14 +19,21 @@ class Main extends Component {
         }
 
         this.handleToggle = this.handleToggle.bind(this);
+        this.signedIn = this.signedIn.bind(this);
     }
     
+    componentWillMount() {
+        console.log("Why am i in here");
+        if (this.props.User.cookie && this.props.User.cookie) {
+            this.props.persistLogin(this.props.User.cookie);
+        }
+    }
     handleToggle() {
         this.setState({open: !this.state.open});
     }
 
     signedIn() {
-        return Object.keys(this.props.User).length !== 0;
+        return this.props.User && this.props.User.cookie;
     }
 
     render() {
@@ -116,15 +123,15 @@ class Main extends Component {
                         <Route path='/register'
                          render={() => <Register {...this.props} />}/>
                         <Route path='/home'
-                         render={() => <HomePage {...this.props}/>}/>
+                         render={() => !this.signedIn() ? <Redirect to='/login'/> : <HomePage {...this.props}/>}/>
                         <Route path='/manageOrgs'
-                         render={() => <MyOrgs type="Admin" {...this.props}/>}/>
+                         render={() => !this.signedIn() ? <Redirect to='/login'/> : <MyOrgs type="Admin" {...this.props}/>}/>
                          <Route path='/myOrgs'
-                         render={() => <MyOrgs type="Member" {...this.props}/>}/>
+                         render={() => !this.signedIn() ? <Redirect to='/login'/> : <MyOrgs type="Member" {...this.props}/>}/>
                         <Route path='/manageEvents'
-                         render={() => <MyEvents {...this.props}/>}/> 
+                         render={() => !this.signedIn() ? <Redirect to='/login'/> : <MyEvents {...this.props}/>}/> 
                         <Route path='/myEvents'
-                         render={() => <RSVPEvents {...this.props}/>}/> 
+                         render={() => !this.signedIn() ? <Redirect to='/login'/> : <RSVPEvents {...this.props}/>}/> 
 
                 </Switch>
                 </MuiThemeProvider>

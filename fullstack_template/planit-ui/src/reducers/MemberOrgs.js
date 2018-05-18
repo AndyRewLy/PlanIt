@@ -1,4 +1,4 @@
-function MemberOrgs(state = {}, action) {
+function MemberOrgs(state = [], action) {
     console.log("MemberOrgs reducing action " + action.type);
     switch(action.type) {
     case 'GET_MEMBER_ORGS':
