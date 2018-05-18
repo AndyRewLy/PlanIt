@@ -3,7 +3,20 @@ import Dialog from 'material-ui/Dialog'
 
 import React, { Component } from 'react';
 
+import {
+    Table,
+    TableBody,
+    TableHeader,
+    TableHeaderColumn,
+    TableRow,
+    TableRowColumn,
+} from 'material-ui/Table';
+
 class OrgInfoDialog extends Component {
+
+    constructor(props){
+        super(props);
+    }
 
     render() {
         const exit = <FlatButton label="Exit" primary={true} onClick={this.props.close}/>
@@ -18,14 +31,18 @@ class OrgInfoDialog extends Component {
              title={this.props.org.organizationName}
              open={this.props.isVisible}
              onRequestClose={this.props.close}>
-                <div>
-                    <h5>Organization Type</h5>
-                    <div>{this.props.org.organizationType}</div>
-                </div>
-                <div>
-                    <h5>Organization Description</h5>
-                    <div>{this.props.org.organizationDescription}</div>
-                </div>
+            <Table>
+                    <TableBody displayRowCheckbox={false}>
+                        <TableRow>
+                            <TableRowColumn className="bold-row">Type</TableRowColumn>
+                            <TableRowColumn>{this.props.org.organizationType}</TableRowColumn>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowColumn className="bold-row">Description</TableRowColumn>
+                            <TableRowColumn>{this.props.org.organizationDescription}</TableRowColumn>
+                        </TableRow>
+                    </TableBody>
+                </Table>
             </Dialog>
         );
     }

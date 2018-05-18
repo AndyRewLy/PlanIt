@@ -14,7 +14,7 @@ import OrgCard from '../Card/OrgCard';
 
 import CreateOrgDialog from '../Dialog/CreateOrgDialog';
 import OrgInfoDialog from '../Dialog/OrgInfoDialog';
-import {RSVPEvents } from '../index';
+import {OrgEvents } from '../index';
 import { Route, Switch, Redirect, Link } from 'react-router-dom';
 import React, { Component } from 'react';
 
@@ -58,10 +58,8 @@ class MyOrgs extends React.Component {
     }
 
     viewAllEvents(orgId) {
-        console.log("CLICKED ON VIEW ALL EVENTS")
         this.props.getOrganizationEvents(orgId);
-        this.props.history.push("/myEvents");
-        return <Route path='/myEvents' render={() => <RSVPEvents {...this.props}/>}/> 
+        this.props.history.push("/orgEvents");
     }
 
     render() {
