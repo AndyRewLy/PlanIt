@@ -1,0 +1,9 @@
+.response-container {
+    height: 200px !important;
+    overflow-y: scroll;
+}
+
+.response-type-item {
+    font-size: 15px;
+    width: 70px;
+}

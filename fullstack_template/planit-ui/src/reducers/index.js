@@ -9,8 +9,10 @@ import AllEvents from './AllEvents';
 import RSVPEvents from './RSVPEvents';
 import OrgEvents from './OrgEvents';
 import EventComments from './EventComments';
+import EventRSVPResponses from './EventRSVPResponses';
 
-const appReducer = combineReducers({User, AllOrgs, AdminOrgs, MemberOrgs, AdminEvents, AllEvents, RSVPEvents, EventComments, OrgEvents});
+const appReducer = combineReducers({User, AllOrgs, AdminOrgs, MemberOrgs, AdminEvents, AllEvents, RSVPEvents, EventComments, OrgEvents, EventRSVPResponses});
+
 const rootReducer = (state, action) => {
     if (action.type == 'LOG_OUT')
         state = undefined;
