@@ -356,6 +356,24 @@ export function getEventComments(eventId) {
      })
 }
 
+export function getEventRSVPResponses(eventId) {
+    headers.set("Authorization", cookie);
+
+    console.log("Get RSVP responses API call");
+
+    return get("event/" + eventId + "/statistics")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         return json["message"];
+     })
+}
+
 export function getOrganizationEvents(orgId) {
     headers.set("Authorization", cookie);
 
