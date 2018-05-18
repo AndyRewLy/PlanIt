@@ -1,4 +1,4 @@
-function AdminOrgs(state = {}, action) {
+function AdminOrgs(state = [], action) {
     console.log("Admin Orgs reducing action " + action.type);
     switch(action.type) {
     case 'GET_ADMIN_ORGS':

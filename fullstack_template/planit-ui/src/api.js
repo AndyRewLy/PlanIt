@@ -63,6 +63,25 @@ export function del(endpoint) {
     })
 }
 
+export function persistLogin(token) {
+    cookie = token;
+
+    //making test api call to verify cookie is valid
+    headers.set("Authorization", cookie);
+
+    return get("orgs/all")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         return json["message"];
+     })
+}
+
 export function signIn(cred) {
     console.log("API signin with " + cred);
 
@@ -83,7 +102,7 @@ export function signIn(cred) {
              headers: headers,
              credentials: "include"
          }
-         return {username: cred.username};
+         return {username: cred.username, cookie: cookie};
      })
 }
 
@@ -280,6 +299,8 @@ function createErrorPromise(response, body) {
        .then(response => response.json())
        .then(errorList => Promise.reject(errorList.length ? 
         ["had an error"] : ["Unknown error"]));
+    else if (response.status === 401)
+       return Promise.reject(["Unauthorized Error"]);
     else if (response.status === 500)
        return Promise.reject(["Server Connect Error"]);
     else
@@ -331,6 +352,27 @@ export function getEventComments(eventId) {
          return createErrorPromise(response);
      })
      .then(json => {
+         return json["message"];
+     })
+}
+
+export function getOrganizationEvents(orgId) {
+    headers.set("Authorization", cookie);
+
+    console.log("Get organization events API call");
+
+    return get("org/" + orgId + "/events")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         console.log("------------------")
+         console.log(json["message"])
+         console.log("------------------")
          return json["message"];
      })
 }
