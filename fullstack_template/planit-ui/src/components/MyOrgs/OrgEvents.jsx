@@ -16,6 +16,8 @@ class OrgEvents extends React.Component {
             showEventVisible: false,
             calloutEventId: undefined,
             canRSVP: false,
+            firstChange: true,
+            initEvents: [],
             orgName: ''
         }
         
@@ -60,7 +62,7 @@ class OrgEvents extends React.Component {
             }
         }
 
-        return {};
+        return "";
     }
 
     updateRsvpToEvent(response, eventId) {
@@ -72,18 +74,34 @@ class OrgEvents extends React.Component {
     }
 
     createRowComponents() {
-        var rowComponents = [];        
+        var rowComponents = [];       
         var cards = this.props.RSVPEvents;
         var curOrg = this.state.orgName;
+
         for (var i = 0; i < cards.length; i++) {
-            if (cards[i].title == curOrg) {
+            if (cards[i].title == curOrg) { // restriction
+                
+                var empty = this.state.initEvents[0].events;
+                for(var evId in cards[i].events){
+                    var id = cards[i].events[evId][0].eventId;
+                    empty = empty.filter((event)=> event[0].eventId !== id);
+                }
+
+                var e = [];
+                if (this.state.initEvents[0].events.length !== cards[i].events.length) {
+                    e = cards[i].events.concat(empty);
+                }
+                else {
+                    e = cards[i].events;
+                }
+
                 rowComponents.push(
                     <div key={cards[i].title}>
                         <div className="rowComponent" key={cards[i].title}>
                             <h1 style={{ paddingTop: 20 + 'px', fontSize: 16 + 'px' }}>{cards[i].title}</h1>
                         </div>
                         <RSVPEventCardContainer 
-                            cards={cards[i].events} 
+                            cards={e} 
                             canRSVP={false} 
                             renderEventInfo={this.toggleEventInfo} />
                     </div>
@@ -101,8 +119,8 @@ class OrgEvents extends React.Component {
     }
 
     componentDidUpdate (prevProps, prevState) {
-        if (this.props !== prevProps) {
-            this.setState({orgName: this.props.OrgEvents[0].title})
+        if ((this.props !== prevProps) && this.state.firstChange) {
+            this.setState({orgName: this.props.OrgEvents[0].title, initEvents: this.props.RSVPEvents, firstChange: false});
         }    
     }
 
