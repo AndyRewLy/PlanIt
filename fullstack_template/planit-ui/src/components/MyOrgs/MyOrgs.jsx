@@ -46,7 +46,7 @@ class MyOrgs extends React.Component {
         
         console.log("Organization was...");
         console.log(org);
-        this.setState({orgInfo: org, isInfoVisible: true});
+        this.props.getMembers(orgId, () => this.setState({orgInfo: org, isInfoVisible: true}));
     }
 
     closeCreateDialog() {

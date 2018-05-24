@@ -2,6 +2,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Dialog from 'material-ui/Dialog'
 
 import React, { Component } from 'react';
+import OrgMembersContainer from '../OrgMembersContainer/OrgMembersContainer';
 
 import {
     Table,
@@ -31,7 +32,7 @@ class OrgInfoDialog extends Component {
              title={this.props.org.organizationName}
              open={this.props.isVisible}
              onRequestClose={this.props.close}>
-            <Table>
+                <Table>
                     <TableBody displayRowCheckbox={false}>
                         <TableRow>
                             <TableRowColumn className="bold-row">Type</TableRowColumn>
@@ -43,6 +44,7 @@ class OrgInfoDialog extends Component {
                         </TableRow>
                     </TableBody>
                 </Table>
+                <OrgMembersContainer members={this.props.Members}/>
             </Dialog>
         );
     }
