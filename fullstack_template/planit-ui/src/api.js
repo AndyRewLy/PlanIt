@@ -394,3 +394,25 @@ export function getOrganizationEvents(orgId) {
          return json["message"];
      })
 }
+
+export function getMembers(orgId) {
+    headers.set("Authorization", cookie);
+
+    console.log("Get organization members");
+
+    return new Promise(function(resolve, reject) {
+        setTimeout(resolve, 100, 'foo');
+      })
+    /* Uncomment this when this is done*/
+    // return get("org/" + orgId + "/members")
+    //   .then((response) => {
+    //       if (response.ok) {
+    //           return response.json();
+    //       }
+
+    //       return createErrorPromise(response);
+    //   })
+    //   .then(json => {
+    //       return json["message"]
+    //   })
+}

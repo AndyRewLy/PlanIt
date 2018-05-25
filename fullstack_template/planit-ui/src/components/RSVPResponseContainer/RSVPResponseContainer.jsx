@@ -22,8 +22,8 @@ class RSVPResponseContainer extends React.Component {
     }
 
     render() {
-        let responses, going, interested, not_going; 
-        responses = this.props.responseList;
+        var responses, going, interested, not_going; 
+        responses = this.props.responseList ? this.props.responseList : [];
 
         going = (
             responses["going"].join(', '))
