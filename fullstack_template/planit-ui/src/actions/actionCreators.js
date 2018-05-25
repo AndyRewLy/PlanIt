@@ -235,16 +235,10 @@ export function getMembers(orgId, cb, errCb) {
     console.log("Get all members for a given organization");
 
     return (dispatch, prevState) => {
-        api.getMembers(orgId)
-        .then(() => dispatch({members:[{email: "a@a", memberStatus: 1}], type: "GET_MEMBERS"}))
-        .then(() => {if (cb) cb();})
-        .catch((error) => {if (errCb) errCb();})
-        
-        /* uncomment this when it is done*/
-        // api.getMembers(orgId)
-        //  .then(events => dispatch({events: events, type: "GET_MEMBERS"}))
-        //  .then(() => {if (cb) cb();})
-        //  .catch((error) => {if (errCb) errCb();})
+         api.getMembers(orgId)
+          .then(members => dispatch({members: members, type: "GET_MEMBERS"}))
+          .then(() => {if (cb) cb();})
+          .catch((error) => {if (errCb) errCb();})
     }
 }
 

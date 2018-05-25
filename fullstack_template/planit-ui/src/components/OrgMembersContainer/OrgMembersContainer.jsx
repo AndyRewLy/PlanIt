@@ -30,7 +30,7 @@ class OrgMembersContainer extends React.Component {
                 <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                     <TableRow>
                         <TableHeaderColumn>Email</TableHeaderColumn>
-                        <TableHeaderColumn>Memberstatus</TableHeaderColumn>
+                        <TableHeaderColumn>Member Status</TableHeaderColumn>
                     </TableRow>
                 </TableHeader>
                 <TableBody stripedRows={true} displayRowCheckbox={false}>

@@ -379,8 +379,21 @@ def get_event_statistics(id):
     
     return jsonify(message=serialized)
     
+@app.route('/org/<id>/members',methods=['GET'])
+@jwt_required()
+def get_org_members(id):
+    serialized = []
     
+    admins = Organization.query.get(id).admins
+    serialized = [{"email": admin.email, "memberStatus": "admin"} for admin in admins]
     
+    members = Organization.query.get(id).members 
+    for member in members:
+        if not any(admin["email"] == member.email for admin in serialized):
+            serialized.append({"email": member.email, "memberStatus": "member"})
+
+    print(serialized)
+    return jsonify(message=serialized), 200
 
 if __name__ == "__main__":
    app.secret_key = os.urandom(12)
