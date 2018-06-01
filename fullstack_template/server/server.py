@@ -356,11 +356,12 @@ def get_admin_requests(id):
 def update_admin_requests(id):
     admins = Organization.query.get(id).admins 
     pending_admins = Organization.query.get(id).pending_admins
-
     request_data = request.get_json()
+
+    user = User.query.get(request_data["user_id"])
     if [request_data["approved"]]: 
-        admins.append(current_identity) 
-    pending_admins.remove(current_identity)
+        admins.append(user) 
+    pending_admins.remove(user)
 
     try:     
         db.session.add(admins)
