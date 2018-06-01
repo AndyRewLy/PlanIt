@@ -8,6 +8,7 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+import ToggleButton from 'react-toggle-button'
 
 import OrgCardContainer from '../CardContainer/OrgCardContainer';
 import OrgCard from '../Card/OrgCard';
@@ -31,6 +32,7 @@ class MyOrgs extends React.Component {
             orgInfo: {}
         }
 
+        this.handleOrgRoleChange = this.handleOrgRoleChange.bind(this);
         this.viewAllEvents = this.viewAllEvents.bind(this);
         this.closeCreateDialog = this.closeCreateDialog.bind(this);
         this.closeInfoDialog = this.closeInfoDialog.bind(this);
@@ -57,6 +59,17 @@ class MyOrgs extends React.Component {
         this.setState({isInfoVisible: false});
     }
 
+    handleOrgRoleChange(value) {
+        if(value == false) {
+            this.props.getAllAdminOrgs();
+            this.props.history.push("/manageOrgs");
+        }
+        else {
+            this.props.getAllMemberOrgs();
+            this.props.history.push("/myOrgs");
+        }
+    }
+
     viewAllEvents(orgId) {
         this.props.getOrganizationEvents(orgId);
         this.props.history.push("/orgEvents");
@@ -72,6 +85,20 @@ class MyOrgs extends React.Component {
                         <h1 className="float-left" style={{paddingTop: 20 + 'px', fontSize: 16 + 'px'}}>Organizations You Are an Admin of: </h1>
                         <RaisedButton className="float-left" label="Create Organization" primary={true} style={style} onClick={() => this.setState({isCreateVisible:true})}/>
                     </div>
+                    <div>
+                        <ToggleButton 
+                            containerStyle={toggleButtonStyle.containerStyle} 
+                            trackStyle={toggleButtonStyle.trackStyle} 
+                            thumbStyle={toggleButtonStyle.thumbStyle}
+                            thumbAnimateRange={toggleButtonStyle.thumbAnimateRange} 
+                            activeLabelStyle={toggleButtonStyle.activeLabelStyle}
+                            inactiveLabelStyle={toggleButtonStyle.inactiveLabelStyle}
+                            colors={toggleButtonStyle.colors}
+                            inactiveLabel={"Member"}
+                            activeLabel={"Admin"}
+                            value={true} 
+                            onToggle={this.handleOrgRoleChange}/>
+                    </div>
                   </div>
                   <OrgCardContainer cards={this.props.AdminOrgs} renderOrgInfo={this.changeOrgInfoVisible}/>
               </div>
@@ -79,6 +106,19 @@ class MyOrgs extends React.Component {
               <div>
                   <div className="rowComponent">
                     <h1 style={{paddingTop: 20 + 'px', fontSize: 16 + 'px'}}>Organizations You Are a Member of: </h1>
+                    <div>
+                        <ToggleButton 
+                            containerStyle={toggleButtonStyle.containerStyle} 
+                            trackStyle={toggleButtonStyle.trackStyle} 
+                            thumbStyle={toggleButtonStyle.thumbStyle}
+                            thumbAnimateRange={toggleButtonStyle.thumbAnimateRange} 
+                            activeLabelStyle={toggleButtonStyle.activeLabelStyle}
+                            inactiveLabelStyle={toggleButtonStyle.inactiveLabelStyle}
+                            inactiveLabel={"Member"}
+                            activeLabel={"Admin"}
+                            value={false} 
+                            onToggle={this.handleOrgRoleChange}/>
+                    </div>
                   </div>
                   <OrgCardContainer cards={this.props.MemberOrgs} renderOrgInfo={this.changeOrgInfoVisible}/>
               </div>
@@ -93,6 +133,20 @@ class MyOrgs extends React.Component {
 
 const style = {
     margin: 15,
+};
+
+const toggleButtonStyle = {
+    containerStyle: {display:'inline-block',width:'100px',height:'25px'},
+    trackStyle:{width:'100px', height:'25px'},
+    thumbStyle:{width:'25px', height:'25px'},
+    thumbAnimateRange:[1, 80],
+    activeLabelStyle:{ width:'30px', fontSize:'13px'},
+    inactiveLabelStyle:{ width:'30px', fontSize:'13px'},
+    colors:{
+        active: {
+          base: '#3E5C76',
+        },
+      }
 };
 
 
