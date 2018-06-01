@@ -347,7 +347,7 @@ def get_admin_requests(id):
     serialized = [] 
 
     pending_admins = Organization.query.get(id).pending_admins
-    serialized = [{"email": user.email} for user in pending_admins]
+    serialized = [{"email": user.email, "id": user.id} for user in pending_admins]
 
     return jsonify(message=serialized), 200
 
