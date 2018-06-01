@@ -370,7 +370,7 @@ def update_admin_requests(id):
     except:
         db.session.rollback()
 
-    return jsonify(message="set rsvp successful")
+    return jsonify(message="admin request review successful")
 
 
 @app.route('/org/<id>/events',methods=['GET'])
