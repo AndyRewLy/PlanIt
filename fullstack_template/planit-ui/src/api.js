@@ -429,3 +429,38 @@ export function postAdminRequest(orgId) {
         return 200;
      });
 }
+
+export function getAdminRequests(orgId) {
+    headers.set("Authorization", cookie);
+
+    console.log("Get Admin Requests");
+
+     return get("org/" + orgId + "/adminrequest")
+       .then((response) => {
+           if (response.ok) {
+               return response.json();
+           }
+           return createErrorPromise(response);
+       })
+       .then(json => {
+           return json["message"]
+       })
+}
+
+export function sendRequestStatus(orgId, userId, approved) {
+    headers.set("Authorization", cookie);
+
+    console.log("Request status update"); 
+
+    return put("org/" + orgId + "/adminrequest", {"user_id":userId, "approved": approved})
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+        return 200;
+     });
+}

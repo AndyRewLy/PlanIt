@@ -11,8 +11,9 @@ import RSVPEvents from './RSVPEvents';
 import OrgEvents from './OrgEvents';
 import EventComments from './EventComments';
 import EventRSVPResponses from './EventRSVPResponses';
+import AdminRequests from './AdminRequests';
 
-const appReducer = combineReducers({User, AllOrgs, AdminOrgs, MemberOrgs, AdminEvents, AllEvents, RSVPEvents, EventComments, OrgEvents, EventRSVPResponses, Members});
+const appReducer = combineReducers({User, AllOrgs, AdminOrgs, MemberOrgs, AdminEvents, AllEvents, RSVPEvents, EventComments, OrgEvents, EventRSVPResponses, Members, AdminRequests});
 
 const rootReducer = (state, action) => {
     if (action.type == 'LOG_OUT')

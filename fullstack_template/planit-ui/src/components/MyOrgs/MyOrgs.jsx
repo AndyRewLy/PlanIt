@@ -15,6 +15,8 @@ import OrgCard from '../Card/OrgCard';
 
 import CreateOrgDialog from '../Dialog/CreateOrgDialog';
 import OrgInfoDialog from '../Dialog/OrgInfoDialog';
+import ViewRequestDialog from '../Dialog/ViewRequestDialog';
+
 import {OrgEvents } from '../index';
 import { Route, Switch, Redirect, Link } from 'react-router-dom';
 import React, { Component } from 'react';
@@ -29,6 +31,7 @@ class MyOrgs extends React.Component {
         this.state = {
             isCreateVisible: false,
             isInfoVisible: false,
+            viewRequests: false,
             orgInfo: {}
         }
 
@@ -38,6 +41,10 @@ class MyOrgs extends React.Component {
         this.closeCreateDialog = this.closeCreateDialog.bind(this);
         this.closeInfoDialog = this.closeInfoDialog.bind(this);
         this.changeOrgInfoVisible = this.changeOrgInfoVisible.bind(this);
+
+        this.viewAdminRequests = this.viewAdminRequests.bind(this);
+        this.sendRequestStatus = this.sendRequestStatus.bind(this);
+        this.closeRequestDialog = this.closeRequestDialog.bind(this);
     }
 
     changeOrgInfoVisible(orgId) {
@@ -59,6 +66,10 @@ class MyOrgs extends React.Component {
     closeInfoDialog() {
         this.setState({isInfoVisible: false});
     }
+    
+    closeRequestDialog() {
+        this.setState({viewRequests: false});
+    }
 
     handleOrgRoleChange(value) {
         if(value == false) {
@@ -78,6 +89,14 @@ class MyOrgs extends React.Component {
 
     requestAdminAccess(orgId) {
         this.props.postAdminRequest(orgId);
+    }
+
+    viewAdminRequests(orgId) {
+        this.props.getAdminRequests(orgId, () => this.setState({viewRequests: true, isInfoVisible: false}));
+    }
+
+    sendRequestStatus(orgId, userId, status) {
+        this.props.postRequestStatus(orgId, userId, status);
     }
 
     render() {
@@ -128,7 +147,21 @@ class MyOrgs extends React.Component {
                   <OrgCardContainer cards={this.props.MemberOrgs} renderOrgInfo={this.changeOrgInfoVisible}/>
               </div>
                }
-               <OrgInfoDialog isVisible={this.state.isInfoVisible} close={this.closeInfoDialog} org={this.state.orgInfo} viewAllEvents={this.viewAllEvents} submitAdminRequest={this.requestAdminAccess} {...this.props}/>
+               <OrgInfoDialog 
+                 isVisible={this.state.isInfoVisible} 
+                 close={this.closeInfoDialog} 
+                 org={this.state.orgInfo} 
+                 viewAllEvents={this.viewAllEvents} 
+                 submitAdminRequest={this.requestAdminAccess} 
+                 viewAdminRequests={this.viewAdminRequests}
+                 {...this.props}/>
+                 <ViewRequestDialog
+                  isVisible={this.state.viewRequests}
+                  org={this.state.orgInfo}
+                  sendRequestStatus={this.sendRequestStatus}
+                  close={this.closeRequestDialog}
+                  org={this.state.orgInfo}
+                  {...this.props}/>
                <CreateOrgDialog isVisible={this.state.isCreateVisible} close={this.closeCreateDialog} {...this.props}/>
                
             </div>

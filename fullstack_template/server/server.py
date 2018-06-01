@@ -354,18 +354,16 @@ def get_admin_requests(id):
 @app.route('/org/<id>/adminrequest',methods=['PUT'])
 @jwt_required()
 def update_admin_requests(id):
-    admins = Organization.query.get(id).admins 
-    pending_admins = Organization.query.get(id).pending_admins
     request_data = request.get_json()
 
     user = User.query.get(request_data["user_id"])
+    org = Organization.query.get(id)
     if [request_data["approved"]]: 
-        admins.append(user) 
-    pending_admins.remove(user)
+        org.admins.append(user) 
+
+    org.pending_admins.remove(user)
 
     try:     
-        db.session.add(admins)
-        db.session.add(pending_admins)
         db.session.commit()
     except:
         db.session.rollback()
