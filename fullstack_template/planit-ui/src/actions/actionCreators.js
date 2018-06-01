@@ -251,3 +251,23 @@ export function postAdminRequest(orgId, cb, errCb) {
          .catch((error) => {if (errCb) errCb();})
     }
 }
+
+export function getAdminRequests(orgId, cb, errCb) {
+    console.log("Getting admin requests...");
+
+    return (dispatch, prevState) => {
+        dispatch({requests: [{"email": "a@a", "id": 1}], type: "GET_ADMIN_REQUESTS"})
+        if (cb) cb();
+        // api.getAdminRequests(orgId)
+        //  .then(() => {if (cb) cb();})
+        //  .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function sendRequestStatus(orgId, userId, status, cb) {
+    console.log("Sending request satus...");
+
+    return (dispatch, prevState) => {
+        if (cb) cb();
+    }
+}

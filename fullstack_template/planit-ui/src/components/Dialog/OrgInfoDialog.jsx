@@ -21,15 +21,19 @@ class OrgInfoDialog extends Component {
 
     render() {
         const exit = <FlatButton label="Exit" primary={true} onClick={this.props.close}/>
-        const request_admin = <FlatButton label="Request Admin Status" primary={true} onClick={this.props.submitAdminRequest(this.props.org.organizationId)}/>    
+        const request_admin = <FlatButton label="Request Admin Status" primary={true} onClick={() => this.props.submitAdminRequest(this.props.org.organizationId)}/>    
+        const viewRequests = <FlatButton label="View Admin Requests" primary={true} onClick={() => this.props.viewAdminRequests(this.props.org.organizationId)}/>;
         const viewEvents = 
         <FlatButton
                 label="View Events"
                 primary={true}
                 onClick={() => this.props.viewAllEvents(this.props.org.organizationId)} />
+        var currUser = this.props.Members.filter(m => m.email === this.props.User.username);
+        var isAdmin = currUser[0] && currUser[0].memberStatus === "admin";
+
         return (
             <Dialog 
-             actions={[viewEvents, request_admin, exit]}
+             actions={isAdmin ? [viewEvents, viewRequests, exit] : [viewEvents, request_admin, exit]}
              title={this.props.org.organizationName}
              open={this.props.isVisible}
              onRequestClose={this.props.close}>

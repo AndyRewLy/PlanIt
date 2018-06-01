@@ -429,3 +429,11 @@ export function postAdminRequest(orgId) {
         return 200;
      });
 }
+
+export function getAdminRequests(orgId) {
+    headers.set("Authorization", cookie);
+
+    console.log("Get admin requests...");
+
+    return 1
+}
