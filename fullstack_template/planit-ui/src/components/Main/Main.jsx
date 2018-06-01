@@ -71,14 +71,6 @@ class Main extends Component {
                                     this.handleToggle();
                                  }}>
                                 </MenuItem>
-                                <MenuItem value="manageEvents" primaryText="Manage Events" 
-                                 rightIcon={<Event/>}
-                                 onClick={() => {
-                                    this.props.getAllAdminEvents();
-                                    this.props.history.push("/manageEvents");
-                                    this.handleToggle();                                
-                                 }}>
-                                </MenuItem>
                                 <MenuItem value="myEvents" primaryText="My Events" 
                                  rightIcon={<Event/>}
                                  onClick={() => {

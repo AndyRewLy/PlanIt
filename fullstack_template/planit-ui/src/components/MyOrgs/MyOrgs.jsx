@@ -93,6 +93,7 @@ class MyOrgs extends React.Component {
                             thumbAnimateRange={toggleButtonStyle.thumbAnimateRange} 
                             activeLabelStyle={toggleButtonStyle.activeLabelStyle}
                             inactiveLabelStyle={toggleButtonStyle.inactiveLabelStyle}
+                            colors={toggleButtonStyle.colors}
                             inactiveLabel={"Member"}
                             activeLabel={"Admin"}
                             value={true} 
@@ -140,7 +141,12 @@ const toggleButtonStyle = {
     thumbStyle:{width:'25px', height:'25px'},
     thumbAnimateRange:[1, 80],
     activeLabelStyle:{ width:'30px', fontSize:'13px'},
-    inactiveLabelStyle:{ width:'30px', fontSize:'13px'}
+    inactiveLabelStyle:{ width:'30px', fontSize:'13px'},
+    colors:{
+        active: {
+          base: '#3E5C76',
+        },
+      }
 };
 
 
