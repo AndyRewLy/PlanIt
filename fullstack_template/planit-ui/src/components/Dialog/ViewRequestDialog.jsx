@@ -21,7 +21,8 @@ class OrgInfoDialog extends Component {
 
     render() {
         const exit = <FlatButton label="Exit" primary={true} onClick={this.props.close}/>
-        var sendRequestStatus = (userId, status) => this.props.sendRequestStatus(this.props.organizationId, userId, status);
+        var sendRequestStatus = (userId, status) => this.props.sendRequestStatus(this.props.org.organizationId, userId, status);
+
         return (
             <Dialog 
              actions={[exit]}

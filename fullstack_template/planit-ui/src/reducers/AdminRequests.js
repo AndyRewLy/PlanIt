@@ -3,6 +3,8 @@ function AdminRequests(state = [], action) {
     switch(action.type) {
     case 'GET_ADMIN_REQUESTS':
        return action.requests;
+    case 'DELETE_ADMIN_REQUEST':
+       return state.filter(request => request.id !== action.userId)
     default:
        return state;
     }

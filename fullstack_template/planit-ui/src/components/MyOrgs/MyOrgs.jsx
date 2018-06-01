@@ -160,6 +160,7 @@ class MyOrgs extends React.Component {
                   org={this.state.orgInfo}
                   sendRequestStatus={this.sendRequestStatus}
                   close={this.closeRequestDialog}
+                  org={this.state.orgInfo}
                   {...this.props}/>
                <CreateOrgDialog isVisible={this.state.isCreateVisible} close={this.closeCreateDialog} {...this.props}/>
                

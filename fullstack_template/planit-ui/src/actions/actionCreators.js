@@ -256,11 +256,11 @@ export function getAdminRequests(orgId, cb, errCb) {
     console.log("Getting admin requests...");
 
     return (dispatch, prevState) => {
-        dispatch({requests: [{"email": "a@a", "id": 1}], type: "GET_ADMIN_REQUESTS"})
         if (cb) cb();
-        // api.getAdminRequests(orgId)
-        //  .then(() => {if (cb) cb();})
-        //  .catch((error) => {if (errCb) errCb();})
+        api.getAdminRequests(orgId)
+         .then(requests => dispatch({requests: requests, type: "GET_ADMIN_REQUESTS"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
     }
 }
 
@@ -268,6 +268,9 @@ export function sendRequestStatus(orgId, userId, status, cb) {
     console.log("Sending request satus...");
 
     return (dispatch, prevState) => {
-        if (cb) cb();
+        api.sendRequestStatus(orgId, userId, status)
+         .then(dispatch({userId: userId, type: "DELETE_ADMIN_REQUEST"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => error)
     }
 }
