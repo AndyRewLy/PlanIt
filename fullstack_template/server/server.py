@@ -330,10 +330,8 @@ def get_event_comments(id):
 @jwt_required()
 def create_admin_request(id):
     org = Organization.query.get(id)
-    print(org.pending_admins)
     if (current_identity not in org.pending_admins):
         org.pending_admins.append(current_identity)
-    print(org.pending_admins)
 
     try:     
         db.session.add(org)
@@ -341,8 +339,39 @@ def create_admin_request(id):
     except:
         db.session.rollback()
 
-    print('goodbye!')
     return jsonify(message="successful admin request")
+
+@app.route('/org/<id>/adminrequest',methods=['GET'])
+@jwt_required()
+def get_admin_requests(id):
+    serialized = [] 
+
+    pending_admins = Organization.query.get(id).pending_admins
+    serialized = [{"email": user.email, "id": user.id} for user in pending_admins]
+
+    return jsonify(message=serialized), 200
+
+@app.route('/org/<id>/adminrequest',methods=['PUT'])
+@jwt_required()
+def update_admin_requests(id):
+    admins = Organization.query.get(id).admins 
+    pending_admins = Organization.query.get(id).pending_admins
+    request_data = request.get_json()
+
+    user = User.query.get(request_data["user_id"])
+    if [request_data["approved"]]: 
+        admins.append(user) 
+    pending_admins.remove(user)
+
+    try:     
+        db.session.add(admins)
+        db.session.add(pending_admins)
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    return jsonify(message="admin request review successful")
+
 
 @app.route('/org/<id>/events',methods=['GET'])
 @jwt_required()
