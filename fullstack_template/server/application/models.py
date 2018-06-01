@@ -50,10 +50,16 @@ organization_admins = db.Table('organization_admins',
     db.Column('org_id', db.Integer, db.ForeignKey('organization.id'), primary_key=True)
 )
 
+pending_organization_admins = db.Table('pending_organization_admins', 
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('org_id', db.Integer, db.ForeignKey('organization.id'), primary_key=True)
+)
+
 organization_members = db.Table('organization_members',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
     db.Column('org_id', db.Integer, db.ForeignKey('organization.id'), primary_key=True)
 )
+
 
 class Organization(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -64,6 +70,8 @@ class Organization(db.Model):
     events = relationship("Event", backref='organization', order_by='desc(Event.event_start)')
     admins = db.relationship('User', secondary=organization_admins,
         backref=db.backref('organizations_as_admin'))
+    pending_admins = db.relationship('User', secondary=pending_organization_admins,
+        backref=db.backref('organizations_as_pending_admins'))  
     members = db.relationship('User', secondary=organization_members,
         backref=db.backref('organizations_as_member'))
 

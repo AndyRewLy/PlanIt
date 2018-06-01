@@ -21,6 +21,7 @@ class OrgInfoDialog extends Component {
 
     render() {
         const exit = <FlatButton label="Exit" primary={true} onClick={this.props.close}/>
+        const request_admin = <FlatButton label="Request Admin Status" primary={true} onClick={this.props.submitAdminRequest(this.props.org.organizationId)}/>    
         const viewEvents = 
         <FlatButton
                 label="View Events"
@@ -28,7 +29,7 @@ class OrgInfoDialog extends Component {
                 onClick={() => this.props.viewAllEvents(this.props.org.organizationId)} />
         return (
             <Dialog 
-             actions={[viewEvents, exit]}
+             actions={[viewEvents, request_admin, exit]}
              title={this.props.org.organizationName}
              open={this.props.isVisible}
              onRequestClose={this.props.close}>

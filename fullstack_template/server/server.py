@@ -326,6 +326,24 @@ def get_event_comments(id):
 
     return jsonify(message=serialized), 200
 
+@app.route('/org/<id>/adminrequest',methods=['POST'])
+@jwt_required()
+def create_admin_request(id):
+    org = Organization.query.get(id)
+    print(org.pending_admins)
+    if (current_identity not in org.pending_admins):
+        org.pending_admins.append(current_identity)
+    print(org.pending_admins)
+
+    try:     
+        db.session.add(org)
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    print('goodbye!')
+    return jsonify(message="successful admin request")
+
 @app.route('/org/<id>/events',methods=['GET'])
 @jwt_required()
 def get_org_events(id):

@@ -242,3 +242,12 @@ export function getMembers(orgId, cb, errCb) {
     }
 }
 
+export function postAdminRequest(orgId, cb, errCb) {
+    console.log("Request Admin Access Action Creator"); 
+
+    return (dispatch, prevState) => {
+        api.postAdminRequest(orgId)
+         .then(() => { if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
