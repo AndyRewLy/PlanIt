@@ -63,14 +63,6 @@ class Main extends Component {
                                     this.handleToggle();
                                  }}>
                                 </MenuItem>
-                                <MenuItem value="manageOrgs" primaryText="Manage Orgs" 
-                                 rightIcon={<Group/>}
-                                 onClick={() => {
-                                    this.props.getAllAdminOrgs();
-                                    this.props.history.push("/manageOrgs");
-                                    this.handleToggle();
-                                 }}>
-                                 </MenuItem>
                                  <MenuItem value="myOrgs" primaryText="My Orgs" 
                                  rightIcon={<Group/>}
                                  onClick={() => {
