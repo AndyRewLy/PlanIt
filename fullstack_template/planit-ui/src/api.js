@@ -411,3 +411,21 @@ export function getMembers(orgId) {
            return json["message"]
        })
 }
+
+export function postAdminRequest(orgId) {
+    headers.set("Authorization", cookie);
+
+    console.log("Request admin access with "); 
+
+    return post("org/" + orgId + "/adminrequest")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+        return 200;
+     });
+}

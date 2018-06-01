@@ -34,6 +34,7 @@ class MyOrgs extends React.Component {
 
         this.handleOrgRoleChange = this.handleOrgRoleChange.bind(this);
         this.viewAllEvents = this.viewAllEvents.bind(this);
+        this.requestAdminAccess = this.requestAdminAccess.bind(this);
         this.closeCreateDialog = this.closeCreateDialog.bind(this);
         this.closeInfoDialog = this.closeInfoDialog.bind(this);
         this.changeOrgInfoVisible = this.changeOrgInfoVisible.bind(this);
@@ -73,6 +74,10 @@ class MyOrgs extends React.Component {
     viewAllEvents(orgId) {
         this.props.getOrganizationEvents(orgId);
         this.props.history.push("/orgEvents");
+    }
+
+    requestAdminAccess(orgId) {
+        this.props.postAdminRequest(orgId);
     }
 
     render() {
@@ -123,7 +128,7 @@ class MyOrgs extends React.Component {
                   <OrgCardContainer cards={this.props.MemberOrgs} renderOrgInfo={this.changeOrgInfoVisible}/>
               </div>
                }
-               <OrgInfoDialog isVisible={this.state.isInfoVisible} close={this.closeInfoDialog} org={this.state.orgInfo} viewAllEvents={this.viewAllEvents} {...this.props}/>
+               <OrgInfoDialog isVisible={this.state.isInfoVisible} close={this.closeInfoDialog} org={this.state.orgInfo} viewAllEvents={this.viewAllEvents} submitAdminRequest={this.requestAdminAccess} {...this.props}/>
                <CreateOrgDialog isVisible={this.state.isCreateVisible} close={this.closeCreateDialog} {...this.props}/>
                
             </div>
