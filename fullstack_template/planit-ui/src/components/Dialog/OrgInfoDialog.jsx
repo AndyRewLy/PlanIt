@@ -28,14 +28,18 @@ class OrgInfoDialog extends Component {
                 label="View Events"
                 primary={true}
                 onClick={() => this.props.viewAllEvents(this.props.org.organizationId)} />
+        const leaveOrg = <FlatButton
+                            label="Leave Org"
+                            primary={true}
+                            onClick={() => this.props.leaveOrg("false", this.props.org.organizationId)} />
         var currUser = this.props.Members.filter(m => m.email === this.props.User.username);
         var isAdmin = currUser[0] && currUser[0].memberStatus === "admin";
 
         return (
             <Dialog 
-             actions={isAdmin && this.props.viewAsAdmin ? [viewEvents, viewRequests, exit] : 
-                       (isAdmin && !this.props.viewAsAdmin || this.props.org.requestedAdmin ? [viewEvents, exit] :
-                                                             [viewEvents, request_admin, exit])}
+             actions={isAdmin && this.props.viewAsAdmin ? [leaveOrg, viewEvents, viewRequests, exit] : 
+                       (isAdmin && !this.props.viewAsAdmin || this.props.org.requestedAdmin ? [leaveOrg, viewEvents, exit] :
+                                                             [leaveOrg, viewEvents, request_admin, exit])}
              title={this.props.org.organizationName}
              open={this.props.isVisible}
              onRequestClose={this.props.close}>
