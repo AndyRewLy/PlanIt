@@ -247,6 +247,7 @@ export function postAdminRequest(orgId, cb, errCb) {
 
     return (dispatch, prevState) => {
         api.postAdminRequest(orgId)
+         .then(() => dispatch({orgId: orgId, type: "UPDATE_ADMIN_REQUEST"}))
          .then(() => { if (cb) cb();})
          .catch((error) => {if (errCb) errCb();})
     }

@@ -78,13 +78,19 @@ class Organization(db.Model):
     def __repr__(self):
         return '<Organization %r %r %r>' % (self.name, self.org_type, self.description)
     
-    def serialize(self):
+    def serialize(self, userId=None):
+        requestedAdmin = False
+        if userId is not None:
+            if any(user.id == userId for user in self.pending_admins):
+                requestedAdmin = True
+
         return {
             'organizationId': self.id,
             'organizationName': self.name, 
             'organizationType': self.org_type.name,
             'organizationDescription': self.description,
-            'organizationImage': self.image
+            'organizationImage': self.image,
+            'requestedAdmin': requestedAdmin
         } 
 
 class Event(db.Model): 

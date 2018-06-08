@@ -75,10 +75,12 @@ class MyOrgs extends React.Component {
         if(value == false) {
             this.props.getAllAdminOrgs();
             this.props.history.push("/manageOrgs");
+            this.setState({adminView: true})
         }
         else {
             this.props.getAllMemberOrgs();
             this.props.history.push("/myOrgs");
+            this.setState({adminView: false})
         }
     }
 
@@ -154,6 +156,7 @@ class MyOrgs extends React.Component {
                  viewAllEvents={this.viewAllEvents} 
                  submitAdminRequest={this.requestAdminAccess} 
                  viewAdminRequests={this.viewAdminRequests}
+                 viewAsAdmin={this.state.adminView}
                  {...this.props}/>
                  <ViewRequestDialog
                   isVisible={this.state.viewRequests}
