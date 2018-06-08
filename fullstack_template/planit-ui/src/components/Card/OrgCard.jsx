@@ -14,6 +14,11 @@ class OrgCard extends React.Component {
       
       render() {
           var adminRequests = this.props.adminRequests ? this.props.adminRequests : 0;
+          var notificationShown = undefined;
+          
+          if (!this.props.canJoin && this.props.role != 'Member') {
+            notificationShown = <div className="notification">{adminRequests}</div>;
+          }
 
       return (
         <div className="Card"
@@ -24,7 +29,7 @@ class OrgCard extends React.Component {
                     <h1 class="card-sub-item">{this.props.organizationName}</h1>
                     <h2 class="card-sub-item">{this.props.organizationDescription}</h2>
                 </div>
-                <div className="notification">{adminRequests}</div>
+                {notificationShown}
             </div>
         </div>);
       }
