@@ -191,18 +191,18 @@ export function postComment(eventId, body, cb, errCb) {
 
     return (dispatch, prevState) => {
         api.postComment(eventId, body)
-         .then(()=> api.getEventComments(eventId))
+         .then(()=> api.getEventComments(eventId, body["isAdminComment"]))
          .then(comments => dispatch({comments: comments, type: "GET_EVENT_COMMENTS"}))
          .then(() => { if (cb) cb();})
          .catch((error) => {if (errCb) errCb();})
     }
 }
 
-export function getEventComments(eventId, cb, errCb) {
+export function getEventComments(eventId, isAdminComment, cb, errCb) {
     console.log("Get all Event Comments Action Creator");
 
     return (dispatch, prevState) => {
-        api.getEventComments(eventId)
+        api.getEventComments(eventId, isAdminComment)
          .then(comments => dispatch({comments: comments, type: "GET_EVENT_COMMENTS"}))
          .then(() => {if (cb) cb();})
          .catch((error) => {if (errCb) errCb();})

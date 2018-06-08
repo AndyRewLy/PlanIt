@@ -27,7 +27,7 @@ class CommentContainer extends React.Component {
     }
 
     handleCommentChange(event, value) {
-        this.setState({ content: value });
+        this.setState({ content: value, isAdminComment: this.props.isAdminComment });
     }
 
     validateInput() {
@@ -37,7 +37,6 @@ class CommentContainer extends React.Component {
 
     submitComment() {
         var event = this.props.event;
-
         //Submit comment
         this.props.postComment(event.eventId, this.state);
     }
