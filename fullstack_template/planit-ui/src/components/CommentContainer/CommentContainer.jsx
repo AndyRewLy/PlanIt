@@ -61,7 +61,7 @@ class CommentContainer extends React.Component {
                 <Table fixedHeader={true} height={200}>
                     <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                         <TableRow>
-                            <TableHeaderColumn>Email</TableHeaderColumn>
+                            <TableHeaderColumn>Name</TableHeaderColumn>
                             <TableHeaderColumn>Posting Date</TableHeaderColumn>
                             <TableHeaderColumn>Comment</TableHeaderColumn>
                         </TableRow>
