@@ -318,12 +318,20 @@ def add_comment(id):
     return jsonify(message="add comment successful")
 
 #returns a list of comments posted for the specified event
-@app.route('/event/<id>/comments',methods=['GET'])
+@app.route('/event/<id>/comments/admin=<sel>',methods=['GET'])
 @jwt_required()
-def get_event_comments(id):
+def get_event_comments(id, sel):
     serialized = []
     event = Event.query.get(id)
-    serialized = [EventComment.serialize(item) for item in event.comments]
+    if(sel == 'true' or sel == True):
+        sel = 1
+        print("IN TRUE")
+    else:
+        sel = 0
+    
+    comments = EventComment.query.filter_by(event_id=id, isAdminComment=sel).all()
+    print(comments)
+    serialized = [EventComment.serialize(item) for item in comments]
 
     return jsonify(message=serialized), 200
 

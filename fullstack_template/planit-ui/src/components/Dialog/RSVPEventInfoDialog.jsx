@@ -1,5 +1,6 @@
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import CommentContainer from '../CommentContainer/CommentContainer';
 import React, { Component } from 'react';
 
 import {
@@ -12,6 +13,10 @@ import {
 } from 'material-ui/Table';
 
 class RSVPEventInfoDialog extends React.Component {
+
+    componentDidMount() {
+        this.props.getEventComments(this.props.event.eventId, false);
+    }
 
     render() {
         console.log("rendering RSVPEEventInfoDialog");
@@ -36,6 +41,9 @@ class RSVPEventInfoDialog extends React.Component {
         const event = this.props.event;
         const rsvp_status = this.props.rsvp_status;
         console.log(rsvp_status)
+
+        console.log("MEMBER COMMENTS???")
+        console.log(this.props.EventComments)
         return (
             
             <Dialog
@@ -72,6 +80,11 @@ class RSVPEventInfoDialog extends React.Component {
                         </TableRow>
                     </TableBody>
                 </Table>
+                <h4>Discussion</h4>
+                <CommentContainer
+                    comList={this.props.EventComments}
+                    isAdminComment={false}
+                    {...this.props} />
             </Dialog>
         );
 }
