@@ -90,7 +90,8 @@ class Organization(db.Model):
             'organizationType': self.org_type.name,
             'organizationDescription': self.description,
             'organizationImage': self.image,
-            'requestedAdmin': requestedAdmin
+            'requestedAdmin': requestedAdmin,
+            'adminRequests': len(self.pending_admins)
         } 
 
 class Event(db.Model): 
