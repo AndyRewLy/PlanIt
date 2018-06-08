@@ -142,6 +142,8 @@ class EventComment(db.Model):
     user_id = db.Column(db.Integer, ForeignKey(User.id)) 
     event_id = db.Column(db.Integer, ForeignKey(Event.id))
     content = db.Column(db.String(1024))
+    isAdminComment = db.Column(db.Boolean)
+
     #epoch time in ms
     date_posted = db.Column(db.BigInteger)
 
@@ -149,12 +151,13 @@ class EventComment(db.Model):
     event = relationship("Event", back_populates="comments")
 
     def __repr__(self):
-        return '<EventComment %r %r %r %r>' % (self.user_id, self.event_id, self.content, self.date_posted) 
+        return '<EventComment %r %r %r %r %r>' % (self.user_id, self.event_id, self.content, self.isAdminComment, self.date_posted) 
     
     def serialize(self):
         return {
             'eventId': self.event_id,
             'user': self.user.first_name + " " + self.user.last_name,
             'content': self.content,
+            'isAdminComment': self.isAdminComment,
             'datePosted': self.date_posted
         }
