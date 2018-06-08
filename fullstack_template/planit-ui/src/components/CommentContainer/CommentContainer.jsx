@@ -52,7 +52,7 @@ class CommentContainer extends React.Component {
                 this.props.comList.map(comment =>
                     <Comment
                         posterEmail={comment.user}
-                        postingDate={comment.datePosted}
+                        postingDate={new Date(comment.datePosted).toLocaleString()}
                         content={comment.content}
                     />))
         }
@@ -62,8 +62,8 @@ class CommentContainer extends React.Component {
                 <Table fixedHeader={true} height={200}>
                     <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                         <TableRow>
-                            <TableHeaderColumn className="com-sub-item">Email</TableHeaderColumn>
-                            <TableHeaderColumn className="com-sub-item">Posting Date</TableHeaderColumn>
+                            <TableHeaderColumn>Email</TableHeaderColumn>
+                            <TableHeaderColumn>Posting Date</TableHeaderColumn>
                             <TableHeaderColumn>Comment</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
