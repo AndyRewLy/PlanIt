@@ -338,12 +338,12 @@ export function postComment(eventId, body) {
      });
 }
 
-export function getEventComments(eventId) {
+export function getEventComments(eventId, isAdminComment) {
     headers.set("Authorization", cookie);
 
     console.log("Get comments API call");
 
-    return get("event/" + eventId + "/comments")
+    return get("event/" + eventId + "/comments/admin=" + isAdminComment)
      .then((response) => {
          if (response.ok) {
              return response.json();

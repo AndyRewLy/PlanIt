@@ -1,6 +1,5 @@
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-
 import React, { Component } from 'react';
 
 import {
@@ -69,7 +68,7 @@ class EventRSVPDialog extends Component {
                             <TableRowColumn>{event.maxParticipants}</TableRowColumn>
                         </TableRow>
                         <TableRow>
-                            <TableRowColumn className="bold-row">Event Type</TableRowColumn>
+                            <TableRowColumn className="bold-row">Event Types</TableRowColumn>
                             <TableRowColumn>{event.eventMembersOnly ? "For Members Only" : "Open to Everyone"}</TableRowColumn>
                         </TableRow>
                     </TableBody>

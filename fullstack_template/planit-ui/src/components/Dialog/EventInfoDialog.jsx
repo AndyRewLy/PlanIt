@@ -21,12 +21,16 @@ class EventInfoDialog extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getEventComments(this.props.event.eventId);
+        this.props.getEventComments(this.props.event.eventId, true);
         this.props.getEventRSVPResponses(this.props.event.eventId);
     }
 
     render() {
         const event = this.props.event;
+
+
+        console.log("ADMIN COMMENTS???")
+        console.log(this.props.EventComments)
         return (
             <Dialog
                 title={event.eventTitle}
@@ -68,6 +72,7 @@ class EventInfoDialog extends React.Component {
                 <h4>Discussion</h4>
                 <CommentContainer
                     comList={this.props.EventComments}
+                    isAdminComment={true}
                     {...this.props} />
             </Dialog>
         );

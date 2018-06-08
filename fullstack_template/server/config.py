@@ -5,7 +5,7 @@
 
 
 # Uncomment the line below if you want to work with a local DB
-SQLALCHEMY_DATABASE_URI = 'sqlite:///testdb'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///test.db'
 SQLALCHEMY_TRACK_MODIFICATIONS=False
 SQLALCHEMY_POOL_RECYCLE = 3600
 

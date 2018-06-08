@@ -4,7 +4,9 @@ env/
 *.pyc
 *.db
 
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+fullstack_template/server/application/testdb
