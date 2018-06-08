@@ -154,7 +154,7 @@ class MyOrgs extends React.Component {
                             onToggle={this.handleOrgRoleChange}/>
                     </div>
                   </div>
-                  <OrgCardContainer cards={this.props.MemberOrgs} renderOrgInfo={this.changeOrgInfoVisible}/>
+                  <OrgCardContainer role={this.props.type} cards={this.props.MemberOrgs} renderOrgInfo={this.changeOrgInfoVisible}/>
               </div>
                }
                <OrgInfoDialog 
