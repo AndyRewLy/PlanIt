@@ -91,6 +91,8 @@ export function createNewOrg(org, cb, errCb) {
     return (dispatch, prevState) => {
         api.postOrg(org)
          .then(() => dispatch({org: org, type: "ADD_ADMIN_ORG"}))
+         .then(() => api.getAllAdminOrgs())
+         .then(adminOrgs => dispatch({adminOrgs: adminOrgs, type: "GET_ADMIN_ORGS"}))
          .then(() => { if (cb) cb(); })
          .catch((error) => {if (errCb) errCb();})
     }
