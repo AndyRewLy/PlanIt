@@ -304,7 +304,8 @@ def add_comment(id):
         date_posted = round(time() * 1000)
         
         comment = EventComment(content = request_data["content"],
-                               date_posted = date_posted)
+                               date_posted = date_posted, 
+                               isAdminComment = request_data["isAdminComment"])
         comment.event = event
         comment.user = current_identity
 
