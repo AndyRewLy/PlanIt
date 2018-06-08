@@ -151,7 +151,7 @@ def get_organizations(sel):
         #get all organizations you are a member of
         orgs = current_identity.organizations_as_member
 
-    serialized = [Organization.serialize(item) for item in orgs]
+    serialized = [Organization.serialize(item, current_identity.id) for item in orgs]
     return jsonify(message=serialized), 200
 
 @app.route('/events/create',methods=['POST'])
@@ -358,7 +358,7 @@ def update_admin_requests(id):
 
     user = User.query.get(request_data["user_id"])
     org = Organization.query.get(id)
-    if [request_data["approved"]]: 
+    if request_data["approved"]: 
         org.admins.append(user) 
 
     org.pending_admins.remove(user)

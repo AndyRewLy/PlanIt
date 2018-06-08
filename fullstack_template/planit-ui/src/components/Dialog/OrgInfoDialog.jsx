@@ -33,7 +33,9 @@ class OrgInfoDialog extends Component {
 
         return (
             <Dialog 
-             actions={isAdmin ? [viewEvents, viewRequests, exit] : [viewEvents, request_admin, exit]}
+             actions={isAdmin && this.props.viewAsAdmin ? [viewEvents, viewRequests, exit] : 
+                       (isAdmin && !this.props.viewAsAdmin || this.props.org.requestedAdmin ? [viewEvents, exit] :
+                                                             [viewEvents, request_admin, exit])}
              title={this.props.org.organizationName}
              open={this.props.isVisible}
              onRequestClose={this.props.close}>

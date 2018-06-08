@@ -28,6 +28,7 @@ class OrgCardContainer extends React.Component {
                                 organizationName={card.organizationName}
                                 organizationDescription={card.organizationDescription}
                                 organizationImage={card.organizationImage}
+                                adminRequests={card.adminRequests}
                                 canJoin={card.canJoin ? card.canJoin : false}
                               /> : '')
                        }
