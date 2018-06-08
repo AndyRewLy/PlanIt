@@ -14,8 +14,8 @@ class Comments extends React.Component {
     render() {
         return (
             <TableRow>
-                <TableRowColumn className="com-sub-item">{this.props.posterEmail}</TableRowColumn>
-                <TableRowColumn className="com-sub-item">{this.props.postingDate}</TableRowColumn>
+                <TableRowColumn>{this.props.posterEmail}</TableRowColumn>
+                <TableRowColumn>{this.props.postingDate}</TableRowColumn>
                 <TableRowColumn><div className="com-content">{this.props.content}</div></TableRowColumn>
             </TableRow>
         );

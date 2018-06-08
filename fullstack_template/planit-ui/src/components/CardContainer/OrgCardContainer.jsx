@@ -22,6 +22,7 @@ class OrgCardContainer extends React.Component {
                                (filterText && 
                                 card.organizationName.match(new RegExp(filterText, 'i'))) ?
                               <OrgCard
+                                role={this.props.role}
                                 renderOrgInfo={this.props.renderOrgInfo ? this.props.renderOrgInfo : undefined}
                                 key={card.organizationId}
                                 organizationId = {card.organizationId}

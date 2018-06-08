@@ -35,6 +35,7 @@ class MyOrgs extends React.Component {
             orgInfo: {}
         }
 
+        this.leaveOrg = this.leaveOrg.bind(this);
         this.handleOrgRoleChange = this.handleOrgRoleChange.bind(this);
         this.viewAllEvents = this.viewAllEvents.bind(this);
         this.requestAdminAccess = this.requestAdminAccess.bind(this);
@@ -101,6 +102,13 @@ class MyOrgs extends React.Component {
         this.props.postRequestStatus(orgId, userId, status);
     }
 
+    leaveOrg(response, orgId) {
+        var that = this;
+
+        this.props.postOrgJoinStatus(response, orgId,
+            () => that.closeInfoDialog());
+    }
+
     render() {
         return (
             <div style={style}>
@@ -146,7 +154,7 @@ class MyOrgs extends React.Component {
                             onToggle={this.handleOrgRoleChange}/>
                     </div>
                   </div>
-                  <OrgCardContainer cards={this.props.MemberOrgs} renderOrgInfo={this.changeOrgInfoVisible}/>
+                  <OrgCardContainer role={this.props.type} cards={this.props.MemberOrgs} renderOrgInfo={this.changeOrgInfoVisible}/>
               </div>
                }
                <OrgInfoDialog 
@@ -157,6 +165,7 @@ class MyOrgs extends React.Component {
                  submitAdminRequest={this.requestAdminAccess} 
                  viewAdminRequests={this.viewAdminRequests}
                  viewAsAdmin={this.state.adminView}
+                 leaveOrg={this.leaveOrg}
                  {...this.props}/>
                  <ViewRequestDialog
                   isVisible={this.state.viewRequests}
