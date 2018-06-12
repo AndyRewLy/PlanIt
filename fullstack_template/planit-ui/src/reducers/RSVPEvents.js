@@ -4,6 +4,9 @@ function RSVPEvents(state = [], action) {
     switch(action.type) {
     case 'GET_RSVP_EVENTS':
        return action.events;
+    case 'GET_ORG_EVENTS':
+        console.log("getting org events: " + action.events)
+       return action.events;
     default:
        return state;
     }

@@ -63,6 +63,25 @@ export function del(endpoint) {
     })
 }
 
+export function persistLogin(token) {
+    cookie = token;
+
+    //making test api call to verify cookie is valid
+    headers.set("Authorization", cookie);
+
+    return get("orgs/all")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         return json["message"];
+     })
+}
+
 export function signIn(cred) {
     console.log("API signin with " + cred);
 
@@ -83,7 +102,7 @@ export function signIn(cred) {
              headers: headers,
              credentials: "include"
          }
-         return {username: cred.username};
+         return {username: cred.username, cookie: cookie};
      })
 }
 
@@ -280,6 +299,8 @@ function createErrorPromise(response, body) {
        .then(response => response.json())
        .then(errorList => Promise.reject(errorList.length ? 
         ["had an error"] : ["Unknown error"]));
+    else if (response.status === 401)
+       return Promise.reject(["Unauthorized Error"]);
     else if (response.status === 500)
        return Promise.reject(["Server Connect Error"]);
     else
@@ -300,4 +321,146 @@ function createErrorPromise(response, body) {
      .then(json => {
          return json["message"];
      })
+}
+
+export function postComment(eventId, body) {
+    console.log("Posting comment");
+
+    return post("event/" + eventId + "/comments", body)
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+         return createErrorPromise(response);
+     })
+     .then(json => {
+        return json["message"];
+     });
+}
+
+export function getEventComments(eventId, isAdminComment) {
+    headers.set("Authorization", cookie);
+
+    console.log("Get comments API call");
+
+    return get("event/" + eventId + "/comments/admin=" + isAdminComment)
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         return json["message"];
+     })
+}
+
+export function getEventRSVPResponses(eventId) {
+    headers.set("Authorization", cookie);
+
+    console.log("Get RSVP responses API call");
+
+    return get("event/" + eventId + "/statistics")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         return json["message"];
+     })
+}
+
+export function getOrganizationEvents(orgId) {
+    headers.set("Authorization", cookie);
+
+    console.log("Get organization events API call");
+
+    return get("org/" + orgId + "/events")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+         console.log("------------------")
+         console.log(json["message"])
+         console.log("------------------")
+         return json["message"];
+     })
+}
+
+export function getMembers(orgId) {
+    headers.set("Authorization", cookie);
+
+    console.log("Get organization members");
+
+     return get("org/" + orgId + "/members")
+       .then((response) => {
+           if (response.ok) {
+               return response.json();
+           }
+           return createErrorPromise(response);
+       })
+       .then(json => {
+           return json["message"]
+       })
+}
+
+export function postAdminRequest(orgId) {
+    headers.set("Authorization", cookie);
+
+    console.log("Request admin access with "); 
+
+    return post("org/" + orgId + "/adminrequest")
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+        return 200;
+     });
+}
+
+export function getAdminRequests(orgId) {
+    headers.set("Authorization", cookie);
+
+    console.log("Get Admin Requests");
+
+     return get("org/" + orgId + "/adminrequest")
+       .then((response) => {
+           if (response.ok) {
+               return response.json();
+           }
+           return createErrorPromise(response);
+       })
+       .then(json => {
+           return json["message"]
+       })
+}
+
+export function sendRequestStatus(orgId, userId, approved) {
+    headers.set("Authorization", cookie);
+
+    console.log("Request status update"); 
+
+    return put("org/" + orgId + "/adminrequest", {"user_id":userId, "approved": approved})
+     .then((response) => {
+         if (response.ok) {
+             return response.json();
+         }
+
+         return createErrorPromise(response);
+     })
+     .then(json => {
+        return 200;
+     });
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { Login, Register, HomePage, MyOrgs, MyEvents, RSVPEvents } from '../index';
+import { Login, Register, HomePage, MyOrgs, MyEvents, RSVPEvents, OrgEvents } from '../index';
 import { Route, Switch, Redirect, Link } from 'react-router-dom';
 
 import Drawer from 'material-ui/Drawer';
@@ -19,14 +19,21 @@ class Main extends Component {
         }
 
         this.handleToggle = this.handleToggle.bind(this);
+        this.signedIn = this.signedIn.bind(this);
     }
     
+    componentWillMount() {
+        console.log("Why am i in here");
+        if (this.props.User.cookie && this.props.User.cookie) {
+            this.props.persistLogin(this.props.User.cookie);
+        }
+    }
     handleToggle() {
         this.setState({open: !this.state.open});
     }
 
     signedIn() {
-        return Object.keys(this.props.User).length !== 0;
+        return this.props.User && this.props.User.cookie;
     }
 
     render() {
@@ -38,40 +45,37 @@ class Main extends Component {
                     {this.signedIn() ? 
                         <div>
                             <AppBar className="PlanIt" 
-                             title="PlanIt" 
+                             title="PLAN IT" 
                              iconClassNameRight="muidocs-icon-navigation-expand-more" 
                              onLeftIconButtonClick={this.handleToggle}/>
+                            <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
                             <Drawer docked={false} width={200} open={this.state.open} onRequestChange={(open) => this.setState({open})}>
                                 <MenuItem value="home" primaryText="Home" 
                                  rightIcon={<Home/>}
                                  onClick={() => {
-                                    this.props.getAllOrgs();
-                                    this.props.history.push("/home");
+                                    var that = this;
+
+                                    this.props.getAllOrgs(() => 
+			                           that.props.getAllMemberOrgs(() => 
+                                          that.props.getAllFilteredEvents("")
+                                    ));
+                                    that.props.history.push("/home");
                                     this.handleToggle();
                                  }}>
                                 </MenuItem>
-                                <MenuItem value="myOrgs" primaryText="My Organizations" 
+                                 <MenuItem value="myOrgs" primaryText="My Orgs" 
                                  rightIcon={<Group/>}
                                  onClick={() => {
-                                    this.props.getAllAdminOrgs();
                                     this.props.getAllMemberOrgs();
-                                    this.props.history.push("/orgs");
+                                    this.props.history.push("/myOrgs");
                                     this.handleToggle();
                                  }}>
                                 </MenuItem>
                                 <MenuItem value="myEvents" primaryText="My Events" 
                                  rightIcon={<Event/>}
                                  onClick={() => {
-                                    this.props.getAllAdminEvents();
-                                    this.props.history.push("/events");
-                                    this.handleToggle();                                
-                                 }}>
-                                </MenuItem>
-                                <MenuItem value="myRSVPs" primaryText="RSVP Events" 
-                                 rightIcon={<Event/>}
-                                 onClick={() => {
                                     this.props.getAllRSVPEvents();
-                                    this.props.history.push("/RSVPEvents");
+                                    this.props.history.push("/myEvents");
                                     this.handleToggle();                                
                                  }}>
                                 </MenuItem>
@@ -84,6 +88,7 @@ class Main extends Component {
                                  }}>
                                 </MenuItem>
                             </Drawer>
+                            </MuiThemeProvider>
                         </div>
                     :
                     ''
@@ -102,14 +107,17 @@ class Main extends Component {
                         <Route path='/register'
                          render={() => <Register {...this.props} />}/>
                         <Route path='/home'
-                         render={() => <HomePage {...this.props}/>}/>
-                        <Route path='/orgs'
-                         render={() => <MyOrgs {...this.props}/>}/>
-                        <Route path='/events'
-                         render={() => <MyEvents {...this.props}/>}/> 
-                        <Route path='/RSVPEvents'
-                         render={() => <RSVPEvents {...this.props}/>}/> 
-
+                         render={() => !this.signedIn() ? <Redirect to='/login'/> : <HomePage {...this.props}/>}/>
+                        <Route path='/manageOrgs'
+                         render={() => !this.signedIn() ? <Redirect to='/login'/> : <MyOrgs type="Admin" {...this.props}/>}/>
+                         <Route path='/myOrgs'
+                         render={() => !this.signedIn() ? <Redirect to='/login'/> : <MyOrgs type="Member" {...this.props}/>}/>
+                        <Route path='/manageEvents'
+                         render={() => !this.signedIn() ? <Redirect to='/login'/> : <MyEvents {...this.props}/>}/> 
+                        <Route path='/myEvents'
+                         render={() => !this.signedIn() ? <Redirect to='/login'/> : <RSVPEvents {...this.props}/>}/> 
+                        <Route path='/orgEvents'
+                         render={() => !this.signedIn() ? <Redirect to='/login'/> : <OrgEvents {...this.props}/>}/>
                 </Switch>
                 </MuiThemeProvider>
             </div>

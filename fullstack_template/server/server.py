@@ -1,9 +1,10 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from application.models import User, OrganizationType, Organization, Event, EventRSVP
+from application.models import User, OrganizationType, Organization, Event, EventRSVP, EventComment
 from flask_jwt import JWT, jwt_required, current_identity
 from flask_cors import CORS, cross_origin
 
+from time import time, gmtime, strftime, localtime
 from application.db_connector import db
 from util.hash_password import hash_password, check_password
 from util.converters import get_rsvp_status_string
@@ -150,7 +151,7 @@ def get_organizations(sel):
         #get all organizations you are a member of
         orgs = current_identity.organizations_as_member
 
-    serialized = [Organization.serialize(item) for item in orgs]
+    serialized = [Organization.serialize(item, current_identity.id) for item in orgs]
     return jsonify(message=serialized), 200
 
 @app.route('/events/create',methods=['POST'])
@@ -159,12 +160,10 @@ def create_event():
     request_data = request.get_json()
 
     eventTags = ''.join(request_data["eventTags"].split()) + "#"
-    dateFormat = '%m/%d/%y %I:%M%p'
-    eventStart = datetime.strptime(request_data["eventStartTime"], dateFormat)
-    eventEnd = datetime.strptime(request_data["eventEndTime"], dateFormat)
+    dateFormat = '%Y-%m-%dT%H:%M:%S'
 
-    print(eventStart)
-    print(eventEnd)
+    eventStart = datetime.strptime(request_data["eventStartTime"][:-5], dateFormat) - timedelta(hours=7)
+    eventEnd = datetime.strptime(request_data["eventEndTime"][:-5], dateFormat) - timedelta(hours=7)
 
     data = Event(name=request_data["eventTitle"], 
                  description=request_data["eventDescription"],
@@ -294,6 +293,161 @@ def get_events_rsvp(sel):
 
     return jsonify(message=serialized), 200
 
+#adds a comment to the specified event
+@app.route('/event/<id>/comments',methods=['POST'])
+@jwt_required()
+def add_comment(id):
+    if request.method == 'POST':
+        request_data = request.get_json()
+        event = Event.query.get(id)
+        #converting epoch time to ms
+        date_posted = round(time() * 1000)
+        
+        comment = EventComment(content = request_data["content"],
+                               date_posted = date_posted, 
+                               isAdminComment = request_data["isAdminComment"])
+        comment.event = event
+        comment.user = current_identity
+
+    try:     
+        db.session.add(comment)
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    return jsonify(message="add comment successful")
+
+#returns a list of comments posted for the specified event
+@app.route('/event/<id>/comments/admin=<sel>',methods=['GET'])
+@jwt_required()
+def get_event_comments(id, sel):
+    serialized = []
+    event = Event.query.get(id)
+    if(sel == 'true' or sel == True):
+        sel = 1
+        print("IN TRUE")
+    else:
+        sel = 0
+    
+    comments = EventComment.query.filter_by(event_id=id, isAdminComment=sel).all()
+    print(comments)
+    serialized = [EventComment.serialize(item) for item in comments]
+
+    return jsonify(message=serialized), 200
+
+@app.route('/org/<id>/adminrequest',methods=['POST'])
+@jwt_required()
+def create_admin_request(id):
+    org = Organization.query.get(id)
+    if (current_identity not in org.pending_admins):
+        org.pending_admins.append(current_identity)
+
+    try:     
+        db.session.add(org)
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    return jsonify(message="successful admin request")
+
+@app.route('/org/<id>/adminrequest',methods=['GET'])
+@jwt_required()
+def get_admin_requests(id):
+    serialized = [] 
+
+    pending_admins = Organization.query.get(id).pending_admins
+    serialized = [{"email": user.email, "id": user.id} for user in pending_admins]
+
+    return jsonify(message=serialized), 200
+
+@app.route('/org/<id>/adminrequest',methods=['PUT'])
+@jwt_required()
+def update_admin_requests(id):
+    request_data = request.get_json()
+
+    user = User.query.get(request_data["user_id"])
+    org = Organization.query.get(id)
+    if request_data["approved"]: 
+        org.admins.append(user) 
+
+    org.pending_admins.remove(user)
+
+    try:     
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    return jsonify(message="admin request review successful")
+
+
+@app.route('/org/<id>/events',methods=['GET'])
+@jwt_required()
+def get_org_events(id):
+    serialized = []
+    org_name = Organization.query.get(id).name
+
+    #events rsvp with status
+    events_and_status = db.session.query(Event, EventRSVP.status).filter_by(org_id=id).outerjoin(EventRSVP) \
+                                                .filter(EventRSVP.user_id.is_(current_identity.id)) \
+                                                .order_by(Event.event_start.desc()).all()
+
+    #events not rsvped to
+    events_rsvp = EventRSVP.query.with_entities(EventRSVP.event_id).filter_by(user_id=current_identity.id).subquery()
+    events_not_rsvp = db.session.query(Event).filter(~Event.id.in_(events_rsvp)).filter_by(org_id=id)\
+                                             .order_by(Event.event_start.desc()).all()
+
+    events_serialized = [(Event.serialize(event), get_rsvp_status_string(rsvp_status)) for (event, rsvp_status) in events_and_status]
+    [events_serialized.append((Event.serialize(event), "")) for event in events_not_rsvp]
+    
+    serialized = [{"title" : org_name,
+                   "events": events_serialized
+                  }]
+
+    return jsonify(message=serialized), 200
+
+@app.route('/event/<id>/statistics',methods=['GET'])
+@jwt_required()
+def get_event_statistics(id):
+    
+    going = db.session.query(EventRSVP, User)\
+                    .filter_by(event_id=id).filter_by(status=2)\
+                    .join(User).with_entities(User.first_name, User.last_name).all()
+
+    interested = db.session.query(EventRSVP, User.first_name, User.last_name)\
+                    .filter_by(event_id=id).filter_by(status=1)\
+                    .join(User).with_entities(User.first_name, User.last_name).all()
+
+    not_going = db.session.query(EventRSVP, User.first_name, User.last_name)\
+                    .filter_by(event_id=id).filter_by(status=0)\
+                    .join(User).with_entities(User.first_name, User.last_name).all()
+
+    going = [user[0] + " " + user[1] for user in going]
+    interested = [user[0] + " " + user[1] for user in interested]
+    not_going = [user[0] + " " + user[1] for user in not_going]
+
+    serialized = {
+        "going":going,
+        "interested":interested,
+        "not_going":not_going
+    }
+    
+    return jsonify(message=serialized)
+    
+@app.route('/org/<id>/members',methods=['GET'])
+@jwt_required()
+def get_org_members(id):
+    serialized = []
+    
+    admins = Organization.query.get(id).admins
+    serialized = [{"email": admin.email, "memberStatus": "admin"} for admin in admins]
+    
+    members = Organization.query.get(id).members 
+    for member in members:
+        if not any(admin["email"] == member.email for admin in serialized):
+            serialized.append({"email": member.email, "memberStatus": "member"})
+
+    print(serialized)
+    return jsonify(message=serialized), 200
 
 if __name__ == "__main__":
    app.secret_key = os.urandom(12)

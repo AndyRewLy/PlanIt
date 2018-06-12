@@ -24,6 +24,7 @@ class Home extends React.Component {
             orgFilter: undefined
         }
 
+        this.getNonMemberOrgs = this.getNonMemberOrgs.bind(this);
         this.renderEventInfo = this.renderEventInfo.bind(this);
         this.updateEventFilter = this.updateEventFilter.bind(this);
         this.handleEventClose = this.handleEventClose.bind(this);
@@ -85,6 +86,25 @@ class Home extends React.Component {
         this.setState({ showOrgInfo: !this.state.showOrgInfo });
     }
 
+    getNonMemberOrgs() {
+        var memberOrgs = this.props.MemberOrgs; 
+
+        var orgs = this.props.AllOrgs.map(org => {
+            org.canJoin = memberOrgs.filter(memOrg =>
+                memOrg.organizationId === org.organizationId
+            ).length ? false : true;
+            return org.canJoin ? org : null;
+        })
+
+        var nonMemOrgs = []
+        orgs.forEach(function(item, index) {
+            if (item) {
+                nonMemOrgs.push(item)
+            }
+        })
+        return nonMemOrgs;
+    }
+
     render() {
         var memberOrgs = this.props.MemberOrgs;
         var orgId = this.state.calloutOrgId;
@@ -111,12 +131,7 @@ class Home extends React.Component {
                     <TextField className="row-item" hintText="Search for an Org" onChange={this.updateOrgFilter} />
                 </div>
                 <OrgCardContainer filterText={this.state.orgFilter}
-                    cards={this.props.AllOrgs.map(org => {
-                        org.canJoin = memberOrgs.filter(memOrg =>
-                            memOrg.organizationId === org.organizationId
-                        ).length ? false : true;
-                        return org;
-                    })}
+                    cards={this.getNonMemberOrgs()}
                     renderOrgInfo={this.renderOrgInfo} />
                 <EventRSVPDialog rsvp={this.rsvpToEvent}
                     event={event}

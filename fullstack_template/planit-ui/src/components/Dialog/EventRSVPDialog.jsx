@@ -1,8 +1,17 @@
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-
 import React, { Component } from 'react';
 
+import {
+    Table,
+    TableBody,
+    TableHeader,
+    TableHeaderColumn,
+    TableRow,
+    TableRowColumn,
+} from 'material-ui/Table';
+
+require('./Dialog.css');
 class EventRSVPDialog extends Component {
 
     /*  The props for this component
@@ -32,30 +41,38 @@ class EventRSVPDialog extends Component {
         return (
             <Dialog
                 title={event.eventTitle}
-                actions={actions}
                 open={this.props.open}
+                actions={actions}
+                autoScrollBodyContent={true}
                 onRequestClose={this.props.close}>
-                <div>
-                    <h5>Description</h5>
-                    <div>{event.eventDescription}</div>
-                </div>
-                <div>
-                    <h5>Location</h5>
-                    <div>{event.eventLocation}</div>
-                </div>
-                <div>
-                    <h5>Date and Time</h5>
-                    <div>Start: {event.eventStartTime}</div>
-                    <div>End: {event.eventEndTime} </div>
-                </div>
-                <div>
-                    <h5>Maximum Participants</h5>
-                    <div>{event.maxParticipants}</div>
-                </div>
-                <div>
-                    <h5>Event Type</h5>
-                    <div>{event.eventMembersOnly ? "Members Only" : "Open to Everyone"}</div>
-                </div>
+                <Table>
+                    <TableBody displayRowCheckbox={false}>
+                        <TableRow>
+                            <TableRowColumn className="bold-row">Description</TableRowColumn>
+                            <TableRowColumn>{event.eventDescription}</TableRowColumn>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowColumn className="bold-row">Location</TableRowColumn>
+                            <TableRowColumn>{event.eventLocation}</TableRowColumn>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowColumn className="bold-row">Start Time</TableRowColumn>
+                            <TableRowColumn>{event.eventStartTime}</TableRowColumn>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowColumn className="bold-row">End Time</TableRowColumn>
+                            <TableRowColumn>{event.eventEndTime}</TableRowColumn>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowColumn className="bold-row">Max Participants</TableRowColumn>
+                            <TableRowColumn>{event.maxParticipants}</TableRowColumn>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowColumn className="bold-row">Event Types</TableRowColumn>
+                            <TableRowColumn>{event.eventMembersOnly ? "For Members Only" : "Open to Everyone"}</TableRowColumn>
+                        </TableRow>
+                    </TableBody>
+                </Table>
             </Dialog>
         );
     }

@@ -3,7 +3,7 @@
 }
 
 .CardContainer > .card-subcontainer {
-	background: #ececec;
+	background: #FEFEFE;
 	padding: 10px;
 	border-radius: 5px;
   text-align: center;
@@ -12,5 +12,5 @@
   flex: 0 0 100%;
   overflow: auto;
   word-wrap: break-word;
-  height: 260px;
+  height: 330px;
 }

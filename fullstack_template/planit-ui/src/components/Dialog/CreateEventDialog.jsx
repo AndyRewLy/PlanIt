@@ -3,7 +3,11 @@ import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
 
 import Dialog from 'material-ui/Dialog';
+import TimePicker from 'material-ui/TimePicker';
+import DatePicker from 'material-ui/DatePicker';
 import React, { Component } from 'react';
+
+import './CreateEventDialog.css';
 
 class CreateEventDialog extends React.Component {
     constructor(props) {
@@ -16,16 +20,23 @@ class CreateEventDialog extends React.Component {
             maxPartError: '',
             tagsError: '',
             startTimeError: '',
+            stopDateError: '',
             stopTimeError: '',
             eventImgError: '',
             validationError: false,
-            eventMembersOnly: false
+            eventMembersOnly: false,
+            eventStartTime: undefined, 
+            eventEndTime: undefined
         }
 
         this.handleEventTitleChange = this.handleEventTitleChange.bind(this);
         this.handleEventDescriptionChange = this.handleEventDescriptionChange.bind(this);
         this.handleEventLocationChange = this.handleEventLocationChange.bind(this);
         this.handleEventStartTimeChange = this.handleEventStartTimeChange.bind(this);
+        this.handleStartDayChange = this.handleStartDayChange.bind(this);
+        this.handleStartTimeChange = this.handleStartTimeChange.bind(this);
+        this.handleEndDayChange = this.handleEndDayChange.bind(this);
+        this.handleEndTimeChange = this.handleEndTimeChange.bind(this);
         this.handleEventEndTimeChange = this.handleEventEndTimeChange.bind(this);
         this.handleMembersOnlyCheck = this.handleMembersOnlyCheck.bind(this);
         this.handleMaxParticipantsChange = this.handleMaxParticipantsChange.bind(this);
@@ -60,10 +71,12 @@ class CreateEventDialog extends React.Component {
         state.maxPartError = '';
         state.tagsError = '';
         state.startTimeError = '';
+        state.stopDateError = '';
         state.stopTimeError = '';
         state.eventImgError = '';
         state.validationError = false;
-
+        state.eventStartTime = undefined;
+        state.eventEndTime = undefined;
         this.props.close();
     }
 
@@ -136,6 +149,83 @@ class CreateEventDialog extends React.Component {
 
     }
 
+    handleStartDayChange(event, value) {
+        if (this.state.eventStartTime != undefined) {
+            var newDate = this.state.eventStartTime;
+            newDate.setFullYear(value.getFullYear(), value.getMonth(), value.getDate());
+        } else {
+        var newDate = value;
+        }
+
+        this.setState(prevState => ({
+            eventStartTime: newDate
+        }))
+    }
+
+    handleStartTimeChange(event, value) {
+        if (this.state.eventStartTime != undefined) {
+          var newDate = this.state.eventStartTime;
+          newDate.setHours(value.getHours());
+          newDate.setMinutes(value.getMinutes());
+        } else {
+          var newDate = value;
+        }
+    
+        this.setState(prevState => ({
+            eventStartTime: newDate
+        }))
+        console.log(newDate);
+      }
+
+    handleEndDayChange(event, value) {
+        if (this.state.eventEndTime != undefined) {
+            var newDate = this.state.eventEndTime;
+            newDate.setFullYear(value.getFullYear(), value.getMonth(), value.getDate());
+          } else {
+            var newDate = value;
+            newDate.setHours(23)
+            newDate.setMinutes(59)
+        }
+
+          var newDateWithBuffer = newDate;
+          newDateWithBuffer.setMinutes(newDate.getMinutes() - 1);
+          if (this.state.eventStartTime != undefined && newDateWithBuffer <= this.state.eventStartTime) {
+            this.setState(prevState => ({
+                stopDateError: 'Event end day is before the event start day'
+            }))
+          } else {
+            this.setState(prevState => ({
+              eventEndTime: newDate,
+              stopDateError: ''
+            }))
+          }
+          console.log(newDate);
+    }
+
+    handleEndTimeChange(event, value) {
+        if (this.state.eventEndTime != undefined) {
+          var newDate = this.state.eventEndTime;
+          newDate.setHours(value.getHours());
+          newDate.setMinutes(value.getMinutes());
+        } else {
+          var newDate = value;
+        }
+    
+        var newDateWithBuffer = newDate;
+        newDateWithBuffer.setMinutes(newDate.getMinutes() - 1);
+        if (this.state.eventStartTime != undefined && newDateWithBuffer <= this.state.eventStartTime) {
+          this.setState(prevState => ({
+            stopTimeError: 'Event end time is before the event start time'
+          }))
+        } else {
+          this.setState(prevState => ({
+            eventEndTime: newDate,
+            stopTimeError: ''
+          }))
+        }
+        console.log(newDate);
+    }
+
     handleEventEndTimeChange(event, value) {
 
         if(value) {
@@ -160,7 +250,7 @@ class CreateEventDialog extends React.Component {
         var state = this.state;
 
         if (state.eventNameError || state.eventDescError || state.eventLocError || state.eventImgError
-            || state.maxPartError || state.tagsError || state.startTimeError || state.stopTimeError) {
+            || state.maxPartError || state.tagsError || state.startTimeError || state.stopTimeError || state.stopDateError) {
             this.toggleValidationError();
         }
         else {
@@ -197,11 +287,37 @@ class CreateEventDialog extends React.Component {
                     </div>
                     <div>
                         <div>Event Start Time</div>
-                        <TextField hintText="03/14/18 4:00PM" errorText = {this.state.startTimeError} onChange={this.handleEventStartTimeChange} />
+                        <div class="event-time-row">
+                            <DatePicker
+                                hintText="Day"
+                                errorText = {this.state.startTimeError}
+                                value={this.state.eventStartTime}
+                                onChange={this.handleStartDayChange}
+                            />
+                            <TimePicker
+                                hintText="Time"
+                                errorText = {this.state.startTimeError}
+                                value={undefined}
+                                onChange={this.handleStartTimeChange}
+                            />    
+                        </div>
                     </div>
                     <div>
                         <div>Event End Time</div>
-                        <TextField hintText="03/14/18 6:00PM" errorText = {this.state.stopTimeError} onChange={this.handleEventEndTimeChange} />
+                        <div class="event-time-row">
+                            <DatePicker
+                                hintText="Day"
+                                errorText = {this.state.stopDateError}
+                                value={this.state.eventEndTime}
+                                onChange={this.handleEndDayChange}
+                            />
+                            <TimePicker
+                                hintText="Time"
+                                errorText = {this.state.stopTimeError}
+                                value={undefined}
+                                onChange={this.handleEndTimeChange}
+                            />   
+                        </div>
                     </div>
                     <div>
                         <Checkbox label="Members Only" checked={this.state.eventMembersOnly} onCheck={this.handleMembersOnlyCheck} />

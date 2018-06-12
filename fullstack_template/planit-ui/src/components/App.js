@@ -16,10 +16,15 @@ function mapStateToProps(state) {
        User: state.User,
        AdminOrgs: state.AdminOrgs,
        MemberOrgs: state.MemberOrgs,
+       Members: state.Members,
        AllOrgs: state.AllOrgs,
        AdminEvents: state.AdminEvents,
        AllEvents: state.AllEvents,
-       RSVPEvents: state.RSVPEvents
+       RSVPEvents: state.RSVPEvents,
+       EventComments: state.EventComments,
+       OrgEvents: state.OrgEvents,
+       EventRSVPResponses: state.EventRSVPResponses,
+       AdminRequests: state.AdminRequests
    };
 }
 

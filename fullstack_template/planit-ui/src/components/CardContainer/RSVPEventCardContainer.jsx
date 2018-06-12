@@ -37,7 +37,7 @@ class RSVPEventCardContainer extends React.Component {
                 }
                 {this.props.cards.length == 0 &&
                     <div className="card-subcontainer">
-                        <div> You currently have no events with this Org. </div>
+                        <div> There are currently no events with this Org. </div>
                     </div>
                 }
             </div>

@@ -5,3 +5,4 @@ export {default as HomePage} from './Home/Home';
 export {default as MyOrgs} from './MyOrgs/MyOrgs';
 export {default as MyEvents} from './MyEvents/MyEvents';
 export {default as RSVPEvents} from './RSVPEvents/RSVPEvents';
+export {default as OrgEvents} from './MyOrgs/OrgEvents';

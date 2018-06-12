@@ -6,6 +6,17 @@
  */
 import * as api from '../api';
 
+export function persistLogin(token, cb) {
+    console.log("Persisting login...");
+
+    return (dispatch, prevState) => {
+        api.persistLogin(token)
+          .catch((error) => {
+            dispatch({type:"LOG_OUT"})
+          });
+    }
+}
+
 export function signIn(credentials, cb, errCb) {
     console.log("Sign In Action Creator");
 
@@ -26,7 +37,7 @@ export function signOut(cb) {
 
     return (dispatch, prevState) => {
         api.signOut();
-        dispatch({type: "SIGN_OUT"});
+        dispatch({type: "LOG_OUT"});
         if (cb) cb();
          
     };
@@ -80,6 +91,8 @@ export function createNewOrg(org, cb, errCb) {
     return (dispatch, prevState) => {
         api.postOrg(org)
          .then(() => dispatch({org: org, type: "ADD_ADMIN_ORG"}))
+         .then(() => api.getAllAdminOrgs())
+         .then(adminOrgs => dispatch({adminOrgs: adminOrgs, type: "GET_ADMIN_ORGS"}))
          .then(() => { if (cb) cb(); })
          .catch((error) => {if (errCb) errCb();})
     }
@@ -128,6 +141,8 @@ export function postEventResponse(status, eventId, cb, errCb) {
         api.postEventResponse({status, eventId})
          .then(() => api.getAllFilteredEvents(""))
          .then((events) => dispatch({events: events, type: "GET_FILTERED_EVENTS"}))
+         .then(() => api.getAllRSVPEvents("true"))
+         .then(events => dispatch({events: events, type: "GET_RSVP_EVENTS"}))
          .then(() => { if (cb) cb();})
          .catch((error) => {if (errCb) errCb();})
     }
@@ -165,9 +180,100 @@ export function getAllRSVPEvents(cb, errCb) {
     console.log("Get all RSVP Events Action Creator");
 
     return (dispatch, prevState) => {
-        api.getAllRSVPEvents()
+        api.getAllRSVPEvents(true)
          .then(events => dispatch({events: events, type: "GET_RSVP_EVENTS"}))
          .then(() => {if (cb) cb();})
          .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function postComment(eventId, body, cb, errCb) {
+    console.log("Register Action Creator...");
+    console.log("Stuff" + eventId + " " + body);
+
+    return (dispatch, prevState) => {
+        api.postComment(eventId, body)
+         .then(()=> api.getEventComments(eventId, body["isAdminComment"]))
+         .then(comments => dispatch({comments: comments, type: "GET_EVENT_COMMENTS"}))
+         .then(() => { if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function getEventComments(eventId, isAdminComment, cb, errCb) {
+    console.log("Get all Event Comments Action Creator");
+
+    return (dispatch, prevState) => {
+        api.getEventComments(eventId, isAdminComment)
+         .then(comments => dispatch({comments: comments, type: "GET_EVENT_COMMENTS"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function getEventRSVPResponses(eventId, cb, errCb) {
+    console.log("Get all Event RSVP Responses Action Creator");
+
+    return (dispatch, prevState) => {
+        api.getEventRSVPResponses(eventId)
+         .then(responses => dispatch({responses: responses, type: "GET_EVENT_RSVP_RESPONSES"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }    
+}
+
+export function getOrganizationEvents(orgId, cb, errCb) {
+    console.log("Get all organization events Action Creator");
+
+    return (dispatch, prevState) => {
+        api.getOrganizationEvents(orgId)
+         .then(events => dispatch({events: events, type: "GET_ORG_EVENTS"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function getMembers(orgId, cb, errCb) {
+    console.log("Get all members for a given organization");
+
+    return (dispatch, prevState) => {
+         api.getMembers(orgId)
+          .then(members => dispatch({members: members, type: "GET_MEMBERS"}))
+          .then(() => {if (cb) cb();})
+          .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function postAdminRequest(orgId, cb, errCb) {
+    console.log("Request Admin Access Action Creator"); 
+
+    return (dispatch, prevState) => {
+        api.postAdminRequest(orgId)
+         .then(() => dispatch({orgId: orgId, type: "UPDATE_ADMIN_REQUEST"}))
+         .then(() => { if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function getAdminRequests(orgId, cb, errCb) {
+    console.log("Getting admin requests...");
+
+    return (dispatch, prevState) => {
+        if (cb) cb();
+        api.getAdminRequests(orgId)
+         .then(requests => dispatch({requests: requests, type: "GET_ADMIN_REQUESTS"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => {if (errCb) errCb();})
+    }
+}
+
+export function sendRequestStatus(orgId, userId, status, cb) {
+    console.log("Sending request satus...");
+
+    return (dispatch, prevState) => {
+        api.sendRequestStatus(orgId, userId, status)
+         .then(dispatch({userId: userId, type: "DELETE_ADMIN_REQUEST"}))
+         .then(() => {if (cb) cb();})
+         .catch((error) => error)
     }
 }

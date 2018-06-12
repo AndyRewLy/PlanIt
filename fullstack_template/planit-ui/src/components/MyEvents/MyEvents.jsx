@@ -1,6 +1,7 @@
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
+import ToggleButton from 'react-toggle-button'
 
 import EventCardContainer from '../CardContainer/EventCardContainer';
 import CreateEventDialog from '../Dialog/CreateEventDialog';
@@ -19,16 +20,28 @@ class MyEvents extends React.Component {
             canRSVP: false
         }
 
+        this.handleOrgRoleChange = this.handleOrgRoleChange.bind(this);
         this.toggleCreateEvent = this.toggleCreateEvent.bind(this);
         this.toggleEventInfo = this.toggleEventInfo.bind(this);
         this.getEventCardWithId = this.getEventCardWithId.bind(this);
         this.createRowComponents = this.createRowComponents.bind(this);
     }
 
+    handleOrgRoleChange(value) {
+        if (value == false) {
+            this.props.getAllAdminEvents();
+            this.props.history.push("/manageEvents");
+        }
+        else {
+            this.props.getAllRSVPEvents();
+            this.props.history.push("/myEvents");
+        }
+    }
+
     toggleCreateEvent(title) {
         var that = this;
 
-        return function() {
+        return function () {
             that.setState({
                 createEventVisible: !that.state.createEventVisible,
                 eventOrgTitle: title
@@ -72,7 +85,10 @@ class MyEvents extends React.Component {
                         {cards[i].admin &&
                          <RaisedButton label="Create Event" primary={true} style={style} onClick={this.toggleCreateEvent(cards[i].title)} />}
                     </div>
-                    <EventCardContainer cards={cards[i].events} canRSVP={false} renderEventInfo={this.toggleEventInfo} />
+                    <EventCardContainer 
+                        cards={cards[i].events} 
+                        canRSVP={false} 
+                        renderEventInfo={this.toggleEventInfo} />
                 </div>
             );
         }
@@ -91,15 +107,31 @@ class MyEvents extends React.Component {
 
         return (
             <div style={style}>
+                <div style={{textAlign: 'right'}}>
+                        <ToggleButton 
+                            containerStyle={toggleButtonStyle.containerStyle} 
+                            trackStyle={toggleButtonStyle.trackStyle} 
+                            thumbStyle={toggleButtonStyle.thumbStyle}
+                            thumbAnimateRange={toggleButtonStyle.thumbAnimateRange} 
+                            activeLabelStyle={toggleButtonStyle.activeLabelStyle}
+                            inactiveLabelStyle={toggleButtonStyle.inactiveLabelStyle}
+                            colors={toggleButtonStyle.colors}
+                            inactiveLabel={"Member"}
+                            activeLabel={"Admin"}
+                            value={true} 
+                            onToggle={this.handleOrgRoleChange}/>
+                    </div>
                 {rowComponents}
                 <CreateEventDialog orgName={this.state.eventOrgTitle}
                  isVisible={this.state.createEventVisible}
                  close={this.toggleCreateEvent(undefined)}
                  {...this.props}/>
                 {this.state.calloutEventId ?
-                   <EventInfoDialog event={this.getEventCardWithId()} 
+                   <EventInfoDialog 
+                    event={this.getEventCardWithId()} 
                     isVisible={this.state.showEventVisible}
-                    close={this.toggleEventInfo}/>
+                    close={this.toggleEventInfo}
+                    {...this.props}/>
                 : ''}
             </div>
         );
@@ -108,6 +140,20 @@ class MyEvents extends React.Component {
 
 const style = {
     margin: 15,
+};
+
+const toggleButtonStyle = {
+    containerStyle: { display: 'inline-block', width: '100px', height: '25px' },
+    trackStyle: { width: '100px', height: '25px' },
+    thumbStyle: { width: '25px', height: '25px' },
+    thumbAnimateRange: [1, 80],
+    activeLabelStyle: { width: '30px', fontSize: '13px' },
+    inactiveLabelStyle: { width: '30px', fontSize: '13px' },
+    colors:{
+        active: {
+          base: '#3E5C76',
+        },
+      }
 };
 
 export default MyEvents;

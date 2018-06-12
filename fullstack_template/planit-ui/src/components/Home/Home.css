@@ -6,3 +6,9 @@
 .row-item {
     float: left;
 }
+
+p.row-item {
+    font-weight: bold;
+    font-style: roboto; 
+    font-size: 19px;
+}
